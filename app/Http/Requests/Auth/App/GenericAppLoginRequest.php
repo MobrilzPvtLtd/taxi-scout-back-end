@@ -17,9 +17,9 @@ class GenericAppLoginRequest extends BaseRequest
             'email'         => 'sometimes|required|email|exists:users,email',
             'password'      => 'sometimes|required',
             'username'      => 'sometimes|required|exists:users,username',
-            'mobile'=>'sometimes|required|mobile_number',
+            // 'mobile'=>'sometimes|required|mobile_number',
             'login_by'=>'sometimes|required',
-            'device_token'=>'sometimes|required'
+            // 'device_token'=>'sometimes|required'
         ];
     }
 }

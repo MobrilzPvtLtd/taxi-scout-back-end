@@ -122,7 +122,7 @@ class DriverController extends BaseController
             }
         } else {
             $this->validateAdmin();
-            $query = $this->driver->where('approve', true)->where('owner_id', null)->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
+            $query = $this->driver->where('owner_id', null)->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
             // $query = Driver::orderBy('created_at', 'desc');
         }
         $results = $queryFilter->builder($query)->customFilter(new DriverFilter)->paginate();

@@ -321,6 +321,7 @@ class AdminController extends BaseController
         }
 
         $admin = User::where('id', 1)->firstOrFail();
+        $userUuid = User::where('id', $user->id)->firstOrFail();
 
         $uuid = substr(Uuid::uuid4()->toString(), 0, 10);
 
@@ -337,7 +338,7 @@ class AdminController extends BaseController
         $data = [
             'name' => $user->name,
             'admin_name' => $admin->name,
-            'company_key' => $uuid,
+            'company_key' => $userUuid->company_key,
             'email' => $user->email,
             'is_approval' => $adminDetail->is_approval,
         ];
