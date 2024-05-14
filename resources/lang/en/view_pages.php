@@ -660,7 +660,7 @@ return array (
   'bulk_actions' => 'Massive actions',
   'archive' => 'Archive',
   'apply' => 'Apply',
-  'password_message' => 'We have received a request to reset your password. You can reset your password by token the below',
+  'password_message' => 'We have received a request to reset your password. You can reset your password by otp the below',
   'commitment_text' => 'We are committed to offering not only a convenience, but also a technology-driven option.',
   'choice_of_genuine_and_verified_drivers' => 'Choice of genuine and verified drivers',
   'schedule_rides' => 'Schedule trips',

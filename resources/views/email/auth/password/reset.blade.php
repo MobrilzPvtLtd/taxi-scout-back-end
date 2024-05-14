@@ -10,7 +10,7 @@
             <p>@lang('view_pages.password_message').</p>
 
             <div class="text-center">
-                <h4>{{ $token }}</h4>
+                <h4>{{ $otp }}</h4>
 
                 {{-- <a href="{{$app_url.'/'.'reset-password/'.$token}}"
                    target="_blank" class="btn btn-default">

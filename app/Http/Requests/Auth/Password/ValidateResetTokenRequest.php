@@ -14,7 +14,8 @@ class ValidateResetTokenRequest extends BaseRequest
     public function rules()
     {
         return [
-            'token' => 'required',
+            'otp' => 'required',
+            // 'token' => 'required',
             'email' => 'required|email',
         ];
     }

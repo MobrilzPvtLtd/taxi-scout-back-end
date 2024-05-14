@@ -11,6 +11,7 @@ use App\Mail\ForgotPassword;
 use App\Models\User;
 use Mail;
 use Illuminate\Contracts\Auth\PasswordBroker;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @group Password-Reset
@@ -79,11 +80,26 @@ class PasswordResetController extends ApiController
             $this->throwAccountDisabledException('email');
         }
 
+        $otp = mt_rand(100000, 999999);
+        $email = $user->email;
+
+        $existingReset = DB::table('password_resets')->where('email', $email)->first();
+
+        if ($existingReset) {
+            DB::table('password_resets')
+                ->where('email', $email)
+                ->update(['token' => $otp]);
+        } else {
+            DB::table('password_resets')->insert([
+                'token' => $otp,
+                'email' => $email,
+            ]);
+        }
+
         if ($request->has('email')) {
             // $this->dispatch(new PasswordResetNotification($user, $this->broker->createToken($user)));
-            Mail::to($user->email)->send(new ForgotPassword($user, $this->broker->createToken($user)));
-
-            return $this->respondSuccess(null, "please check your email for token generation");
+            Mail::to($user->email)->send(new ForgotPassword($user, $otp));
+            return $this->respondSuccess(null, "Please check your email for the 6-digit OTP.");
         }
     }
 
@@ -118,10 +134,16 @@ class PasswordResetController extends ApiController
     {
         $password = $request->input('password');
 
-        if ($request->has('email')&&$request->has('token')) {
-            $token = $request->input('token');
-            $email = $request->input('email');
-            $user = $this->validateResetToken($email, $token);
+
+        if ($request->has('email')&&$request->has('otp')) {
+            $existingReset = DB::table('password_resets')
+                            ->where('email', $request->input('email'))
+                            ->where('token', $request->input('otp'))
+                            ->first();
+            // $user = $this->validateResetToken($email, $otp);
+            if (!$existingReset) {
+                return $this->respondBadRequest('Invalid OTP !');
+            }
         }
 
         if ($request->has('mobile') && $request->has('role')) {
@@ -133,14 +155,20 @@ class PasswordResetController extends ApiController
             return $this->respondBadRequest('Input Params could be mismatched.');
         }
 
+        // $existingReset->forceFill([
+        //     'password' => bcrypt($password),
+        //     'remember_token' => null,
+        // ])->save();
 
-        $user->forceFill([
-            'password' => bcrypt($password),
-            'remember_token' => null,
-        ])->save();
+        DB::table('users')->where('email', $request->has('email'))
+                ->update(['password' => bcrypt($password)]);
 
-        if ($request->has('email')&&$request->has('token')) {
-            $this->broker->deleteToken($user);
+        if ($request->has('email')) {
+            $password = $request->input('password');
+            DB::table('users')->where('email', $request->input('email'))
+                ->update(['password' => bcrypt($password)]);
+
+            DB::table('password_resets')->where('email', $request->input('email'))->delete();
         }
 
         return $this->respondSuccess(null, 'reset-success');

@@ -24,18 +24,18 @@ class ForgotPassword extends Mailable
      *
      * @var string
      */
-    protected $token;
+    protected $otp;
 
     /**
      * Create a new job instance.
      *
      * @param User $user
-     * @param string $token
+     * @param string $otp
      */
-    public function __construct(User $user, $token)
+    public function __construct(User $user, $otp)
     {
         $this->user = $user;
-        $this->token = $token;
+        $this->otp = $otp;
     }
 
     /**
@@ -48,10 +48,10 @@ class ForgotPassword extends Mailable
         $subject = 'Password Reset Request';
         $view = 'email.auth.password.reset';
         $app_url = url()->current();
-        $token = $this->token;
+        $otp = $this->otp;
         $user = $this->user;
 
-        return $this->view($view, ['token' => $token, 'app_url' => $app_url, 'user' => $user])
+        return $this->view($view, ['otp' => $otp, 'app_url' => $app_url, 'user' => $user])
                     ->subject($subject);
     }
 }
