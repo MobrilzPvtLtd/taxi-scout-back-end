@@ -14,11 +14,11 @@ class ResetPasswordRequest extends BaseRequest
     public function rules()
     {
         return [
-            'token'     => 'sometimes|required',
+            'token'     => 'required',
             'email'     => 'sometimes|required|email|exists:users,email,active,1',
-            'mobile'=>'sometimes|required|mobile_number|exists:users,mobile',
-            'country'=>'sometimes|required',
-            'password'  => 'required|min:6|confirmed',
+            // 'mobile'=>'sometimes|required|mobile_number|exists:users,mobile',
+            // 'country'=>'sometimes|required',
+            'password'  => 'required|min:8|confirmed',
         ];
     }
 

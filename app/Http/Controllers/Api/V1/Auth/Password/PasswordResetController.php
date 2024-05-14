@@ -7,7 +7,9 @@ use App\Http\Requests\Auth\Password\ForgotPasswordRequest;
 use App\Http\Requests\Auth\Password\ResetPasswordRequest;
 use App\Http\Requests\Auth\Password\ValidateResetTokenRequest;
 use App\Jobs\Notifications\Auth\Password\PasswordResetNotification;
+use App\Mail\ForgotPassword;
 use App\Models\User;
+use Mail;
 use Illuminate\Contracts\Auth\PasswordBroker;
 
 /**
@@ -78,9 +80,10 @@ class PasswordResetController extends ApiController
         }
 
         if ($request->has('email')) {
-            $this->dispatch(new PasswordResetNotification($user, $this->broker->createToken($user)));
+            // $this->dispatch(new PasswordResetNotification($user, $this->broker->createToken($user)));
+            Mail::to($user->email)->send(new ForgotPassword($user, $this->broker->createToken($user)));
 
-            return $this->respondSuccess();
+            return $this->respondSuccess(null, "please check your email for token generation");
         }
     }
 

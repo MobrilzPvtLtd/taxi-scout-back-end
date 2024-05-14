@@ -1,16 +1,16 @@
 <div class="footer">
     <div class="icons">
         <a href="{{ config('base.web.links.facebook') }}" target="_blank" class="icon-circle">
-            <img src="{{ asset('images/email/social/facebook.png') }}" alt="Facebook">
+            <img src="{{ asset('images/email/social/facebook.png') }}" alt="Facebook" style="width: 35px">
         </a>
         <a href="{{ config('base.web.links.twitter') }}" target="_blank" class="icon-circle">
-            <img src="{{ asset('images/email/social/twitter.png') }}" alt="Twitter">
+            <img src="{{ asset('images/email/social/twitter.png') }}" alt="Twitter" style="width: 35px">
         </a>
         <a href="{{ config('base.web.links.google_plus') }}" target="_blank" class="icon-circle">
-            <img src="{{ asset('images/email/social/google.png') }}" alt="Google plus">
+            <img src="{{ asset('images/email/social/google.png') }}" alt="Google plus" style="width: 35px">
         </a>
         <a href="{{ config('base.web.links.linkedin') }}" target="_blank" class="icon-circle">
-            <img src="{{ asset('images/email/social/linkedin.png') }}" alt="Linkedin">
+            <img src="{{ asset('images/email/social/linkedin.png') }}" alt="Linkedin" style="width: 35px">
         </a>
     </div>
 
