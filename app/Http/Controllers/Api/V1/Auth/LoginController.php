@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Auth\SendLoginOTPRequest;
 use App\Http\Requests\Auth\App\GenericAppLoginRequest;
 use App\Http\Controllers\Web\Auth\LoginController as BaseLoginController;
+use App\Models\Admin\Driver;
 
 /**
  * @group Authentication
@@ -41,38 +42,26 @@ class LoginController extends BaseLoginController
         return $this->loginUserAccountApp($request, Role::USER);
     }
 
-    /**
-     * Login driver and respond with access token and refresh token.
-     * @group User-Login
-     *
-     * @param \App\Http\Requests\Auth\App\GenericAppLoginRequest $request
-     * @return \Illuminate\Http\JsonResponse
-      * @bodyParam email string optional email of the user entered
-     * @bodyParam mobile string optional mobile of the user entered
-     * @bodyParam social_unique_id string optional mobile of the user entered
-     * @bodyParam password string optional password of the user entered
-     * @bodyParam device_token string optional fcm_token for push notification
-     * @bodyParam apn_token string optional fcm_token for ios push notification
-     * @bodyParam login_by string required i.e android,ios
-
-     * @response {
-    "token_type": "Bearer",
-    "expires_in": 1296000,
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjM4ZTE2N2YyNzlkM2UzZWEzODM5ZGNlMmY4YjdiNDQxYjMwZDQ0YmVlYjAzOWNmZjMzMmE2ZTc0ZDY1MDRiNmE3NjhhZWQzYWU5ZjE5MGUwIn0.eyJhdWQiOiIyIiwianRpIjoiMzhlMTY3ZjI3OWQzZTNlYTM4MzlkY2UyZjhiN2I0NDFiMzBkNDRiZWViMDM5Y2ZmMzMyYTZlNzRkNjUwNGI2YTc2",
-    "refresh_token": "def5020045b028faaca5890136e3a8d7c850fb6b95cf2f78698b2356e544ee567cef1efa4099eaea3e3738ba11c9baabb1188a3d49de316e4451f32cdaa6017ebb9ff748fdf43d84b4e796a0456c4125ebaeca7930491fe315e4b86adf787999250"
-}*/
     public function loginDriver(GenericAppLoginRequest $request)
     {
+        // if($request->has('role') && $request->role=='driver'){
+        //     return $this->loginUserAccountApp($request, Role::DRIVER);
+        // }
 
-        if($request->has('role') && $request->role=='driver'){
+        // if($request->has('role') && $request->role=='admin'){
+        //     return $this->loginUserAccountApp($request, Role::ADMIN);
+        // }
+
+        $user = User::where("email", $request->email)->first();
+        $deriver = Driver::where("user_id", $user->id)->where("email", $request->email)->first();
+
+        if($deriver->approve != 1) {
+            $this->throwCustomException('Your account is pending approval. Please wait for our team to review and approve your account.');
+        }
+
+        if($deriver->approve == 1){
             return $this->loginUserAccountApp($request, Role::DRIVER);
         }
-
-        if($request->has('role') && $request->role=='owner'){
-            return $this->loginUserAccountApp($request, Role::OWNER);
-        }
-
-        return $this->loginUserAccountApp($request, Role::DRIVER);
 
     }
 

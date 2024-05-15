@@ -297,7 +297,7 @@
                             url: url,
                             cache: false,
                             success: function(res) {
-                                fetch('/company/drivers/fetch?search=' + search_keyword)
+                                fetch('drivers/fetch?search=' + search_keyword)
                                     .then(response => response.text())
                                     .then(html => {
                                         document.querySelector('#js-drivers-partial-target')
