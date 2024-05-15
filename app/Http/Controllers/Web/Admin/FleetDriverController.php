@@ -194,8 +194,7 @@ class FleetDriverController extends BaseController
      */
   public function store(CreateFleetDriverRequest $request)
     {
-
-        $created_params = $request->only(['service_location_id', 'name','mobile','email','address','gender','vehicle_type','car_make','car_model','car_color','car_number', 'owner_id','transport_type']);
+        $created_params = $request->only(['service_location_id','company_key', 'name','mobile','email','address','gender','vehicle_type','car_make','car_model','car_color','car_number', 'owner_id','transport_type']);
 
 
         $validate_exists_email = $this->user->belongsTorole(Role::DRIVER)->where('email', $request->email)->exists();
@@ -295,12 +294,12 @@ class FleetDriverController extends BaseController
         $user_param = $request->only(['profile']);
 
         $user_param['profile']=null;
-        
+
         if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
             $user_param['profile'] = $this->imageUploader->file($uploadedFile)
                 ->saveProfilePicture();
         }
-        
+
         $driver->update(['name'=>$request->input('name'),
             'email'=>$request->input('email'),
             'mobile'=>$request->input('mobile'),
@@ -481,7 +480,7 @@ class FleetDriverController extends BaseController
         // dd($item);
 
         $amount = DriverWallet::where('user_id',$driver->id)->first();
-        
+
         if ($amount == null) {
 
          $card = [];
@@ -550,7 +549,7 @@ class FleetDriverController extends BaseController
     //     $page = trans('pages_names.drivers');
     //     $main_menu = 'fleet-drivers';
     //     $sub_menu = 'driver_ratings';
-       
+
     //     return view('admin.fleet-drivers.driver-ratings', compact('page', 'main_menu', 'sub_menu'));
 
     // }

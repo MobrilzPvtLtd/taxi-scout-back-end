@@ -79,7 +79,8 @@ class DriverSignupController extends LoginController
     public function register(DriverRegistrationRequest $request)
     {
         $mobileUuid = $request->input('uuid');
-        $created_params = $request->only(['service_location_id', 'name','mobile','email','address','state','city','country','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','smoking','pets','drinking','handica']);
+        $created_params = $request->only(['service_location_id', 'company_key', 'name','mobile','email','address','state','city','country','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','smoking','pets','drinking','handica']);
+
         $created_params['postal_code'] = $request->postal_code;
         if ($request->input('service_location_id')) {
             $timezone = ServiceLocation::where('id', $request->input('service_location_id'))->pluck('timezone')->first();
@@ -88,26 +89,21 @@ class DriverSignupController extends LoginController
         }
 
         $country_code = $this->country->where('dial_code', $request->input('country'))->exists();
-        //print_r($country_code);
 
-        $validate_exists_email = $this->user->belongsTorole([Role::DRIVER,Role::OWNER])->where('email', $request->email)->exists();
+        $validate_exists_email = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN])->where('email', $request->email)->exists();
 
         if ($validate_exists_email) {
             $this->throwCustomException('Provided email has already been taken');
         }
 
-        // $mobile = $this->otpHandler->getMobileFromUuid($mobileUuid);
         $mobile = $request->mobile;
+        $company_key = $request->company_key;
 
-        $validate_exists_mobile = $this->user->belongsTorole([Role::DRIVER,Role::OWNER])->where('mobile', $mobile)->exists();
+        $validate_exists_mobile = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN])->where('mobile', $mobile)->exists();
 
         if ($validate_exists_mobile) {
             $this->throwCustomException('Provided mobile has already been taken');
         }
-
-        // if (!$country_code) {
-        //     $this->throwCustomException('unable to find country');
-        // }
 
         $country_id = $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
 
@@ -119,14 +115,12 @@ class DriverSignupController extends LoginController
             $profile_picture = $this->imageUploader->file($uploadedFile)
                 ->saveProfilePicture();
         }
-        // DB::beginTransaction();
-        // try {
+
         if ($request->has('email_confirmed') == true)
         {
             $data['email_confirmed'] = true;
         }
         $data = [
-            'company_key' => $request->input('company_key'),
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
@@ -145,7 +139,6 @@ class DriverSignupController extends LoginController
             'handica'=>$request->input('handica'),
         ];
 
-        // DB::enableQueryLog();
         if (env('APP_FOR')=='demo' && $request->has('company_key') && $request->input('company_key')) {
             $data['company_key'] = $request->input('company_key');
         }
@@ -156,15 +149,14 @@ class DriverSignupController extends LoginController
         }
 
         $user = $this->user->create($data);
-        //dd($user);
-        // dd(DB::getQueryLog());
+
+        $created_params['company_key'] = $company_key;
         $created_params['mobile'] = $mobile;
         $created_params['uuid'] = driver_uuid();
-        $created_params['active'] = false; //@TODO need to remove in future
+        $created_params['active'] = false;
         $created_params['transport_type'] = $request->transport_type;
 
-        $driver = $user->driver()->create($created_params); //Create drivers table data
-
+        $driver = $user->driver()->create($created_params);
 
         if($request->has('vehicle_types')){
 
@@ -180,7 +172,7 @@ class DriverSignupController extends LoginController
         $this->database->getReference('drivers/'.'driver_'.$driver->id)->set(['id'=>$driver->id,'vehicle_type'=>$request->input('vehicle_type'),'active'=>1,'updated_at'=> Database::SERVER_TIMESTAMP]);
 
         $driver_detail_data = $request->only(['is_company_driver','company']);
-        $driver_detail = $driver->driverDetail()->create($driver_detail_data);//create driver details table data
+        $driver_detail = $driver->driverDetail()->create($driver_detail_data);
 
         // Create Empty Wallet to the driver
         $driver_wallet = $driver->driverWallet()->create(['amount_added'=>0]);

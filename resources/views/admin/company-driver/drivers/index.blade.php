@@ -119,15 +119,15 @@
 
 
         <script src="{{ asset('assets/js/fetchdata.min.js') }}"></script>
-<script>
+    <script>
              $(document).ready(function() {
-        $(".add-admin").mouseover(function() {
-            $(".add-driver-hover").css('display', 'block');
-        });
-        $(".add-admin").mouseout(function() {
-            $(".add-driver-hover").css('display', 'none');
-        });
-    });
+                $(".add-admin").mouseover(function() {
+                    $(".add-driver-hover").css('display', 'block');
+                });
+                $(".add-admin").mouseout(function() {
+                    $(".add-driver-hover").css('display', 'none');
+                });
+            });
             var search_keyword = '';
             var query = '';
 
@@ -274,5 +274,49 @@
                     });
             });
 
+            $(document).on('click', '.driver-approval', function(e) {
+                e.preventDefault();
+                let url = $(this).attr('data-url');
+                let approve = $(this).hasClass('btn-primary');
+
+                let confirmButtonText = approve ? "Disapproval" : "Approval";
+
+                swal({
+                    title: "Are you sure for " + confirmButtonText + " ?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: approve ? "#ff6b55" : "#55dd6b",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No! Keep it",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        swal.close();
+                        $.ajax({
+                            url: url,
+                            cache: false,
+                            success: function(res) {
+                                fetch('/company/drivers/fetch?search=' + search_keyword)
+                                    .then(response => response.text())
+                                    .then(html => {
+                                        document.querySelector('#js-drivers-partial-target')
+                                            .innerHTML = html
+                                    });
+
+                                $.toast({
+                                    heading: '',
+                                    text: res,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'success',
+                                    hideAfter: 5000,
+                                    stack: 1
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         </script>
     @endsection

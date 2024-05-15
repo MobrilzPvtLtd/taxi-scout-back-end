@@ -190,7 +190,7 @@ class DriverController extends BaseController
   public function store(CreateDriverRequest $request)
     {
         // dd($request);
-        $created_params = $request->only(['service_location_id', 'name','mobile','email','address','gender','car_make','car_model','car_color','car_number','transport_type']);
+        $created_params = $request->only(['service_location_id','company_key', 'name','mobile','email','address','gender','car_make','car_model','car_color','car_number','transport_type']);
 
         $validate_exists_email = $this->user->belongsTorole(Role::DRIVER)->where('email', $request->email)->exists();
 

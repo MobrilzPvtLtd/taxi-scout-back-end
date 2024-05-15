@@ -125,6 +125,7 @@ Route::middleware('auth:web')->group(function () {
         Route::get('/create', 'DriverController@create');
         Route::post('store', 'DriverController@store');
         Route::get('/{driver}', 'DriverController@getById');
+        Route::get('approve/{driver}', 'DriverController@approveDriver');
         Route::post('update/{driver}', 'DriverController@update');
         Route::get('toggle_status/{driver}', 'DriverController@toggleStatus');
         Route::get('toggle_approve/{driver}', 'DriverController@toggleApprove');

@@ -16,6 +16,10 @@ class AddIsApprovalToAdminDetailsTable extends Migration
         Schema::table('admin_details', function (Blueprint $table) {
             $table->string('is_approval')->default(0)->nullable()->after('created_by');
         });
+
+        Schema::table('drivers', function (Blueprint $table) {
+            $table->string('company_key')->nullable()->after('user_id');
+        });
     }
 
     /**
@@ -27,6 +31,9 @@ class AddIsApprovalToAdminDetailsTable extends Migration
     {
         Schema::table('admin_details', function (Blueprint $table) {
             $table->dropColumn('is_approval');
+        });
+        Schema::table('drivers', function (Blueprint $table) {
+            $table->dropColumn('company_key');
         });
     }
 }

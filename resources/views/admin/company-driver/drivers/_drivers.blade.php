@@ -5,7 +5,7 @@
                 <tr>
                     <th> @lang('view_pages.s_no')<span style="float: right;"></span></th>
                     <th> @lang('view_pages.uuid')<span style="float: right;"></span></th>
-                    <th> @lang('view_pages.owner')<span style="float: right;"></span></th>
+                    <th> @lang('view_pages.company_key')<span style="float: right;"></span></th>
                     <th> @lang('view_pages.name')<span style="float: right;"></span></th>
                     <th> @lang('view_pages.email')<span style="float: right;"></span></th>
                     <th> @lang('view_pages.mobile')<span style="float: right;"></span></th>
@@ -17,7 +17,7 @@
             </thead>
 
             <tbody>
-                @if(count($results)<1) 
+                @if(count($results)<1)
                     <tr>
                         <td colspan="11">
                             <p id="no_data" class="lead no-data text-center">
@@ -27,69 +27,72 @@
                         </td>
                     </tr>
                 @else
-
                     @php $i= $results->firstItem(); @endphp
-
-                        @foreach($results as $key => $result)
-
-                        <tr>
-                            <td>{{ $i++ }} </td>
-                            <td> {{$result->uuid}}</td>
-                            <td> {{$result->owner?$result->owner->name:'--'}}</td>
-                            <td> {{$result->name}}</td>
-                            <td>{{$result->email}}</td>
-                            <td>{{$result->mobile}}</td>
-                            <td>
+                    @foreach($results as $key => $result)
+                    <tr>
+                        <td>{{ $i++ }} </td>
+                        <td> {{$result->uuid}}</td>
+                        <td> {{$result->company_key}}</td>
+                        <td> {{$result->name}}</td>
+                        <td>{{$result->email}}</td>
+                        <td>{{$result->mobile}}</td>
+                        <td>
                             <a href="{{ url('company/drivers/document/view',$result->id) }}" class="btn btn-social-icon btn-bitbucket">
                                 <i class="fa fa-file-text"></i>
                             </a>
+                        </td>
+
+                        @if($result->approve == 1)
+                            <td>
+                                <a class="dropdown-item driver-approval btn btn-primary btn-sm" href="#" data-url="{{ url('company/drivers/approve', $result->id) }}" style="background-color: green;">
+                                    @lang('view_pages.approved')
+                                </a>
+                                {{-- <button class="btn btn-success btn-sm">{{ trans('view_pages.approved') }}</button> --}}
                             </td>
-                            @if($result->approve == true)
-                            <td><button class="btn btn-success btn-sm">{{ trans('view_pages.approved') }}</button></td>
+                        @else
+                            <td>
+                                <a class="dropdown-item driver-approval btn btn-danger btn-sm" href="#" data-url="{{ url('company/drivers/approve', $result->id) }}">
+                                    @lang('view_pages.disapproved')
+                                </a>
+                                {{-- <button class="btn btn-danger btn-sm">{{ trans('view_pages.disapproved') }}</button> --}}
+                            </td>
+                        @endif
+                        <td>
+                            @if ($result->available)
+                            <span class="badge badge-success font-size-10">{{trans('view_pages.online')}}</span>
                             @else
-                            <td><button class="btn btn-danger btn-sm">{{ trans('view_pages.disapproved') }}</button></td>
+                            <span class="badge badge-danger font-size-10">{{trans('view_pages.offline')}}</span>
                             @endif
-                            <td>
-                                @if ($result->available)
-                                <span class="badge badge-success font-size-10">{{trans('view_pages.online')}}</span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{{url('company/drivers',$result->id)}}">
+                                    <i class="fa fa-pencil"></i>@lang('view_pages.edit')
+                                </a>
+
+                                <!-- <a class="dropdown-item grey-text text-darken-2" href="{{url('company/drivers/profile',$result->id) }}">{{ trans('view_pages.profile')}}</a>
+
+                                <a class="dropdown-item grey-text text-darken-2" href="{{url('company/drivers/vehicle/privileges',$result->id) }}">{{ trans('view_pages.vehicle_privileges')}}</a> -->
+                                <!--
+                                @if ($result->approve)
+                                <a class="dropdown-item sweet-decline grey-text text-darken-2" href="{{url('company/drivers/toggle_approve',$result->id) }}">
+                                    <i class="fa fa-dot-circle-o"></i>{{ trans('view_pages.disapproved')}}</a>
                                 @else
-                                <span class="badge badge-danger font-size-10">{{trans('view_pages.offline')}}</span>
-                                @endif
-                            </td>
+                                <a class="dropdown-item sweet-approve grey-text text-darken-2" href="{{url('company/drivers/toggle_approve',$result->id) }}">
+                                    <i class="fa fa-dot-circle-o"></i>{{ trans('view_pages.approve')}}</a>
+                                @endif -->
+                                <!--  <a class="dropdown-item" href="{{url('company/drivers/request-list',$result->id)}}">
+                                <i class="fa fa-dot-circle-o"></i>@lang('view_pages.request_list')</a>
 
-                            <td>
-                                    <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{url('company/drivers',$result->id)}}">
-                                            <i class="fa fa-pencil"></i>@lang('view_pages.edit')
-                                        </a>
-
-                                        <!-- <a class="dropdown-item grey-text text-darken-2" href="{{url('company/drivers/profile',$result->id) }}">{{ trans('view_pages.profile')}}</a>
-
-                                        <a class="dropdown-item grey-text text-darken-2" href="{{url('company/drivers/vehicle/privileges',$result->id) }}">{{ trans('view_pages.vehicle_privileges')}}</a> -->
-<!-- 
-                                      @if ($result->approve)
-                                        <a class="dropdown-item sweet-decline grey-text text-darken-2" href="{{url('company/drivers/toggle_approve',$result->id) }}">
-                                            <i class="fa fa-dot-circle-o"></i>{{ trans('view_pages.disapproved')}}</a>
-                                        @else
-                                        <a class="dropdown-item sweet-approve grey-text text-darken-2" href="{{url('company/drivers/toggle_approve',$result->id) }}">
-                                            <i class="fa fa-dot-circle-o"></i>{{ trans('view_pages.approve')}}</a>
-                                      @endif -->
-                                       <!--  <a class="dropdown-item" href="{{url('company/drivers/request-list',$result->id)}}">
-                                        <i class="fa fa-dot-circle-o"></i>@lang('view_pages.request_list')</a> 
-                                      
-                                        <a class="dropdown-item" href="{{url('company/drivers/payment-history',$result->id)}}">
-                                        <i class="fa fa-dot-circle-o"></i>@lang('view_pages.driver_payment_history')</a> -->
-
-
-
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    @endif
+                                <a class="dropdown-item" href="{{url('company/drivers/payment-history',$result->id)}}">
+                                <i class="fa fa-dot-circle-o"></i>@lang('view_pages.driver_payment_history')</a> -->
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
         <div class="text-right">

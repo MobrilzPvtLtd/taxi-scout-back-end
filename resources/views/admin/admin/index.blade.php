@@ -129,50 +129,6 @@
                 });
             });
 
-
-            // $(document).on('click', '.sweet-approval', function(e) {
-            //     e.preventDefault();
-
-            //     let url = $(this).attr('data-url');
-            //     swal({
-            //         title: "Are you sure for Approval ?",
-            //         type: "warning",
-            //         showCancelButton: true,
-            //         confirmButtonColor: "#55dd6b",
-            //         confirmButtonText: "Approve",
-            //         cancelButtonText: "No! Keep it",
-            //         closeOnConfirm: false,
-            //         closeOnCancel: true
-            //     }, function(isConfirm) {
-            //         if (isConfirm) {
-            //             swal.close();
-            //             $.ajax({
-            //                 url: url,
-            //                 cache: false,
-            //                 success: function(res) {
-
-            //                     fetch('admins/fetch?search=' + search_keyword)
-            //                         .then(response => response.text())
-            //                         .then(html => {
-            //                             document.querySelector('#js-admin-partial-target')
-            //                                 .innerHTML = html
-            //                         });
-
-            //                     $.toast({
-            //                         heading: '',
-            //                         text: res,
-            //                         position: 'top-right',
-            //                         loaderBg: '#ff6849',
-            //                         icon: 'success',
-            //                         hideAfter: 5000,
-            //                         stack: 1
-            //                     });
-            //                 }
-            //             });
-            //         }
-            //     });
-            // });
-
             $(document).on('click', '.sweet-approval', function(e) {
                 e.preventDefault();
 

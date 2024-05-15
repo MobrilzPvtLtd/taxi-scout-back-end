@@ -69,6 +69,8 @@ return array (
   'admin_deleted_succesfully' => 'Admin Deleted Successfully',
   'admin_approved_succesfully' => 'Admin Approved Successfully',
   'admin_disapproved_succesfully' => 'Admin Disapproved Successfully',
+  'driver_approved_succesfully' => 'Driver Approved Successfully',
+  'driver_disapproved_succesfully' => 'Driver Disapproved Successfully',
   'admin_profile_updated_succesfully' => 'Profile Updated Successfully',
   'push_notification_send_successfully' => 'Push Notification Send Successfully',
   'push_notification_deleted_successfully' => 'Push Notification Deleted Successfully',

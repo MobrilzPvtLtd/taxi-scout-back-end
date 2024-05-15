@@ -34,6 +34,9 @@ use App\Models\Admin\Fleet;
 use App\Models\Admin\DriverPrivilegedVehicle;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\Notifications\SendPushNotification;
+use App\Mail\ApprovedDriver;
+use App\Models\Admin\DriverDetail;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * @resource Driver
@@ -96,14 +99,16 @@ class DriverController extends BaseController
     {
         $url = request()->fullUrl(); //get full url
         return cache()->tags('drivers_list')->remember($url, Carbon::parse('10 minutes'), function () use ($queryFilter) {
-            if (access()->hasRole(RoleSlug::SUPER_ADMIN) || access()->hasRole(RoleSlug::OWNER)) {
-                $query = Driver::whereOwnerId(auth()->user()->owner->id)->orderBy('created_at', 'desc');
+            if (access()->hasRole(RoleSlug::ADMIN)) {
+                // $query = Driver::whereOwnerId(auth()->user()->owner->id)->orderBy('created_at', 'desc');
+                $query = Driver::where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)
+                ->orderBy('created_at', 'desc');
 
-                if (env('APP_FOR')=='demo') {
-                    $query = Driver::whereHas('user', function ($query) {
-                        $query->whereCompanyKey(auth()->user()->company_key);
-                    })->orderBy('created_at', 'desc');
-                }
+                // if (env('APP_FOR')=='demo') {
+                //     $query = Driver::whereHas('user', function ($query) {
+                //         $query->whereCompanyKey(auth()->user()->company_key);
+                //     })->orderBy('created_at', 'desc');
+                // }
             } else {
                 $this->validateAdmin();
                 $query = $this->driver->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
@@ -145,7 +150,7 @@ class DriverController extends BaseController
      */
     public function store(CreateDriverRequest $request)
     {
-        $created_params = $request->only(['name','mobile','email','address','state','city','gender','car_color','car_number','transport_type']);
+        $created_params = $request->only(['company_key','name','mobile','email','address','state','city','gender','car_color','car_number','transport_type']);
         $created_params['owner_id'] = auth()->user()->owner->id;
         $created_params['service_location_id'] = auth()->user()->owner->service_location_id;
         $created_params['postal_code'] = $request->postal_code;
@@ -444,5 +449,32 @@ class DriverController extends BaseController
         $message = trans('succes_messages.vehicle_unlink_successfully');
 
         return back()->with('success', $message);
+    }
+
+
+    public function approveDriver(Driver $driver)
+    {
+        $driverApprove = Driver::where('id', $driver->id)->first();
+        if ($driverApprove) {
+            $driverApprove->approve = !$driverApprove->approve;
+            $driverApprove->save();
+        }
+
+        $data = [
+            'name' => $driverApprove->name,
+            'email' => $driverApprove->email,
+            'approve' => $driverApprove->approve,
+        ];
+
+        Mail::to($driverApprove->email)->send(new ApprovedDriver($data));
+
+        if ($driverApprove->approve == 1) {
+            $message = trans('succes_messages.driver_approved_succesfully');
+        }else{
+            $message = trans('succes_messages.driver_disapproved_succesfully');
+        }
+
+        return $message;
+        // return redirect('admins')->with('success', $message);
     }
 }
