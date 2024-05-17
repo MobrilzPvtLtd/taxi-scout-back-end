@@ -42,7 +42,7 @@ class Permission
     const EDIT_FLEET_NEEEDED_DOC = 'edit-fleet-needed-document';
     const DELETE_FLEET_NEEEDED_DOC = 'delete-fleet-needed-document';
     const TOGGLE_FLEET_NEEEDED_DOC = 'toggle-fleet-needed-document';
-    
+
     // Manage Owner Needed Doc
     const MANAGE_OWNER_NEEDED_DOC = 'manage-owner-needed-document';
     const ADD_OWNER_NEEEDED_DOC = 'add-owner-needed-document';
@@ -54,23 +54,23 @@ class Permission
     const ADD_PACKAGE_TYPE = 'add-package-type';
     const EDIT_PACKAGE_TYPE = 'edit-package-type';
     const DELETE_PACKAGE_TYPE = 'delete-package-type';
-    const TOGGLE_PACKAGE_TYPE = 'toggle-package-type'; 
-  
+    const TOGGLE_PACKAGE_TYPE = 'toggle-package-type';
+
     // Manage Goods Type
     const GOODS_TYPES = 'manage-goods-types';
     const ADD_GOODS_TYPES = 'add-goods-types';
     const EDIT_GOODS_TYPES = 'edit-goods-types';
     const DELETE_GOODS_TYPES = 'delete-goods-types';
-    const TOGGLE_GOODS_TYPES = 'toggle-goods-types'; 
+    const TOGGLE_GOODS_TYPES = 'toggle-goods-types';
 
 /* Service-Location */
     const SERVICE_LOCATION = 'service_location';
     const ADD_SERVICE_LOCATION = 'Add_Service_Location';
     const EDIT_SERVICE_LOCATION = 'Edit_Service_Location';
     const DELETE_SERVICE_LOCATION = 'Delete_Service_Location';
-    const TOGGLE_SERVICE_LOCATION = 'Toggle_Service_Location'; 
+    const TOGGLE_SERVICE_LOCATION = 'Toggle_Service_Location';
 
-/* Manage Owner */ 
+/* Manage Owner */
     const MANAGE_OWNER = 'manage-owner';
     const CREATE_OWNER = 'add-owner';
     const EDIT_OWNER = 'edit-owner';
@@ -79,21 +79,21 @@ class Permission
     const VIEW_OWNER_DOCUMENT = 'view-owner-document';
     const OWNER_PAYMENT_HISTORY = 'owner-payment-history';
 
- /* Manage Fleets */ 
+ /* Manage Fleets */
     const MANAGE_FLEET = 'manage-fleet';
     const CREATE_FLEET = 'add-fleet';
     const EDIT_FLEET = 'edit-fleet';
     const DELETE_FLEET = 'delete-fleet';
     const FLEET_TOGGLE_STATUS = 'toggle-fleet-status';
-    const FLEET_APPROVE_STATUS = 'toggle-fleet-approval';  
-    const VIEW_FLEET_DOCUMENT = 'view-fleet-document';  
+    const FLEET_APPROVE_STATUS = 'toggle-fleet-approval';
+    const VIEW_FLEET_DOCUMENT = 'view-fleet-document';
 
 /* Admin  */
    const ADMIN = 'admin';
    const CREATE_ADMIN = 'add-admin';
    const EDIT_ADMIN = 'edit-admin';
    const DELETE_ADMIN = 'delete-admin';
-   const TOGGLE_ADMIN = 'toggle-admin-status';  
+   const TOGGLE_ADMIN = 'toggle-admin-status';
 /* Requests */
    const VIEW_REQUEST = 'view-requests';
    const RIDES = 'view-rides';
@@ -115,7 +115,7 @@ class Permission
     const DELETE_ZONE = 'delete-zone';
     const TOGGLE_ZONE = 'toggle-zone';
     const SURGE_ZONE = 'surge-zone';
-    
+
     // Ariport Slugs
     const LIST_AIRPORTS = 'list-airports';
     const ADD_AIRPORTS = 'Add-Airports';
@@ -203,6 +203,12 @@ class Permission
     const EDIT_PROMO = 'edit-promo';
     const TOGGLE_PROMO = 'toggle-promo';
     const DELETE_PROMO = 'delete-promo';
+
+//* Subscription code */
+    const MANAGE_SUBSCRIPTION = 'manage-subscription';
+    const ADD_SUBSCRIPTION = 'add-subscription';
+    const EDIT_SUBSCRIPTION = 'edit-subscription';
+    const DELETE_SUBSCRIPTION = 'delete-subscription';
 //Notifications
     const NOTIFICATIONS = 'notifications';
     const VIEW_NOTIFICATIONS = 'view-notifications';

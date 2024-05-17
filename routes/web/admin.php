@@ -383,10 +383,6 @@ Route::middleware('auth:web')->group(function () {
             Route::get('/request-list/{user}', 'UserController@UserTripRequest');
             Route::get('payment-history/{user}', 'UserController@userPaymentHistory');
             Route::post('payment-history/{user}', 'UserController@StoreUserPaymentHistory');
-
-
-
-
         });
 
         Route::group(['prefix' => 'sos',  'middleware' => 'permission:view-sos'], function () {
@@ -491,6 +487,16 @@ Route::middleware('auth:web')->group(function () {
             Route::get('delete/{reason}', 'CancellationReasonController@delete');
         });
 
+         // Subscription Reason CRUD
+         Route::group(['prefix' => 'subscription',  'middleware' => 'permission:manage-subscription'], function () {
+            Route::get('/', 'SubscriptionController@index');
+            Route::get('/fetch', 'SubscriptionController@fetch');
+            Route::get('/create', 'SubscriptionController@create');
+            Route::post('store', 'SubscriptionController@store');
+            Route::get('/{sub}', 'SubscriptionController@getById');
+            Route::post('update/{sub}', 'SubscriptionController@update');
+            Route::get('delete/{sub}', 'SubscriptionController@delete');
+        });
 
 
         // Promo Codes CRUD

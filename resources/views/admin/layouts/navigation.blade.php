@@ -444,6 +444,15 @@
 
                 </li>
             @endif
+
+            @if (auth()->user()->can('manage-subscription'))
+                <li class="{{ 'manage-subscription' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ url('/subscription') }}">
+                        <i class="fa fa-solid fa-dollar"></i> <span>@lang('pages_names.subscription')</span>
+                    </a>
+                </li>
+            @endif
+
             @if (auth()->user()->can('user-menu'))
                 <li class="treeview {{ 'users' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">

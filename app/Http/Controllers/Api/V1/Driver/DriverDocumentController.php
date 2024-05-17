@@ -49,39 +49,33 @@ class DriverDocumentController extends BaseController
     * @responseFile responses/driver/ListAllDocumentNeededWithUploadedDocuments.json
     */
     public function index()
-    {   
-
+    {
         if (auth()->user()->hasRole(Role::DRIVER)) {
+            $driver_id = auth()->user()->driver->id;
 
-        $driver_id = auth()->user()->driver->id;
-
-        if(auth()->user()->driver->owner_id){
-            $driverneededdocumentQuery  = DriverNeededDocument::active()->where(function($query){
-                $query->where('account_type','fleet_driver')->orWhere('account_type','both');
-            })->get();
-        }else{
-
-        $driverneededdocumentQuery  = DriverNeededDocument::active()->where(function($query){
-                $query->where('account_type','individual')->orWhere('account_type','both');
-            })->get();
-            
-        }
-
-        $neededdocument =  fractal($driverneededdocumentQuery, new DriverNeededDocumentTransformer);
-
-        $driver_needed_docs = DriverNeededDocument::whereActive(true)->get();
-
-        foreach ($driver_needed_docs as $key => $needed_document) {
-
-            if (auth()->user()->driver->driverDocument()->exists()) {
-                $uploaded_document = true;
-            } else {
-                $uploaded_document = false;
+            if(auth()->user()->driver->company_key){
+                // if(auth()->user()->driver->owner_id){
+                $driverneededdocumentQuery  = DriverNeededDocument::active()->where(function($query){
+                    $query->where('account_type','fleet_driver')->orWhere('account_type','both');
+                })->get();
+            }else{
+                $driverneededdocumentQuery  = DriverNeededDocument::active()->where(function($query){
+                    $query->where('account_type','individual')->orWhere('account_type','both');
+                })->get();
             }
-        }
+            $neededdocument =  fractal($driverneededdocumentQuery, new DriverNeededDocumentTransformer);
 
+            $driver_needed_docs = DriverNeededDocument::whereActive(true)->get();
+
+            foreach ($driver_needed_docs as $key => $needed_document) {
+
+                if (auth()->user()->driver->driverDocument()->exists()) {
+                    $uploaded_document = true;
+                } else {
+                    $uploaded_document = false;
+                }
+            }
         }else{
-
             $owner_id = auth()->user()->owner->id;
 
             $ownerneededdocumentQuery  = OwnerNeededDocument::active()->get();
@@ -89,16 +83,13 @@ class DriverDocumentController extends BaseController
             $neededdocument =  fractal($ownerneededdocumentQuery, new OwnerNeededDocumentTransformer);
 
             foreach (OwnerNeededDocument::active()->get() as $key => $needed_document) {
-            if (OwnerDocument::where('owner_id', $owner_id)->where('document_id', $needed_document->id)->exists()) {
-                $uploaded_document = true;
-            } else {
-                $uploaded_document = false;
+                if (OwnerDocument::where('owner_id', $owner_id)->where('document_id', $needed_document->id)->exists()) {
+                    $uploaded_document = true;
+                } else {
+                    $uploaded_document = false;
+                }
             }
         }
-
-        }
-    
-      
 
         $formated_document = $this->formatResponseData($neededdocument);
 
@@ -119,103 +110,94 @@ class DriverDocumentController extends BaseController
     public function uploadDocuments(DriverDocumentUploadRequest $request)
     {
         $created_params = $request->only(['document_id','identify_number','expiry_date']);
-
         if (auth()->user()->hasRole(Role::DRIVER)) {
+            $created_params['document_status'] =DriverDocumentStatus::UPLOADED_AND_WAITING_FOR_APPROVAL;
 
-        $created_params['document_status'] =DriverDocumentStatus::UPLOADED_AND_WAITING_FOR_APPROVAL;
+            $document_exists = auth()->user()->driver->driverDocument()->where('document_id', $request->document_id)->exists();
+            if ($document_exists) {
+                $created_params['document_status'] =DriverDocumentStatus::REUPLOADED_AND_WAITING_FOR_APPROVAL;
+            }
+            $driver_id = auth()->user()->driver->id;
 
-        $document_exists = auth()->user()->driver->driverDocument()->where('document_id', $request->document_id)->exists();
+            $created_params['driver_id'] = $driver_id;
 
-        if ($document_exists) {
-            $created_params['document_status'] =DriverDocumentStatus::REUPLOADED_AND_WAITING_FOR_APPROVAL;
-        }
-        $driver_id = auth()->user()->driver->id;
+            if ($uploadedFile = $this->getValidatedUpload('document', $request)) {
+                $created_params['image'] = $this->imageUploader->file($uploadedFile)
+                    ->saveDriverDocument($driver_id);
+            }
 
-        $created_params['driver_id'] = $driver_id;
+            // Check if document exists
+            $driver_documents = DriverDocument::where('driver_id', $driver_id)->where('document_id', $request->input('document_id'))->first();
 
-        if ($uploadedFile = $this->getValidatedUpload('document', $request)) {
-            $created_params['image'] = $this->imageUploader->file($uploadedFile)
-                ->saveDriverDocument($driver_id);
-        }
-        // Check if document exists
-        $driver_documents = DriverDocument::where('driver_id', $driver_id)->where('document_id', $request->input('document_id'))->first();
+            if ($driver_documents) {
+                DriverDocument::where('driver_id', $driver_id)->where('document_id', $request->input('document_id'))->update($created_params);
+            } else {
+                DriverDocument::create($created_params);
+            }
 
-        if ($driver_documents) {
-            DriverDocument::where('driver_id', $driver_id)->where('document_id', $request->input('document_id'))->update($created_params);
-        } else {
-            DriverDocument::create($created_params);
-        }
-
-        $driver_documents = DriverDocument::where('driver_id', $driver_id)->get();
-    }else{
-
-        if($request->has('fleet_id') && $request->fleet_id){
-
-        $created_params['document_status'] =DriverDocumentStatus::UPLOADED_AND_WAITING_FOR_APPROVAL;
-
-        $fleet = Fleet::where('id',$request->fleet_id)->first();
-
-        $document_exists = $fleet->fleetDocument()->where('document_id', $request->document_id)->exists();
-
-        if ($document_exists) {
-            $created_params['document_status'] =DriverDocumentStatus::REUPLOADED_AND_WAITING_FOR_APPROVAL;
-        }
-
-        $created_params['fleet_id'] = $fleet->id;
-
-        if ($uploadedFile = $this->getValidatedUpload('document', $request)) {
-            $created_params['image'] = $this->imageUploader->file($uploadedFile)
-                ->saveFleetDocument($fleet->id);
-        }
-        // Check if document exists
-        $fleet_documents = FleetDocument::where('fleet_id', $fleet->id)->where('document_id', $request->input('document_id'))->first();
-
-        if ($fleet_documents) {
-            FleetDocument::where('fleet_id', $fleet->id)->where('document_id', $request->input('document_id'))->update($created_params);
-        } else {
-            FleetDocument::create($created_params);
-        }
-
+            $driver_documents = DriverDocument::where('driver_id', $driver_id)->get();
         }else{
+            if($request->has('fleet_id') && $request->fleet_id){
 
+                $created_params['document_status'] =DriverDocumentStatus::UPLOADED_AND_WAITING_FOR_APPROVAL;
 
-        $created_params['document_status'] =DriverDocumentStatus::UPLOADED_AND_WAITING_FOR_APPROVAL;
+                $fleet = Fleet::where('id',$request->fleet_id)->first();
 
-        $document_exists = auth()->user()->owner->ownerDocument()->where('document_id', $request->document_id)->exists();
+                $document_exists = $fleet->fleetDocument()->where('document_id', $request->document_id)->exists();
 
-        if ($document_exists) {
-            $created_params['document_status'] =DriverDocumentStatus::REUPLOADED_AND_WAITING_FOR_APPROVAL;
+                if ($document_exists) {
+                    $created_params['document_status'] =DriverDocumentStatus::REUPLOADED_AND_WAITING_FOR_APPROVAL;
+                }
+
+                $created_params['fleet_id'] = $fleet->id;
+
+                if ($uploadedFile = $this->getValidatedUpload('document', $request)) {
+                    $created_params['image'] = $this->imageUploader->file($uploadedFile)
+                        ->saveFleetDocument($fleet->id);
+                }
+                // Check if document exists
+                $fleet_documents = FleetDocument::where('fleet_id', $fleet->id)->where('document_id', $request->input('document_id'))->first();
+
+                if ($fleet_documents) {
+                    FleetDocument::where('fleet_id', $fleet->id)->where('document_id', $request->input('document_id'))->update($created_params);
+                } else {
+                    FleetDocument::create($created_params);
+                }
+
+            }else{
+                $created_params['document_status'] =DriverDocumentStatus::UPLOADED_AND_WAITING_FOR_APPROVAL;
+
+                $document_exists = auth()->user()->owner->ownerDocument()->where('document_id', $request->document_id)->exists();
+
+                if ($document_exists) {
+                    $created_params['document_status'] =DriverDocumentStatus::REUPLOADED_AND_WAITING_FOR_APPROVAL;
+                }
+                $owner_id = auth()->user()->owner->id;
+
+                $created_params['owner_id'] = $owner_id;
+
+                if ($uploadedFile = $this->getValidatedUpload('document', $request)) {
+                    $created_params['image'] = $this->imageUploader->file($uploadedFile)
+                        ->saveOwnerDocument($owner_id);
+                }
+                // Check if document exists
+                $owner_documents = OwnerDocument::where('owner_id', $owner_id)->where('document_id', $request->input('document_id'))->first();
+
+                if ($owner_documents) {
+                    OwnerDocument::where('owner_id', $owner_id)->where('document_id', $request->input('document_id'))->update($created_params);
+                } else {
+                    OwnerDocument::create($created_params);
+                }
+            }
         }
-        $owner_id = auth()->user()->owner->id;
-
-        $created_params['owner_id'] = $owner_id;
-
-        if ($uploadedFile = $this->getValidatedUpload('document', $request)) {
-            $created_params['image'] = $this->imageUploader->file($uploadedFile)
-                ->saveOwnerDocument($owner_id);
-        }
-        // Check if document exists
-        $owner_documents = OwnerDocument::where('owner_id', $owner_id)->where('document_id', $request->input('document_id'))->first();
-
-        if ($owner_documents) {
-            OwnerDocument::where('owner_id', $owner_id)->where('document_id', $request->input('document_id'))->update($created_params);
-        } else {
-            OwnerDocument::create($created_params);
-        }
-
-
-        }
-        
-
-    }
 
         if(env('APP_FOR')=='demo'){
 
             $status = true;
-             
+
             auth()->user()->driver->update(['approve' == true]);
 
-            $this->database->getReference('drivers/'.'driver_'.$user->driver->id)->update(['approve'=>(int)$status,'updated_at'=> Database::SERVER_TIMESTAMP]);                
+            $this->database->getReference('drivers/'.'driver_'.$user->driver->id)->update(['approve'=>(int)$status,'updated_at'=> Database::SERVER_TIMESTAMP]);
 
         }
         // $result = fractal($driver_documents, new DriverDocumentTransformer);

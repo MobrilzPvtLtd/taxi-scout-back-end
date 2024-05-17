@@ -19,7 +19,7 @@ use App\Base\Constants\Auth\Role;
 
 
 Route::prefix('driver')->namespace('Driver')->middleware('auth')->group(function () {
-    Route::middleware(role_middleware([Role::DRIVER,Role::OWNER]))->group(function () {
+    Route::middleware(role_middleware([Role::DRIVER,Role::ADMIN]))->group(function () {
         // get DriverDocument
         Route::get('documents/needed', 'DriverDocumentController@index');
         // Upload Driver document
