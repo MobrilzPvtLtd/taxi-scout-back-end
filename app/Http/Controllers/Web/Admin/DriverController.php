@@ -120,14 +120,17 @@ class DriverController extends BaseController
                     $query->whereCompanyKey(auth()->user()->company_key);
                 })->orderBy('created_at', 'desc');
             }
+
+            $results = $queryFilter->builder($query)->customFilter(new DriverFilter)->paginate();
+
+            return view('admin.drivers._drivers', compact('results'))->render();
         } else {
-            $this->validateAdmin();
-            $query = $this->driver->where('owner_id', null)->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
+            return view('admin.404');
+            // $this->validateAdmin();
+            // $query = $this->driver->where('owner_id', null)->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
             // $query = Driver::orderBy('created_at', 'desc');
         }
-        $results = $queryFilter->builder($query)->customFilter(new DriverFilter)->paginate();
 
-        return view('admin.drivers._drivers', compact('results'))->render();
 
     }
     public function approvalPending()

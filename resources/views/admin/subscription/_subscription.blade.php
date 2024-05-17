@@ -21,8 +21,12 @@
             <td>{{ $result->package_name }}</td>
             <td>{{ $result->number_of_drivers }}</td>
             <td>{{ $result->amount }}</td>
-            <td>{{ $result->validity }}</td>
-            @if($result->active)
+            @if($result->expired == 1)
+                <td><span class="label label-danger">Expired</span></td>
+            @else
+                <td>{{ $result->validity }}</td>
+            @endif
+            @if($result->active == 1)
                 <td><span class="label label-success">@lang('view_pages.active')</span></td>
             @else
                 <td><span class="label label-danger">@lang('view_pages.inactive')</span></td>

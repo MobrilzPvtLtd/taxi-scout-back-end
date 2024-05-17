@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\Subscription\CreateSubscriptionRequest;
 use App\Http\Requests\Admin\Subscription\UpdateSubscriptionRequest;
 use App\Models\Admin\ServiceLocation;
 use App\Models\Admin\Subscription;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SubscriptionController extends BaseController
@@ -48,16 +49,18 @@ class SubscriptionController extends BaseController
     public function create()
     {
         $page = trans('pages_names.add_subscription');
-        $cities = ServiceLocation::companyKey()->whereActive(true)->get();
         $main_menu = 'manage-subscription';
         $sub_menu = '';
 
-        return view('admin.subscription.create', compact('cities', 'page', 'main_menu', 'sub_menu'));
+        $companies = User::where('company_key', '!=', null)->get();
+
+        return view('admin.subscription.create', compact('companies','page', 'main_menu', 'sub_menu'));
     }
 
     public function store(CreateSubscriptionRequest $request)
     {
-        $created_params = $request->only(['package_name','number_of_drivers','amount','validity','active']);
+        $created_params = $request->only(['company_id','package_name','number_of_drivers','amount','validity','active']);
+
         $this->sub->create($created_params);
 
         $message = trans('succes_messages.subscription_added_succesfully');

@@ -30,6 +30,24 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
+                                            <label for="company_id">@lang('view_pages.select_company')
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select name="company_id" id="company_id" class="form-control" required>
+                                                <option value="">@lang('view_pages.select_company')</option>
+                                                @foreach ($companies as $key => $company)
+                                                    <option value="{{ $company->company_key }}"
+                                                        {{ old('company_id') == $company->company_key ? 'selected' : '' }}>
+                                                        {{ $company->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger">{{ $errors->first('country') }}</span>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-group">
                                             <label for="package_name">@lang('view_pages.package_name') <span
                                                     class="text-danger">*</span></label>
                                             <input class="form-control" type="text" id="package_name" name="package_name"
@@ -38,6 +56,9 @@
                                             <span class="text-danger">{{ $errors->first('package_name') }}</span>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="number_of_drivers">@lang('view_pages.number_of_drivers') <span
@@ -48,23 +69,18 @@
                                             <span class="text-danger">{{ $errors->first('number_of_drivers') }}</span>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="amount">@lang('view_pages.amount') </label>
                                             <input class="form-control" type="text" id="amount"
                                                 name="amount" value="{{ old('amount') }}"
                                                 placeholder="@lang('view_pages.enter') @lang('view_pages.amount')">
-                                            <span
-                                                class="text-danger">{{ $errors->first('amount') }}</span>
+                                            <span class="text-danger">{{ $errors->first('amount') }}</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="validity">@lang('view_pages.validity') <span
-                                                    class="text-danger">*</span></label>
+                                            <label for="validity">@lang('view_pages.validity') (In Days)<span class="text-danger">*</span></label>
                                             <input class="form-control" type="text" id="validity"
                                                 name="validity" value="{{ old('validity') }}"
                                                 required="" placeholder="@lang('view_pages.enter') @lang('view_pages.validity')">
