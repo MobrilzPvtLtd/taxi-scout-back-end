@@ -323,12 +323,6 @@ class AdminController extends BaseController
         $admin = User::where('id', 1)->firstOrFail();
         $userUuid = User::where('id', $user->id)->firstOrFail();
 
-        $uuid = substr(Uuid::uuid4()->toString(), 0, 10);
-
-        if($user->company_key == null){
-            User::where('id', $user->id)->update(['company_key' => $uuid]);
-        }
-
         $adminDetail = AdminDetail::where('user_id', $user->id)->first();
         if ($adminDetail) {
             $adminDetail->is_approval = !$adminDetail->is_approval;

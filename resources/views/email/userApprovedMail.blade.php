@@ -22,14 +22,17 @@
                             class="m_-3343331283272028414content" align="left" valign="top">
                             <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">Hello {{ $data['name'] }}</p>
 
-                            <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">
-                                Welcome to your new Let's get you started with the right product:
-                            </p>
                             <br>
                             @if ($data['is_approval'] == 1)
-                                <h2 style="padding-bottom:5px;word-break:normal;font-size:16px;font-weight:700;margin:0color: #000;">Company Id:
-                                </h2>
-                                <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">{{ $data['company_key'] }}</p>
+                                <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">
+                                    your account has been approved by {{ ucfirst($data['admin_name']) }}
+                                </p>
+                                <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">Company Id: <strong>{{ $data['company_key'] }}</strong>
+                                </p>
+                            @else
+                                <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">
+                                    your account has been disapproved by {{ ucfirst($data['admin_name']) }}
+                                </p>
                             @endif
                             <br>
                             <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">In case you have more questions or just feel like saying hi, reply to this email!</p>
