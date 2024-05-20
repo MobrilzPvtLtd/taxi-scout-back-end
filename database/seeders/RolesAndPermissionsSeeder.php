@@ -1281,6 +1281,39 @@ class RolesAndPermissionsSeeder extends Seeder
             'main_link'=>'subscription',
 
         ],
+// ORDER
+        PermissionSlug::MANAGE_ORDER => [
+            'name' => 'manage-subscription',
+            'description' => 'View Subscription',
+            'main_menu'=>'subscription',
+            'sub_menu'=> null,
+            'main_link'=>'subscription',
+            'sort' => 10,
+            'icon' => 'fa fa-gift'
+        ],
+        PermissionSlug::ADD_ORDER => [
+            'name' => 'add-subscription',
+            'description' => 'Add Subscription',
+            'main_menu'=>'subscription',
+            'sub_menu'=> null,
+            'sub_link'=>null,
+            'main_link'=>'subscription',
+
+        ],
+        PermissionSlug::EDIT_ORDER => [
+            'name' => 'edit-subscription',
+            'description' => 'Edit Subscription',
+            'main_menu'=>'subscription',
+            'main_link'=>'subscription',
+
+        ],
+        PermissionSlug::DELETE_ORDER => [
+            'name' => 'delete-subscription',
+            'description' => 'Delete Subscription',
+            'main_menu'=>'subscription',
+            'main_link'=>'subscription',
+
+        ],
 //Notifications
          PermissionSlug::NOTIFICATIONS => [
             'name' => 'notifications',
@@ -1617,7 +1650,7 @@ class RolesAndPermissionsSeeder extends Seeder
         RoleSlug::ADMIN => [
             'name' => 'Admin',
             'description' => 'Admin group with restricted access',
-            'permissions' => [PermissionSlug::GET_ALL_ROLES, PermissionSlug::GET_ALL_PERMISSIONS,PermissionSlug::ACCESS_DASHBOARD,PermissionSlug::SETTINGS,PermissionSlug::VIEW_COMPANIES,PermissionSlug::DRIVERS_MENU,PermissionSlug::VIEW_DRIVERS,PermissionSlug::VIEW_TYPES,PermissionSlug::VIEW_ZONE,PermissionSlug::MAP_MENU,PermissionSlug::VIEW_SYSTEM_SETINGS,PermissionSlug::SERVICE_LOCATION,PermissionSlug::MANAGE_SUBSCRIPTION,PermissionSlug::EDIT_SUBSCRIPTION,PermissionSlug::LIST_AIRPORTS,PermissionSlug::ADD_AIRPORTS,PermissionSlug::EDIT_AIRPORTS],
+            'permissions' => [PermissionSlug::GET_ALL_ROLES, PermissionSlug::GET_ALL_PERMISSIONS,PermissionSlug::ACCESS_DASHBOARD,PermissionSlug::SETTINGS,PermissionSlug::VIEW_COMPANIES,PermissionSlug::DRIVERS_MENU,PermissionSlug::VIEW_DRIVERS,PermissionSlug::VIEW_TYPES,PermissionSlug::VIEW_ZONE,PermissionSlug::MAP_MENU,PermissionSlug::VIEW_SYSTEM_SETINGS,PermissionSlug::SERVICE_LOCATION,PermissionSlug::MANAGE_SUBSCRIPTION,PermissionSlug::MANAGE_ORDER,PermissionSlug::EDIT_ORDER,PermissionSlug::EDIT_SUBSCRIPTION,PermissionSlug::LIST_AIRPORTS,PermissionSlug::ADD_AIRPORTS,PermissionSlug::EDIT_AIRPORTS],
         ],
 
         //  RoleSlug::OWNER=>[

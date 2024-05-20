@@ -340,7 +340,7 @@ class User extends Authenticatable implements CanSendOTPContract
         return $this->apn_token;
     }
 
-    
+
 
     protected $searchable = [
         'columns' => [

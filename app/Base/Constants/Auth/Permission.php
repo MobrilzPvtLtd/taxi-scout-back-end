@@ -209,6 +209,11 @@ class Permission
     const ADD_SUBSCRIPTION = 'add-subscription';
     const EDIT_SUBSCRIPTION = 'edit-subscription';
     const DELETE_SUBSCRIPTION = 'delete-subscription';
+//* Order code */
+    const MANAGE_ORDER = 'manage-order';
+    const ADD_ORDER = 'add-order';
+    const EDIT_ORDER = 'edit-order';
+    const DELETE_ORDER = 'delete-order';
 //Notifications
     const NOTIFICATIONS = 'notifications';
     const VIEW_NOTIFICATIONS = 'view-notifications';

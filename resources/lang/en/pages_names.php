@@ -68,6 +68,7 @@ return array (
   'edit_complaint_title' => 'Edit',
   'view_promo' => 'Promo',
   'subscription' => 'Subscription',
+  'order' => 'Order',
   'add_promo' => 'Add Promo',
   'edit_promo' => 'Edit Promo',
   'cancellation_rides' => 'Cancellation Rides',

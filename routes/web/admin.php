@@ -498,6 +498,17 @@ Route::middleware('auth:web')->group(function () {
             Route::get('delete/{sub}', 'SubscriptionController@delete');
         });
 
+         // Order Reason CRUD
+         Route::group(['prefix' => 'order',  'middleware' => 'permission:manage-order'], function () {
+            Route::get('/', 'OrderController@index');
+            Route::get('/fetch', 'OrderController@fetch');
+            Route::get('/create', 'OrderController@create');
+            Route::post('store', 'OrderController@store');
+            Route::get('/{order}', 'OrderController@getById');
+            Route::post('update/{order}', 'OrderController@update');
+            Route::get('delete/{order}', 'OrderController@delete');
+        });
+
 
         // Promo Codes CRUD
         Route::group(['prefix' => 'promo',  'middleware' => 'permission:manage-promo'], function () {

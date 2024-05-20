@@ -82,7 +82,6 @@ class SubscriptionController extends BaseController
         $main_menu = 'manage-subscription';
         $sub_menu = '';
         $item = $sub;
-
         return view('admin.subscription.update', compact('item', 'page', 'main_menu', 'sub_menu'));
     }
 

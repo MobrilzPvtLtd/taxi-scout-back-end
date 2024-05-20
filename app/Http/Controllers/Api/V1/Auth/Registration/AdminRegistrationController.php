@@ -12,7 +12,9 @@ use App\Mail\AdminRegister;
 use App\Mail\SuperAdminNotification;
 use App\Models\User;
 use App\Models\Admin\AdminDetail;
+use App\Models\Admin\Order;
 use App\Models\Admin\Subscription;
+use Carbon\Carbon;
 use DB;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Log;
@@ -84,12 +86,24 @@ class AdminRegistrationController extends ApiController
             $userUuid = User::where('id', $user->id)->first();
             $subscription = Subscription::where('id', $request->package_id)->first();
 
+            if ($subscription) {
+                $start_date = $subscription->created_at;
+                $end_date = $start_date->clone()->addDays(30);
+            }
+
             $adminDetail = AdminDetail::where('user_id', $user->id)->first();
             if ($adminDetail) {
                 $adminDetail->is_approval = !$adminDetail->is_approval;
-                $adminDetail->package_id = $subscription->id;
+                $adminDetail->package_id = $request->package_id;
                 $adminDetail->save();
             }
+
+            Order::create([
+                'package_id' => $request->package_id,
+                'user_id' => $user->id,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+            ]);
 
             $data = [
                 'name' => $user->name,

@@ -449,6 +449,13 @@
                     </a>
                 </li>
             @endif
+            @if (auth()->user()->can('manage-order'))
+                <li class="{{ 'manage-order' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ url('/order') }}">
+                        <i class="fa fa-first-order"></i> <span>@lang('pages_names.order')</span>
+                    </a>
+                </li>
+            @endif
 
             @if (auth()->user()->can('user-menu'))
                 <li class="treeview {{ 'users' == $main_menu ? 'active menu-open' : '' }}">
