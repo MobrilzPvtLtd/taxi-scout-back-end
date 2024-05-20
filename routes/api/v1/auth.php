@@ -68,6 +68,7 @@ Route::namespace('Auth')->group(function () {
         Route::post('user/register/validate-otp', 'UserRegistrationController@validateOTP');
         // Register Admin user
         Route::post('admin/register', 'AdminRegistrationController@register');
+        Route::get('admin/packages', 'AdminRegistrationController@packages');
     });
 
     // Confirm user's email.

@@ -14,6 +14,7 @@ class AdminRegistrationRequest extends BaseRequest
     public function rules()
     {
         return [
+            'package_id' => 'required|exists:subscriptions,id',
             'first_name' => 'required|max:50',
             'last_name'=>'required|max:50',
             'address'=>'min:10',

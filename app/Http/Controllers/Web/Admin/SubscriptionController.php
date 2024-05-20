@@ -39,6 +39,14 @@ class SubscriptionController extends BaseController
 
     public function fetch(QueryFilterContract $queryFilter)
     {
+        $expiredPackages = $this->sub->where('active', 1)
+            ->where('created_at', '<', now()->subDays(30))
+            ->get();
+
+        foreach ($expiredPackages as $package) {
+            $package->update(['validity' => 'Expired']);
+        }
+
         $query = $this->sub->query();
 
         $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
@@ -59,7 +67,7 @@ class SubscriptionController extends BaseController
 
     public function store(CreateSubscriptionRequest $request)
     {
-        $created_params = $request->only(['company_id','package_name','number_of_drivers','amount','validity','active']);
+        $created_params = $request->only(['package_name','number_of_drivers','amount','validity','active']);
 
         $this->sub->create($created_params);
 

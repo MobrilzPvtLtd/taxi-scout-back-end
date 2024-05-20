@@ -12,6 +12,7 @@ use App\Mail\AdminRegister;
 use App\Mail\SuperAdminNotification;
 use App\Models\User;
 use App\Models\Admin\AdminDetail;
+use App\Models\Admin\Subscription;
 use DB;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Log;
@@ -52,6 +53,10 @@ class AdminRegistrationController extends ApiController
      * @param \App\Http\Requests\Auth\Registration\UserRegistrationRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
+    public function packages(){
+        return Subscription::get();
+    }
+
     public function register(AdminRegistrationRequest $request)
     {
         DB::beginTransaction();
@@ -75,12 +80,14 @@ class AdminRegistrationController extends ApiController
 
             event(new UserRegistered($user));
 
-            $admin = User::where('id', 1)->firstOrFail();
-            $userUuid = User::where('id', $user->id)->firstOrFail();
+            $admin = User::where('id', 1)->first();
+            $userUuid = User::where('id', $user->id)->first();
+            $subscription = Subscription::where('id', $request->package_id)->first();
 
             $adminDetail = AdminDetail::where('user_id', $user->id)->first();
             if ($adminDetail) {
                 $adminDetail->is_approval = !$adminDetail->is_approval;
+                $adminDetail->package_id = $subscription->id;
                 $adminDetail->save();
             }
 

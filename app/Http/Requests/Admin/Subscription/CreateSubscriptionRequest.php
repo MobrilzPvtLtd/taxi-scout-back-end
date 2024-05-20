@@ -14,7 +14,6 @@ class CreateSubscriptionRequest extends FormRequest
     public function rules()
     {
         return [
-            'company_id' => 'required',
             'package_name' => 'required',
             'number_of_drivers' => 'required',
             'amount' => 'required|integer',

@@ -25,7 +25,10 @@ use App\Models\Master\MailTemplate;
 use App\Mail\WelcomeMail;
 use Illuminate\Support\Facades\Mail;
 use App\Jobs\Mails\SendMailNotification;
+use App\Models\Admin\AdminDetail;
 use App\Models\Admin\DriverVehicleType;
+use App\Models\Admin\Subscription;
+use App\Models\Admin\UserDetails;
 
 /**
  * @group SignUp-And-Otp-Validation
@@ -78,6 +81,23 @@ class DriverSignupController extends LoginController
 
     public function register(DriverRegistrationRequest $request)
     {
+        $adminDetail = AdminDetail::whereHas('user', function ($query) use ($request) {
+            $query->where('company_key', $request->input('company_key'));
+        })->first();
+
+        if ($adminDetail->package_id) {
+            $sub = Subscription::find($adminDetail->package_id);
+
+            if ($sub && $sub->package_name == "Free") {
+
+                $registeredDriverCount = Driver::where('company_key', $request->input('company_key'))->count();
+
+                if ($registeredDriverCount > 0) {
+                    $this->throwCustomException('If your company has already registered a driver, you cannot register another one. Each company is allowed to have only one registered driver at a time.');
+                }
+            }
+        }
+
         $mobileUuid = $request->input('uuid');
         $created_params = $request->only(['service_location_id', 'company_key', 'name','mobile','email','address','state','city','country','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','smoking','pets','drinking','handica']);
 

@@ -12,6 +12,6 @@ class Subscription extends Model
     protected $table = 'subscriptions';
 
     protected $fillable = [
-        'company_id','package_name','number_of_drivers','amount','validity','expired','active'
+        'package_name','number_of_drivers','amount','validity','expired','active'
     ];
 }

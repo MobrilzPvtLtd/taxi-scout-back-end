@@ -15,12 +15,10 @@ class CreateSubscriptionsTable extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->string('company_id')->nullable();
             $table->string('package_name')->nullable();
             $table->string('number_of_drivers')->nullable();
             $table->string('amount')->nullable();
             $table->string('validity')->nullable();
-            $table->boolean('expired')->default(0);
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
