@@ -12,8 +12,8 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\ClearDemoDatabase;
 use App\Console\Commands\ClearRequestTable;
 use App\Console\Commands\ClearOtp;
-
-
+use App\Console\Commands\OrderExpired;
+use App\Models\Admin\Order;
 
 class Kernel extends ConsoleKernel
 {
@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
         ClearDemoDatabase::class,
         ClearRequestTable::class,
         ClearOtp::class,
+        OrderExpired::class,
 
     ];
 
@@ -42,18 +43,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('drivers:totrip')
-                 ->everyMinute();
-         $schedule->command('assign_drivers:for_regular_rides')
-                 ->everyMinute();
-         $schedule->command('assign_drivers:for_schedule_rides')
-                 ->everyFiveMinutes();
-         $schedule->command('offline:drivers')
-                 ->everyFiveMinutes();
-         $schedule->command('notify:document:expires')
-                 ->daily();
-         $schedule->command('clear:otp')
-                 ->everyFiveMinutes();
+        $schedule->command('drivers:totrip')->everyMinute();
+        $schedule->command('assign_drivers:for_regular_rides')->everyMinute();
+        $schedule->command('assign_drivers:for_schedule_rides')->everyFiveMinutes();
+        $schedule->command('offline:drivers')->everyFiveMinutes();
+        $schedule->command('notify:document:expires')->daily();
+        $schedule->command('clear:otp')->everyFiveMinutes();
+        $schedule->command('order:expire')->everyMinute();
+        $schedule->command('order:expire')->daily();
         // $schedule->command('clear:database')
         //          ->daily();
     }

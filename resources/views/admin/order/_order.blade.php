@@ -7,7 +7,9 @@
             <th> @lang('view_pages.start_date')</th>
             <th> End Date</th>
             <th> @lang('view_pages.status')</th>
-            <th> @lang('view_pages.action')</th>
+            @if(auth()->user()->can('edit-order'))
+                <th> @lang('view_pages.action')</th>
+            @endif
         </tr>
     </thead>
 
@@ -25,23 +27,25 @@
             <td>{{ \Carbon\Carbon::parse($result->end_date)->format('d-M-Y') }}</td>
             @if($result->active == 1)
                 <td><span class="label label-success">@lang('view_pages.active')</span></td>
+            @elseif($result->active == 2)
+                <td><span class="label label-danger">Expired</span></td>
             @else
-                <td><span class="label label-danger">@lang('view_pages.inactive')</span></td>
+                <td><span class="label label-warning">@lang('view_pages.inactive')</span></td>
             @endif
             <td>
-
-            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
-            </button>
-                <div class="dropdown-menu">
-                 @if(auth()->user()->can('edit-order'))
-                    <a class="dropdown-item" href="{{url('order',$result->id)}}"><i class="fa fa-pencil"></i>@lang('view_pages.edit')</a>
-                @endif
-                 @if(auth()->user()->can('delete-order'))
-                    <a class="dropdown-item sweet-delete" href="{{url('order/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a>
-                 @endif
+            @if(auth()->user()->can('edit-order'))
+                <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
+                </button>
+                    <div class="dropdown-menu">
+                        @if(auth()->user()->can('edit-order'))
+                            <a class="dropdown-item" href="{{url('order',$result->id)}}"><i class="fa fa-pencil"></i>@lang('view_pages.edit')</a>
+                        @endif
+                        @if(auth()->user()->can('delete-order'))
+                            <a class="dropdown-item sweet-delete" href="{{url('order/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a>
+                        @endif
+                    </div>
                 </div>
-            </div>
-
+            @endif
             </td>
         </tr>
     @empty

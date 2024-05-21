@@ -39,14 +39,6 @@ class SubscriptionController extends BaseController
 
     public function fetch(QueryFilterContract $queryFilter)
     {
-        $expiredPackages = $this->sub->where('active', 1)
-            ->where('created_at', '<', now()->subDays(30))
-            ->get();
-
-        foreach ($expiredPackages as $package) {
-            $package->update(['validity' => 'Expired']);
-        }
-
         $query = $this->sub->query();
 
         $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();

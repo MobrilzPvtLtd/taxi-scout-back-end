@@ -26,7 +26,7 @@ class AdminRegistrationRequest extends BaseRequest
             'mobile' => 'required|mobile_number|unique:users,mobile',
             'area_name'=>'required',
             'pincode'=>'required|min:3|max:8',
-            'role'=>'required|exists:roles,slug'
+            // 'role'=>'required|exists:roles,slug'
         ];
     }
 }

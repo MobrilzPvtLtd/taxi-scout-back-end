@@ -1283,35 +1283,35 @@ class RolesAndPermissionsSeeder extends Seeder
         ],
 // ORDER
         PermissionSlug::MANAGE_ORDER => [
-            'name' => 'manage-subscription',
-            'description' => 'View Subscription',
-            'main_menu'=>'subscription',
+            'name' => 'manage-order',
+            'description' => 'View order code',
+            'main_menu'=>'order',
             'sub_menu'=> null,
-            'main_link'=>'subscription',
+            'main_link'=>'order',
             'sort' => 10,
             'icon' => 'fa fa-gift'
         ],
         PermissionSlug::ADD_ORDER => [
-            'name' => 'add-subscription',
-            'description' => 'Add Subscription',
-            'main_menu'=>'subscription',
+            'name' => 'add-order',
+            'description' => 'add order code',
+            'main_menu'=>'order',
             'sub_menu'=> null,
             'sub_link'=>null,
-            'main_link'=>'subscription',
+            'main_link'=>'order',
 
         ],
         PermissionSlug::EDIT_ORDER => [
-            'name' => 'edit-subscription',
-            'description' => 'Edit Subscription',
-            'main_menu'=>'subscription',
-            'main_link'=>'subscription',
+            'name' => 'edit-order',
+            'description' => 'edit order',
+            'main_menu'=>'order',
+            'main_link'=>'order',
 
         ],
         PermissionSlug::DELETE_ORDER => [
-            'name' => 'delete-subscription',
-            'description' => 'Delete Subscription',
-            'main_menu'=>'subscription',
-            'main_link'=>'subscription',
+            'name' => 'delete-order',
+            'description' => 'delete order',
+            'main_menu'=>'order',
+            'main_link'=>'order',
 
         ],
 //Notifications
@@ -1650,7 +1650,7 @@ class RolesAndPermissionsSeeder extends Seeder
         RoleSlug::ADMIN => [
             'name' => 'Admin',
             'description' => 'Admin group with restricted access',
-            'permissions' => [PermissionSlug::GET_ALL_ROLES, PermissionSlug::GET_ALL_PERMISSIONS,PermissionSlug::ACCESS_DASHBOARD,PermissionSlug::SETTINGS,PermissionSlug::VIEW_COMPANIES,PermissionSlug::DRIVERS_MENU,PermissionSlug::VIEW_DRIVERS,PermissionSlug::VIEW_TYPES,PermissionSlug::VIEW_ZONE,PermissionSlug::MAP_MENU,PermissionSlug::VIEW_SYSTEM_SETINGS,PermissionSlug::SERVICE_LOCATION,PermissionSlug::MANAGE_SUBSCRIPTION,PermissionSlug::MANAGE_ORDER,PermissionSlug::EDIT_ORDER,PermissionSlug::EDIT_SUBSCRIPTION,PermissionSlug::LIST_AIRPORTS,PermissionSlug::ADD_AIRPORTS,PermissionSlug::EDIT_AIRPORTS],
+            'permissions' => [PermissionSlug::GET_ALL_ROLES, PermissionSlug::GET_ALL_PERMISSIONS,PermissionSlug::ACCESS_DASHBOARD,PermissionSlug::SETTINGS,PermissionSlug::VIEW_COMPANIES,PermissionSlug::DRIVERS_MENU,PermissionSlug::VIEW_DRIVERS,PermissionSlug::VIEW_TYPES,PermissionSlug::VIEW_ZONE,PermissionSlug::MAP_MENU,PermissionSlug::VIEW_SYSTEM_SETINGS,PermissionSlug::SERVICE_LOCATION,PermissionSlug::MANAGE_SUBSCRIPTION,PermissionSlug::MANAGE_ORDER,PermissionSlug::LIST_AIRPORTS,PermissionSlug::ADD_AIRPORTS,PermissionSlug::EDIT_AIRPORTS],
         ],
 
         //  RoleSlug::OWNER=>[

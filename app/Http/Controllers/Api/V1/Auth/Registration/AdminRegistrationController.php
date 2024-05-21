@@ -78,7 +78,7 @@ class AdminRegistrationController extends ApiController
 
             $admin = $user->admin()->create($admin_data);
 
-            $user->attachRole($request->input('role'));
+            $user->attachRole(Role::ADMIN);
 
             event(new UserRegistered($user));
 

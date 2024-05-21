@@ -7,7 +7,9 @@
             <th> @lang('view_pages.amount')</th>
             <th> @lang('view_pages.validity')</th>
             <th> @lang('view_pages.status')</th>
-            <th> @lang('view_pages.action')</th>
+            @if(auth()->user()->can('edit-subscription'))
+                <th> @lang('view_pages.action')</th>
+            @endif
         </tr>
     </thead>
 
@@ -21,30 +23,26 @@
             <td>{{ $result->package_name }}</td>
             <td>{{ $result->number_of_drivers }}</td>
             <td>{{ $result->amount }}</td>
-            @if($result->validity == "Expired")
-                <td><span class="text-danger">Expired</span></td>
-            @else
-                <td>{{ $result->validity }} (Days)</td>
-            @endif
+            <td>{{ $result->validity }} (Days)</td>
             @if($result->active == 1)
                 <td><span class="label label-success">@lang('view_pages.active')</span></td>
             @else
                 <td><span class="label label-danger">@lang('view_pages.inactive')</span></td>
             @endif
             <td>
-
-            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
-            </button>
-                <div class="dropdown-menu">
-                 @if(auth()->user()->can('edit-subscription'))
-                    <a class="dropdown-item" href="{{url('subscription',$result->id)}}"><i class="fa fa-pencil"></i>@lang('view_pages.edit')</a>
-                @endif
-                 @if(auth()->user()->can('delete-subscription'))
-                    <a class="dropdown-item sweet-delete" href="{{url('subscription/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a>
-                 @endif
+            @if(auth()->user()->can('edit-subscription'))
+                <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
+                </button>
+                    <div class="dropdown-menu">
+                    @if(auth()->user()->can('edit-subscription'))
+                        <a class="dropdown-item" href="{{url('subscription',$result->id)}}"><i class="fa fa-pencil"></i>@lang('view_pages.edit')</a>
+                    @endif
+                    @if(auth()->user()->can('delete-subscription'))
+                        <a class="dropdown-item sweet-delete" href="{{url('subscription/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a>
+                    @endif
+                    </div>
                 </div>
-            </div>
-
+            @endif
             </td>
         </tr>
     @empty

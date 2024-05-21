@@ -8,10 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Web\BaseController;
 use App\Http\Requests\Admin\Order\CreateOrderRequest;
 use App\Http\Requests\Admin\Order\UpdateOrderRequest;
-use App\Models\Admin\AdminDetail;
-use App\Models\Admin\ServiceLocation;
+use App\Base\Constants\Auth\Role as RoleSlug;
 use App\Models\Admin\Order;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrderController extends BaseController
@@ -30,6 +28,7 @@ class OrderController extends BaseController
 
     public function index()
     {
+
         $page = trans('pages_names.order');
 
         $main_menu = 'manage-order';
@@ -43,7 +42,9 @@ class OrderController extends BaseController
         $query = $this->order->leftJoin('users', 'orders.user_id', '=', 'users.id')
                         ->leftJoin('subscriptions', 'orders.package_id', '=', 'subscriptions.id')
                         ->select('orders.*','users.name','subscriptions.package_name');
-
+        if(!access()->hasRole(RoleSlug::SUPER_ADMIN)){
+            $query = $query->where('orders.user_id', auth()->user()->id);
+        }
         $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
 
         return view('admin.order._order', compact('results'));

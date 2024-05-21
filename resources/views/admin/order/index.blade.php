@@ -8,17 +8,28 @@
 <div class="row">
     <div class="col-12">
         <div class="box">
-            {{-- <div class="box-header with-border">
+            <div class="box-header with-border">
                 <div class="row text-right">
-                    <div class="col-12 text-right">
+                    <div class="col-8 col-md-3">
+                        <div class="form-group">
+                            <input type="text" name="search" id="search_keyword" class="form-control"
+                                placeholder="@lang('view_pages.enter_keyword')">
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-2 text-left">
+                        <button id="search" class="btn btn-success btn-outline btn-sm py-2" type="submit">
+                            @lang('view_pages.search')
+                        </button>
+                    </div>
+                    {{-- <div class="col-12 text-right">
                         @if(auth()->user()->can('add-order'))
                             <a href="{{url('order/create')}}" class="btn btn-primary btn-sm">
                                 <i class="mdi mdi-plus-circle mr-2"></i>Add Order
                             </a>
                         @endif
-                    </div>
+                    </div> --}}
                 </div>
-            </div> --}}
+            </div>
 
         <div id="js-order-partial-target">
             <include-fragment src="order/fetch">
