@@ -117,91 +117,126 @@
             width: -webkit-fill-available;
             border: 1px solid #c5c5c5;
         }
-
     </style>
 
     <!-- Start Page content -->
     <section class="content">
-
         <div class="row g-3">
-            <div class="col-sm-6 col-md-3">
-                <div class="card overflow-hidden" style="min-width: 12rem">
-                    <div class="bg-holder bg-card"
-                        style="background-image:url({{ asset('assets/images/corner-3.png') }});">
-                    </div>
-                    <!--/.bg-holder-->
-                    <div class="card-body position-relative">
-                        <h6>@lang('view_pages.drivers_registered')
-                        </h6>
-                        <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-warning"
-                            data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
-                            {{ $total_drivers[0]['total'] }}</div>
-                            @if(!auth()->user()->hasRole('owner'))
-                            <a class="font-weight-semi-bold fs--1 text-nowrap" href="{{url('drivers/waiting-for-approval')}}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1" data-fa-transform="down-1"></span></a>
-                            @endif
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-3">
-                <div class="card overflow-hidden" style="min-width: 12rem">
-                    <div class="bg-holder bg-card"
-                        style="background-image:url({{ asset('assets/images/corner-2.png') }});">
-                    </div>
-                    <!--/.bg-holder-->
-                    <div class="card-body position-relative">
-                        <h6>@lang('view_pages.drivers_approved')<span class="badge badge-soft-success rounded-pill ml-2">{{number_format($total_drivers[0]['approve_percentage'],2)}}%</span>
-                        </h6>
-                        <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-success"
-                            data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
-                            {{ $total_drivers[0]['approved'] }}</div>
-                        @if(!auth()->user()->hasRole('owner'))
-                            <a class="font-weight-semi-bold fs--1 text-nowrap" href="{{url('drivers')}}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1" data-fa-transform="down-1"></span></a>
-                        @endif
-                    </div>
-                </div>
-            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <h3 class="font-weight-600">Map Location</h3>
+                                <ul class="box-controls pull-right">
+                                    <li><a class="box-btn-close" href="#"></a></li>
+                                    <li><a class="box-btn-slide" href="#"></a></li>
+                                    <li><a class="box-btn-fullscreen" href="#"></a></li>
+                                </ul>
+                            </div>
 
-            <div class="col-sm-6 col-md-3">
-                <div class="card overflow-hidden" style="min-width: 12rem">
-                    <div class="bg-holder bg-card"
-                        style="background-image:url({{ asset('assets/images/corner-2.png') }});">
-                    </div>
-                    <!--/.bg-holder-->
-                    <div class="card-body position-relative">
-                        <h6>@lang('view_pages.drivers_waiting_for_approval')<span class="badge badge-soft-success rounded-pill ml-2">{{number_format($total_drivers[0]['decline_percentage'],2)}}%</span>
-                        </h6>
-                        <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-warning"
-                            data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
-                            {{ $total_drivers[0]['declined'] }}</div>
-                        @if(!auth()->user()->hasRole('owner'))
-                            <a class="font-weight-semi-bold fs--1 text-nowrap"
-                            href="{{url('drivers/waiting-for-approval')}}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1" data-fa-transform="down-1"></span></a>
-                        @endif
-                    </div>
-                </div>
-            </div>
-       @if(!auth()->user()->hasRole('owner'))
-
-            <div class="col-sm-6 col-md-3">
-                <div class="card overflow-hidden" style="min-width: 12rem">
-                    <div class="bg-holder bg-card"
-                        style="background-image:url({{ asset('assets/images/corner-1.png') }});">
-                    </div>
-                    <!--/.bg-holder-->
-                    <div class="card-body position-relative">
-                        <h6> @lang('view_pages.users_registered')
-                        </h6>
-                        <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-danger"
-                            data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
-                            {{ $total_users }}</div>
-                            <a class="font-weight-semi-bold fs--1 text-nowrap" href="{{url('users')}}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1" data-fa-transform="down-1"></span></a>
+                            <div class="box-body row">
+                                <div class="col-md-6 m-auto">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="card overflow-hidden" style="min-width: 12rem">
+                                                <div class="bg-holder bg-card" style="background-image:url({{ asset('assets/images/corner-3.png') }});">
+                                                </div>
+                                                <!--/.bg-holder-->
+                                                <div class="card-body position-relative">
+                                                    <h6>@lang('view_pages.drivers_registered')
+                                                    </h6>
+                                                    <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-warning"
+                                                        data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
+                                                        {{ $total_drivers }}
+                                                    </div>
+                                                    @if (!auth()->user()->hasRole('admin'))
+                                                        <a class="font-weight-semi-bold fs--1 text-nowrap"
+                                                            href="{{ url('drivers/waiting-for-approval') }}">@lang('view_pages.see_all')<span
+                                                                class="fa fa-angle-right ml-1" data-fa-transform="down-1"></span></a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card overflow-hidden" style="min-width: 12rem">
+                                                <div class="bg-holder bg-card" style="background-image:url({{ asset('assets/images/corner-2.png') }});">
+                                                </div>
+                                                <!--/.bg-holder-->
+                                                <div class="card-body position-relative">
+                                                    <h6>@lang('view_pages.drivers_approved')
+                                                        {{-- <span class="badge badge-soft-success rounded-pill ml-2">{{ number_format($total_drivers[0]['approve_percentage'], 2) }}%</span> --}}
+                                                    </h6>
+                                                    <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-success"
+                                                        data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
+                                                        {{ $total_aproved_drivers }}
+                                                        {{-- {{ $total_drivers[0]['approved'] }} --}}
+                                                    </div>
+                                                    @if (!auth()->user()->hasRole('admin'))
+                                                        <a class="font-weight-semi-bold fs--1 text-nowrap"
+                                                            href="{{ url('drivers') }}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1"
+                                                                data-fa-transform="down-1"></span></a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card overflow-hidden" style="min-width: 12rem">
+                                                <div class="bg-holder bg-card" style="background-image:url({{ asset('assets/images/corner-2.png') }});">
+                                                </div>
+                                                <!--/.bg-holder-->
+                                                <div class="card-body position-relative">
+                                                    <h6>@lang('view_pages.drivers_waiting_for_approval')<span
+                                                            class="badge badge-soft-success rounded-pill ml-2">
+                                                            {{-- {{ number_format($total_drivers[0]['decline_percentage'], 2) }}% --}}
+                                                        </span>
+                                                    </h6>
+                                                    <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-warning"
+                                                        data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
+                                                        {{-- {{ $total_drivers[0]['declined'] }} --}}
+                                                        {{ $total_waiting_drivers }}
+                                                    </div>
+                                                    @if (!auth()->user()->hasRole('admin'))
+                                                        <a class="font-weight-semi-bold fs--1 text-nowrap"
+                                                            href="{{ url('drivers/waiting-for-approval') }}">@lang('view_pages.see_all')<span
+                                                                class="fa fa-angle-right ml-1" data-fa-transform="down-1"></span></a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if (!auth()->user()->hasRole('admin'))
+                                            <div class="col-sm-6">
+                                                <div class="card overflow-hidden" style="min-width: 12rem">
+                                                    <div class="bg-holder bg-card"
+                                                        style="background-image:url({{ asset('assets/images/corner-1.png') }});">
+                                                    </div>
+                                                    <!--/.bg-holder-->
+                                                    <div class="card-body position-relative">
+                                                        <h6> @lang('view_pages.users_registered')
+                                                        </h6>
+                                                        <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-danger"
+                                                            data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
+                                                            {{ $total_users }}</div>
+                                                        <a class="font-weight-semi-bold fs--1 text-nowrap"
+                                                            href="{{ url('users') }}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1"
+                                                                data-fa-transform="down-1"></span></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div id="map"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        @endif
 
-        @if(!auth()->user()->hasRole('owner'))
+        {{-- @if (!auth()->user()->hasRole('owner'))
         <div class="row g-3">
             <div class="col-md-12">
                 <div class="row">
@@ -224,14 +259,14 @@
                                             <h4 class="text-center" style="color:#333;font-size:25px;">@lang('view_pages.no_data_found')</h4>
                                         </p>
                                     </include-fragment>
-                                </div>                                
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        @endif
+        @endif --}}
 
         <div class="row g-3">
             <div class="col-md-12">
@@ -261,7 +296,7 @@
                                                         class="ion ion-stats-bars text-white"></i></span>
                                                 <div class="info-box-content" style="color: #455a80">
                                                     <h4 class="font-weight-600">
-                                                        {{$currency}} {{$todayEarnings[0]['total']}}
+                                                        {{ $currency }} {{ $todayEarnings[0]['total'] }}
                                                         <br>
                                                         @lang('view_pages.today_earnings')
                                                     </h4>
@@ -276,11 +311,11 @@
                                                 <div class="info-box-content" style="color: #455a80">
                                                     <h4 class="font-weight-600">
 
-                                                        {{$currency}} {{$todayEarnings[0]['cash']}}
+                                                        {{ $currency }} {{ $todayEarnings[0]['cash'] }}
 
                                                         <br>
                                                         @lang('view_pages.by_cash')
-                                                        
+
                                                     </h4>
                                                 </div>
                                             </div>
@@ -293,7 +328,7 @@
                                                 <div class="info-box-content" style="color: #455a80">
                                                     <h4 class="font-weight-600">
 
-                                                        {{$currency}} {{$todayEarnings[0]['wallet']}}
+                                                        {{ $currency }} {{ $todayEarnings[0]['wallet'] }}
 
                                                         <br>
                                                         @lang('view_pages.by_wallet')
@@ -309,7 +344,7 @@
                                                 <div class="info-box-content" style="color: #455a80">
                                                     <h4 class="font-weight-600">
 
-                                                        {{$currency}} {{$todayEarnings[0]['card']}}
+                                                        {{ $currency }} {{ $todayEarnings[0]['card'] }}
 
                                                         <br>
                                                         @lang('view_pages.by_card_online')
@@ -325,7 +360,7 @@
                                                 <div class="info-box-content" style="color: #455a80">
                                                     <h4 class="font-weight-600">
 
-                                                        {{$currency}} {{$todayEarnings[0]['admin_commision']}}
+                                                        {{ $currency }} {{ $todayEarnings[0]['admin_commision'] }}
 
                                                         <br>
                                                         @lang('view_pages.admin_commision')
@@ -340,7 +375,7 @@
                                                         class="ion ion-stats-bars text-white"></i></span>
                                                 <div class="info-box-content" style="color: #455a80">
                                                     <h4 class="font-weight-600">
-                                                        {{$currency}} {{$todayEarnings[0]['driver_commision']}}
+                                                        {{ $currency }} {{ $todayEarnings[0]['driver_commision'] }}
                                                         <br>
                                                         @lang('view_pages.driver_earnings')
                                                     </h4>
@@ -354,7 +389,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-12 col-lg-12">
                 <!-- DONUT CHART -->
                 <div class="box">
@@ -384,7 +418,7 @@
                                         <div class="info-box-content" style="color: #455a80">
                                             <h4 class="font-weight-600">
 
-                                                {{$currency}} {{$overallEarnings[0]['total']}}
+                                                {{ $currency }} {{ $overallEarnings[0]['total'] }}
                                                 <br>
                                                 @lang('view_pages.overall_earnings')
                                             </h4>
@@ -396,7 +430,7 @@
                                     <div class="box box-body">
                                         <div class="font-size-18 flexbox align-items-center" style="color: #7460ee">
                                             <span style="color: #455a80"> @lang('view_pages.by_cash')</span>
-                                            <span>{{$currency}} {{$overallEarnings[0]['cash']}}</span>
+                                            <span>{{ $currency }} {{ $overallEarnings[0]['cash'] }}</span>
 
                                         </div>
                                         <div class="progress progress-xxs mt-10 mb-0">
@@ -416,7 +450,7 @@
                                     <div class="box box-body">
                                         <div class="font-size-18 flexbox align-items-center" style="color: #7460ee">
                                             <span style="color: #455a80"> @lang('view_pages.by_wallet')</span>
-                                            <span>{{$currency}} {{$overallEarnings[0]['wallet']}}</span>
+                                            <span>{{ $currency }} {{ $overallEarnings[0]['wallet'] }}</span>
                                         </div>
                                         <div class="progress progress-xxs mt-10 mb-0">
                                             <div class="progress-bar" role="progressbar"
@@ -434,7 +468,7 @@
                                     <div class="box box-body">
                                         <div class="font-size-18 flexbox align-items-center" style="color: #7460ee">
                                             <span style="color: #455a80"> @lang('view_pages.by_card_online')</span>
-                                            <span>{{$currency}} {{$overallEarnings[0]['card']}}</span>
+                                            <span>{{ $currency }} {{ $overallEarnings[0]['card'] }}</span>
                                         </div>
                                         <div class="progress progress-xxs mt-10 mb-0">
                                             <div class="progress-bar" role="progressbar"
@@ -455,7 +489,7 @@
                                         <div class="info-box-content" style="color: #fc4b6c">
                                             <h4 class="font-weight-600">
 
-                                                {{$currency}} {{$overallEarnings[0]['admin_commision']}}
+                                                {{ $currency }} {{ $overallEarnings[0]['admin_commision'] }}
                                                 <br>
                                                 @lang('view_pages.admin_commision')
                                             </h4>
@@ -470,7 +504,7 @@
                                         <div class="info-box-content" style="color: #26c6da">
                                             <h4 class="font-weight-600">
 
-                                                {{$currency}} {{$overallEarnings[0]['driver_commision']}}
+                                                {{ $currency }} {{ $overallEarnings[0]['driver_commision'] }}
                                                 <br>
                                                 @lang('view_pages.driver_earnings')
                                             </h4>
@@ -486,8 +520,6 @@
                 <!-- /.box -->
 
             </div>
-
-
             <div class="col-12 col-lg-12">
                 <div class="box">
                     <div class="box-header with-border">
@@ -509,7 +541,8 @@
                                         <div class="box box-body bg-primary">
                                             <div class="flexbox">
                                                 <span class="ion ion-ios-person-outline font-size-50"></span>
-                                                <span class="font-size-40 font-weight-200">{{$trips[0]['total_cancelled']}}</span>
+                                                <span
+                                                    class="font-size-40 font-weight-200">{{ $trips[0]['total_cancelled'] }}</span>
                                             </div>
                                             <div class="text-right">@lang('view_pages.total_request_cancelled')</div>
                                         </div>
@@ -518,7 +551,8 @@
                                         <div class="box box-body bg-primary" style="background-color: #1e88e5 !important">
                                             <div class="flexbox">
                                                 <span class="ion ion-ios-person-outline font-size-50"></span>
-                                                <span class="font-size-40 font-weight-200">{{$trips[0]['auto_cancelled']}}</span>
+                                                <span
+                                                    class="font-size-40 font-weight-200">{{ $trips[0]['auto_cancelled'] }}</span>
                                             </div>
                                             <div class="text-right">@lang('view_pages.cancelled_due_to_no_drivers')</div>
                                         </div>
@@ -527,7 +561,8 @@
                                         <div class="box box-body bg-primary" style="background-color: #26c6da !important">
                                             <div class="flexbox">
                                                 <span class="ion ion-ios-person-outline font-size-50"></span>
-                                                <span class="font-size-40 font-weight-200">{{$trips[0]['user_cancelled']}}</span>
+                                                <span
+                                                    class="font-size-40 font-weight-200">{{ $trips[0]['user_cancelled'] }}</span>
                                             </div>
                                             <div class="text-right">@lang('view_pages.cancelled_by_user')</div>
                                         </div>
@@ -536,7 +571,8 @@
                                         <div class="box box-body bg-primary" style="background-color: #fc4b6c !important">
                                             <div class="flexbox">
                                                 <span class="ion ion-ios-person-outline font-size-50"></span>
-                                                <span class="font-size-40 font-weight-200">{{$trips[0]['driver_cancelled']}}</span>
+                                                <span
+                                                    class="font-size-40 font-weight-200">{{ $trips[0]['driver_cancelled'] }}</span>
                                             </div>
                                             <div class="text-right">@lang('view_pages.cancelled_by_driver')</div>
                                         </div>
@@ -547,8 +583,226 @@
                     </div>
                 </div>
             </div>
-
+        </div>
     </section>
+
+    <script type="text/javascript"
+        src="https://maps.google.com/maps/api/js?key={{ get_settings('google_map_key') }}&libraries=visualization"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-analytics.js"></script>
+
+    <script type="text/javascript">
+        var heatmapData = [];
+        var pickLat = [];
+        var pickLng = [];
+        var default_lat = '{{ $default_lat }}';
+        var default_lng = '{{ $default_lng }}';
+        var company_key = '{{ auth()->user()->company_key }}';
+        var driverLat, driverLng, bearing, type;
+        var marker = [];
+
+
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "{{ get_settings('firebase-api-key') }}",
+            authDomain: "{{ get_settings('firebase-auth-domain') }}",
+            databaseURL: "{{ get_settings('firebase-db-url') }}",
+            projectId: "{{ get_settings('firebase-project-id') }}",
+            storageBucket: "{{ get_settings('firebase-storage-bucket') }}",
+            messagingSenderId: "{{ get_settings('firebase-messaging-sender-id') }}",
+            appId: "{{ get_settings('firebase-app-id') }}",
+            measurementId: "{{ get_settings('firebase-measurement-id') }}"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+
+        var tripRef = firebase.database().ref('drivers');
+
+        tripRef.on('value', async function(snapshot) {
+            var data = snapshot.val();
+
+            await loadDriverIcons(data);
+        });
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: new google.maps.LatLng(default_lat, default_lng),
+            zoom: 5,
+            mapTypeId: 'roadmap'
+        });
+
+        var iconBase = '{{ asset('map/icon/') }}';
+        var icons = {
+            car_available: {
+                name: 'Available',
+                icon: iconBase + '/driver_available.png'
+            },
+            car_ontrip: {
+                name: 'OnTrip',
+                icon: iconBase + '/driver_on_trip.png'
+            },
+            car_offline: {
+                name: 'Offline',
+                icon: iconBase + '/driver_off_trip.png'
+            },
+            bike_available: {
+                name: 'Available',
+                icon: iconBase + '/available-bike.png'
+            },
+            bike_ontrip: {
+                name: 'OnTrip',
+                icon: iconBase + '/ontrip-bike.png'
+            },
+            bike_offline: {
+                name: 'Offline',
+                icon: iconBase + '/offline-bike.png'
+            },
+            truck_available: {
+                name: 'Available',
+                icon: iconBase + '/available-truck.png'
+            },
+            truck_ontrip: {
+                name: 'OnTrip',
+                icon: iconBase + '/ontrip-truck.png'
+            },
+            truck_offline: {
+                name: 'Offline',
+                icon: iconBase + '/offline-truck.png'
+            },
+        };
+
+        var fliter_icons = {
+            available: {
+                name: 'Available',
+                icon: iconBase + '/available.png'
+            },
+            ontrip: {
+                name: 'OnTrip',
+                icon: iconBase + '/ontrip.png'
+            },
+            offline: {
+                name: 'Offline',
+                icon: iconBase + '/offline.png'
+            }
+        };
+
+        var legend = document.getElementById('legend');
+
+        for (var key in fliter_icons) {
+            var type = fliter_icons[key];
+            var name = type.name;
+            var icon = type.icon;
+            var div = document.createElement('div');
+            div.innerHTML = '<img src="' + icon + '"> ' + name;
+            legend.appendChild(div);
+        }
+
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+
+        function loadDriverIcons(data) {
+            deleteAllMarkers();
+
+            Object.entries(data).forEach(([key, val]) => {
+                if (typeof val.l != 'undefined') {
+                    var contentString = `<div class="p-2">
+                                    <h6><i class="fa fa-id-badge"></i> : ${val.name ?? '-' } </h6>
+                                    <h6><i class="fa fa-phone-square"></i> : ${val.mobile ?? '-'} </h6>
+                                    <h6><i class="fa fa-id-card"></i> : ${val.vehicle_number ?? '-'} </h6>
+                                    <h6><i class="fa fa-truck"></i> : ${val.vehicle_type_name ?? '-'} </h6>
+                                </div>`;
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+
+                    var iconImg = '';
+
+                    var date = new Date();
+                    var timestamp = date.getTime();
+                    var conditional_timestamp = new Date(timestamp - 5 * 60000);
+                    //    console.log(conditional_timestamp,val.updated_at,conditional_timestamp < val.updated_at);
+                    if (conditional_timestamp > val.updated_at) {
+                        if (val.vehicle_type_icon == 'taxi') {
+                            iconImg = icons['car_offline'].icon;
+                        } else if (val.vehicle_type_icon == 'motor_bike') {
+                            iconImg = icons['bike_offline'].icon;
+                        } else if (val.vehicle_type_icon == 'truck') {
+                            iconImg = icons['truck_offline'].icon;
+                        } else {
+                            iconImg = icons['car_offline'].icon;
+
+                        }
+                    } else {
+                        if (val.is_available == true && val.is_active == true) {
+                            if (val.vehicle_type_icon == 'taxi') {
+                                iconImg = icons['car_available'].icon;
+                            } else if (val.vehicle_type_icon == 'motor_bike') {
+                                iconImg = icons['bike_available'].icon;
+                            } else if (val.vehicle_type_icon == 'truck') {
+                                iconImg = icons['truck_available'].icon;
+                            } else {
+                                iconImg = icons['car_available'].icon;
+
+                            }
+                        } else if (val.is_active == true && val.is_available == false) {
+                            if (val.vehicle_type_icon == 'taxi') {
+                                iconImg = icons['car_ontrip'].icon;
+                            } else if (val.vehicle_type_icon == 'motor_bike') {
+                                iconImg = icons['bike_ontrip'].icon;
+                            } else if (val.vehicle_type_icon == 'truck') {
+                                iconImg = icons['truck_ontrip'].icon;
+                            } else {
+                                iconImg = icons['car_ontrip'].icon;
+                            }
+                        } else {
+
+                            if (val.vehicle_type_icon == 'taxi') {
+                                iconImg = icons['car_offline'].icon;
+                            } else if (val.vehicle_type_icon == 'motor_bike') {
+                                iconImg = icons['bike_offline'].icon;
+                            } else if (val.vehicle_type_icon == 'truck') {
+                                iconImg = icons['truck_offline'].icon;
+                            } else {
+                                iconImg = icons['car_offline'].icon;
+
+                            }
+                        }
+                    }
+                    // if(val.company_key==company_key){
+
+
+                    var carIcon = new google.maps.Marker({
+                        position: new google.maps.LatLng(val.l[0], val.l[1]),
+                        icon: iconImg,
+                        map: map
+                    });
+
+                    carIcon.addListener('click', function() {
+                        infowindow.open(map, carIcon);
+                    });
+
+                    marker.push(carIcon);
+                    carIcon.setMap(map);
+                    // }
+
+                    // marker.addListener('click', function() {
+                    //     infowindow.open(map, marker);
+                    // });
+                }
+            });
+        }
+
+        // Delete truck icons once map reloads
+        function deleteAllMarkers() {
+            for (var i = 0; i < marker.length; i++) {
+                marker[i].setMap(null);
+            }
+        }
+    </script>
 
     <script src="{{ asset('assets/vendor_components/jquery.peity/jquery.peity.js') }}"></script>
 
@@ -563,7 +817,6 @@
             });
 
         }); // End of use strict
-
     </script>
 
     <!-- Morris.js charts -->
@@ -580,7 +833,7 @@
             var barChartData = barData?.cancel;
             var overallEarning = barData?.earnings;
             let cancelValues = [];
-            for(var value in barChartData){
+            for (var value in barChartData) {
                 // console.log(barChartData[value]);
             }
 
@@ -592,12 +845,12 @@
                 barSizeRatio: 0.5,
                 barGap: 5,
                 xkey: 'y',
-                ykeys: ['a', 'd','u'],
+                ykeys: ['a', 'd', 'u'],
                 labels: ['Cancelled due to no Drivers', 'Cancelled by User', 'Cancelled by Driver'],
                 hideHover: 'auto',
                 color: '#666666'
             });
-            console.log(barChartData,bar);
+            console.log(barChartData, bar);
 
             if ($('#chart_1').length > 0) {
                 var ctx1 = document.getElementById("chart_1").getContext("2d");
@@ -611,7 +864,7 @@
                             pointHighlightStroke: "#26c6da",
                             data: overallEarning['values']
                         },
-                       
+
 
                     ]
                 };
@@ -680,7 +933,9 @@
                         "Scheduled"
                     ],
                     datasets: [{
-                        data: [tripData[0].today_completed,tripData[0].today_cancelled,tripData[0].today_scheduled],
+                        data: [tripData[0].today_completed, tripData[0].today_cancelled, tripData[0]
+                            .today_scheduled
+                        ],
                         backgroundColor: [
                             "#7460ee",
                             "#fc4b6c",
@@ -721,7 +976,5 @@
                 });
             }
         });
-
     </script>
-
 @endsection

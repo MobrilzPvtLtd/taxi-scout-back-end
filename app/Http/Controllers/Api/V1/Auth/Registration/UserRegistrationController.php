@@ -141,28 +141,13 @@ class UserRegistrationController extends LoginController
 
         return response()->json(['success'=>true]);
     }
-    /**
-     * Register the user and send welcome email.
-     * @bodyParam name string required name of the user
-    * @bodyParam company_key string optional company key of demo
-     * @bodyParam mobile integer required mobile of user
-     * @bodyParam email email required email of the user
-     * @bodyParam password password required password provided user
-     * @bodyParam oauth_token string optional from social provider
-     * @bodyParam password_confirmation password required  confirmed password provided user
-     * @bodyParam device_token string required device_token of the user
-     * @bodyParam refferal_code string optional refferal_code of the another user
-     * @bodyParam login_by string required from which device the user registered. the input should be 'android',or 'ios'
-     * @param \App\Http\Requests\Auth\Registration\UserRegistrationRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @responseFile responses/auth/register.json
-     */
+
     public function register(UserRegistrationRequest $request)
     {
         // die();
         $mobileUuid = $request->input('uuid');
 
-        $country_id =  $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
+        // $country_id =  $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
         $validate_exists_email = $this->user->belongsTorole(Role::USER)->where('email', $request->email)->exists();
 
         if ($validate_exists_email) {
@@ -194,9 +179,9 @@ class UserRegistrationController extends LoginController
             $this->throwCustomException('Provided mobile has already been taken');
         }
 
-        if (!$country_id) {
-            $this->throwCustomException('unable to find country');
-        }
+        // if (!$country_id) {
+        //     $this->throwCustomException('unable to find country');
+        // }
 
 
         if ($request->has('refferal_code')) {
@@ -228,7 +213,7 @@ class UserRegistrationController extends LoginController
             'mobile_confirmed' => true,
             'fcm_token'=>$request->input('device_token'),
             'login_by'=>$request->input('login_by'),
-            'country'=>$country_id,
+            // 'country'=>$country_id,
             'refferal_code'=>str_random(6),
             'profile_picture'=>$profile_picture,
             'lang'=>$request->input('lang')

@@ -18,7 +18,7 @@
                 </li>
             @endif
 
-            @if (auth()->user()->can('access-dashboard') && env('APP_FOR') == 'demo1')
+            {{-- @if (auth()->user()->can('access-dashboard') && env('APP_FOR') == 'demo1')
                 <li class="{{ 'admin_dashboard' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/admin_dashboard') }}">
                         <i class="fa fa-tachometer"></i> <span>@lang('pages_names.admin-dashboard')</span>
@@ -29,8 +29,14 @@
                         <i class="fa fa-tachometer"></i> <span>Driver profile Dashboard</span>
                     </a>
                 </li>
+            @endif --}}
+            @if (auth()->user()->can('view-system-settings'))
+                <li class="{{ 'system_settings' == $sub_menu ? 'active' : '' }}">
+                    <a href="{{ url('/system/settings') }}"><i
+                            class="fa fa-cogs"></i>@lang('pages_names.system_settings')</a>
+                </li>
             @endif
-            @if (auth()->user()->menucheck_roll == 'A')
+            {{-- @if (auth()->user()->menucheck_roll == 'A')
                 @if (auth()->user()->can('view-settings'))
                     <li class="treeview {{ 'settings' == $main_menu ? 'active menu-open' : '' }}">
                         <a href="javascript: void(0);">
@@ -66,8 +72,8 @@
                         </ul>
                     </li>
                 @endif
-            @endif
-            @if (auth()->user()->can('master-data'))
+            @endif --}}
+            {{-- @if (auth()->user()->can('master-data'))
                 <li class="treeview {{ 'master' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-code-fork"></i>
@@ -126,7 +132,7 @@
 
                     </ul>
                 </li>
-            @endif
+            @endif --}}
 
             @if (auth()->user()->can('service_location'))
                 <li class="{{ 'service_location' == $main_menu ? 'active' : '' }}">
@@ -140,7 +146,7 @@
                 $areas = App\Models\Admin\ServiceLocation::companyKey()->active(true)->get();
             @endphp
 
-            @if (auth()->user()->can('manage-owner'))
+            {{-- @if (auth()->user()->can('manage-owner'))
                 <li class="treeview {{ 'manage_owners' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-code-fork"></i>
@@ -160,22 +166,22 @@
 
                 </li>
 
-            @endif
+            @endif --}}
 
 
-            @if (auth()->user()->can('manage-fleet'))
+            {{-- @if (auth()->user()->can('manage-fleet'))
                 <li class="{{ $main_menu == 'manage_fleet' ? 'active' : '' }}">
                     <a href="{{ route('viewFleet') }}">
                         <i class="fa fa-bus"></i>
                         <span> {{ trans('pages_names.manage_fleet') }} </span>
                     </a>
                 </li>
-            @endif
+            @endif --}}
 
             @if (auth()->user()->can('admin'))
                 <li class="{{ 'admin' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/admins') }}">
-                        <i class="fa fa-user-circle-o"></i> <span>@lang('pages_names.admins')</span>
+                        <i class="fa fa-user-circle-o"></i> <span>Taxi Company</span>
                     </a>
                 </li>
             @endif
@@ -300,15 +306,15 @@
                 </li>
             @endif
 
-            @if (auth()->user()->can('view-types'))
+            {{-- @if (auth()->user()->can('view-types'))
                 <li class="{{ 'types' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/types') }}">
                         <i class="fa fa-taxi "></i> <span>@lang('pages_names.types')</span>
                     </a>
                 </li>
-            @endif
+            @endif --}}
 
-            @if (auth()->user()->can('map-menu'))
+            {{-- @if (auth()->user()->can('map-menu'))
                 <li class="treeview {{ 'map' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-map"></i>
@@ -332,7 +338,7 @@
 
                     </ul>
                 </li>
-            @endif
+            @endif --}}
 
             @if (auth()->user()->can('vehicle-fare'))
                 <li class="{{ 'vehicle-fare' == $main_menu ? 'active' : '' }}">
@@ -457,7 +463,12 @@
                 </li>
             @endif
 
-            @if (auth()->user()->can('user-menu'))
+            @if (auth()->user()->can('view-users'))
+                <li class="{{ 'user_details' == $sub_menu ? 'active' : '' }}">
+                    <a href="{{ url('/users') }}"><i class="fa fa-user"></i>@lang('pages_names.user_details')</a>
+                </li>
+            @endif
+            {{-- @if (auth()->user()->can('user-menu'))
                 <li class="treeview {{ 'users' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-user"></i>
@@ -475,42 +486,28 @@
                         @endif
                     </ul>
                 </li>
-            @endif
+            @endif --}}
 
-            @if (auth()->user()->can('view-sos'))
+            {{-- @if (auth()->user()->can('view-sos'))
                 <li class="{{ 'emergency_number' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/sos') }}">
                         <i class="fa fa-heartbeat"></i> <span>@lang('pages_names.emergency_number')</span>
                     </a>
                 </li>
-            @endif
+            @endif --}}
 
-            @if (auth()->user()->can('manage-promo'))
+            {{-- @if (auth()->user()->can('manage-promo'))
                 <li class="{{ 'manage-promo' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/promo') }}">
                         <i class="fa fa-gift"></i> <span>@lang('pages_names.promo_codes')</span>
                     </a>
                 </li>
-            @endif
+            @endif --}}
 
-            @if (auth()->user()->can('notifications'))
-                <li class="treeview {{ 'notifications' == $main_menu ? 'active menu-open' : '' }}">
-                    <a href="javascript: void(0);">
-                        <i class="fa fa-paper-plane"></i>
-                        <span> @lang('pages_names.notifications') </span>
-                        <span class="pull-right-container">
-                            <i class="fa fa-angle-right pull-right"></i>
-                        </span>
-                    </a>
-
-                    <ul class="treeview-menu">
-                        @if (auth()->user()->can('view-notifications'))
-                            <li class="{{ 'push_notification' == $sub_menu ? 'active' : '' }}">
-                                <a href="{{ url('/notifications/push') }}"><i
-                                        class="fa fa-circle-thin"></i>@lang('pages_names.push_notification')</a>
-                            </li>
-                        @endif
-                    </ul>
+            @if (auth()->user()->can('view-notifications'))
+                <li class="{{ 'push_notification' == $sub_menu ? 'active' : '' }}">
+                    <a href="{{ url('/notifications/push') }}"><i
+                            class="fa fa-paper-plane"></i>Notification</a>
                 </li>
             @endif
 
@@ -683,22 +680,22 @@
                                         class="fa fa-circle-thin"></i>@lang('pages_names.map_view')</a>
                             </li>
 
-                            {{--  <li class="{{ 'map-mapbox' == $sub_menu ? 'active' : '' }}">
+                             <li class="{{ 'map-mapbox' == $sub_menu ? 'active' : '' }}">
                                 <a href="{{route('mapViewMapbox')}}"><i class="fa fa-circle-thin"></i>@lang('pages_names.map_view_mapbox')</a>
-                            </li> --}}
+                            </li>
                         @endif
                     </ul>
                 </li>
             @endif
 
-            @if (auth()->user()->can('manage-faq'))
+            {{-- @if (auth()->user()->can('manage-faq'))
                 <li class="{{ 'faq' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/faq') }}">
                         <i class="fa fa-question-circle"></i> <span>@lang('pages_names.faq')</span>
                     </a>
                 </li>
-            @endif
-            @if (auth()->user()->can('cms'))
+            @endif --}}
+            {{-- @if (auth()->user()->can('cms'))
                 <li class="treeview {{ 'cms' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-file-pdf-o"></i>
@@ -774,7 +771,7 @@
                         <i class="fa fa-building"></i> <span>@lang('pages_names.company')</span>
                         </a>
                     </li>
-            @endif -->
+            @endif --> --}}
 
 
             <!--

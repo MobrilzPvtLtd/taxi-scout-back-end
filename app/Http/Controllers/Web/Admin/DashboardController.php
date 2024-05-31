@@ -7,6 +7,9 @@ use App\Models\Admin\Driver;
 use App\Models\Request\Request;
 use App\Models\Request\RequestBill;
 use App\Models\User;
+use App\Base\Constants\Auth\Role;
+use App\Models\Admin\Zone;
+use App\Base\Constants\Auth\Role as RoleSlug;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use App\Base\Constants\Setting\Settings;
@@ -16,16 +19,13 @@ class DashboardController extends BaseController
 
     public function dashboard()
     {
-
         if(!Session::get('applocale')){
             Session::put('applocale', 'en');
         }
 
-        // Session::put('applocale', 'en');
-
         $ownerId = null;
-        if (auth()->user()->hasRole('owner')) {
-            $ownerId = auth()->user()->owner->id;
+        if (auth()->user()->hasRole('admin')) {
+            $ownerId = auth()->user()->admin->id;
         }
 
         $page = trans('pages_names.dashboard');
@@ -34,26 +34,39 @@ class DashboardController extends BaseController
 
         $today = date('Y-m-d');
 
-        $total_drivers = Driver::selectRaw('
-                                        IFNULL(SUM(CASE WHEN approve=1 THEN 1 ELSE 0 END),0) AS approved,
-                                        IFNULL((SUM(CASE WHEN approve=1 THEN 1 ELSE 0 END) / count(*)),0) * 100 AS approve_percentage,
-                                        IFNULL((SUM(CASE WHEN approve=0 THEN 1 ELSE 0 END) / count(*)),0) * 100 AS decline_percentage,
-                                        IFNULL(SUM(CASE WHEN approve=0 THEN 1 ELSE 0 END),0) AS declined,
-                                        count(*) AS total
-                                    ')
-                                ->whereHas('user', function ($query) {
-                                    $query->companyKey();
-                                });
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $total_drivers = Driver::where('owner_id', null)->count();
+            $total_waiting_drivers = Driver::where('approve', false)->where('owner_id', null)->count();
+            $total_aproved_drivers = Driver::where('approve', true)->where('owner_id', null)->count();
+        }else{
+            $total_drivers = Driver::where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
-        if($ownerId != null){
-            $total_drivers = $total_drivers->whereOwnerId($ownerId);
+            $total_aproved_drivers = Driver::where('approve', true)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+
+            $total_waiting_drivers = Driver::where('approve', false)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->where('owner_id', null)->count();
         }
 
-        $total_drivers = $total_drivers->get();
+
+        // $total_drivers = Driver::selectRaw('
+        //         IFNULL(SUM(CASE WHEN approve=1 THEN 1 ELSE 0 END),0) AS approved,
+        //         IFNULL((SUM(CASE WHEN approve=1 THEN 1 ELSE 0 END) / count(*)),0) * 100 AS approve_percentage,
+        //         IFNULL((SUM(CASE WHEN approve=0 THEN 1 ELSE 0 END) / count(*)),0) * 100 AS decline_percentage,
+        //         IFNULL(SUM(CASE WHEN approve=0 THEN 1 ELSE 0 END),0) AS declined,
+        //         count(*) AS total
+        //     ')
+        // ->whereHas('user', function ($query) {
+        //     $query->auth()->user()->company_key;
+        // });
+
+        // if($ownerId != null){
+        //     $total_drivers = $total_drivers->whereOwnerId($ownerId);
+        // }
+
+        // $total_drivers = $total_drivers->get();
 
         $total_users = User::belongsToRole('user')->companyKey()->count();
 
-//trips
+        //trips
         if($ownerId != null){
         $trips = Request::companyKey()->selectRaw('
                     IFNULL(SUM(CASE WHEN is_completed=1 THEN 1 ELSE 0 END),0) AS today_completed,
@@ -166,12 +179,12 @@ class DashboardController extends BaseController
              $startDate = Carbon::now()->startOfMonth()->subMonths(6);
              $endDate = Carbon::now();
              $data=[];
-    if($ownerId != null){
-        while ($startDate->lte($endDate)){
+        if($ownerId != null){
+            while ($startDate->lte($endDate)){
 
-        $from = Carbon::parse($startDate)->startOfMonth();
-        $to = Carbon::parse($startDate)->endOfMonth();
-        $shortName = $startDate->shortEnglishMonth;
+            $from = Carbon::parse($startDate)->startOfMonth();
+            $to = Carbon::parse($startDate)->endOfMonth();
+            $shortName = $startDate->shortEnglishMonth;
                 $monthName = $startDate->monthName;
                 $data['cancel'][] = [
                     'y' => $shortName,
@@ -188,7 +201,7 @@ class DashboardController extends BaseController
                 }
 
      }else{
-    while ($startDate->lte($endDate)){
+        while ($startDate->lte($endDate)){
 
         $from = Carbon::parse($startDate)->startOfMonth();
         $to = Carbon::parse($startDate)->endOfMonth();
@@ -209,14 +222,43 @@ class DashboardController extends BaseController
                 }
       }
 
-        if (auth()->user()->countryDetail) {
-            $currency = auth()->user()->countryDetail->currency_symbol;
-        } else {
-            $currency = get_settings(Settings::CURRENCY);
-        }
-        // $currency = auth()->user()->countryDetail->currency_code ?: env('SYSTEM_DEFAULT_CURRENCY');
-        $currency = get_settings('currency_code');
-          return redirect('/airport');
-        //return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_users','trips','todayEarnings','overallEarnings','data'));
+    if (auth()->user()->countryDetail) {
+        $currency = auth()->user()->countryDetail->currency_symbol;
+    } else {
+        $currency = get_settings(Settings::CURRENCY);
+    }
+    // $currency = auth()->user()->countryDetail->currency_code ?: env('SYSTEM_DEFAULT_CURRENCY');
+    $currency = get_settings('currency_code');
+
+    $default_lat = get_settings('default_latitude');
+    $default_lng = get_settings('default_longitude');
+
+    $zone = Zone::active()->companyKey()->first();
+
+    // if ($zone) {
+    //     if (access()->hasRole(Role::SUPER_ADMIN)) {
+    //     } else {
+    //         $admin_detail = auth()->user()->admin;
+    //         $zone = $admin_detail->serviceLocationDetail->zones()->first();
+    //     }
+    //     $coordinates = $zone->coordinates->toArray();
+    //     $multi_polygon = [];
+    //     foreach ($coordinates as $key => $coordinate) {
+    //         $polygon = [];
+    //         foreach ($coordinate[0] as $key => $point) {
+    //             $pp = new \stdClass;
+    //             $pp->lat = $point->getLat();
+    //             $pp->lng = $point->getLng();
+    //             $polygon [] = $pp;
+    //         }
+    //         $multi_polygon[] = $polygon;
+    //     }
+
+    //     $default_lat = $polygon[0]->lat;
+    //     $default_lng = $polygon[0]->lng;
+    // }
+
+        // return redirect('/airport');
+    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng'));
     }
 }

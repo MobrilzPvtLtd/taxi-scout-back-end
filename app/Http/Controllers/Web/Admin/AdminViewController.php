@@ -36,23 +36,16 @@ class AdminViewController extends BaseController
     public function viewLogin()
     {
         $host_name = request()->getHost();
-
         $conditional_host = explode('.',$host_name);
 
         if($conditional_host[0] =='tagxi-super-docs'){
-
-        return redirect('user-manual');
-
+            return redirect('user-manual');
         }
 
         if($conditional_host[0] =='tagxi-super-server'){
-
             $user = User::belongsToRole('super-admin')->first();
-
             auth('web')->login($user, true);
-
             return redirect('dashboard');
-
         }
 
         if($conditional_host[0] =='super-bidding'){

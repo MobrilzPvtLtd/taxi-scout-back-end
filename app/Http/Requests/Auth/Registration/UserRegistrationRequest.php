@@ -20,10 +20,10 @@ class UserRegistrationRequest extends BaseRequest
             'password' => 'sometimes|required|min:6|confirmed',
             // 'uuid' => 'required|uuid|exists:mobile_otp_verifications,id,verified,1',
             'mobile' => 'required',
-            'terms_condition' => 'sometimes|required|boolean|in:1',
-            'device_token'=>'sometimes|required',
-            'login_by'=>'sometimes|required|in:android,ios',
-            'oauth_token'=>'sometimes|required',
+            // 'terms_condition' => 'sometimes|required|boolean|in:1',
+            // 'device_token'=>'sometimes|required',
+            // 'login_by'=>'sometimes|required|in:android,ios',
+            // 'oauth_token'=>'sometimes|required',
         ];
     }
 }
