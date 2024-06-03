@@ -566,6 +566,45 @@ class RolesAndPermissionsSeeder extends Seeder
             'icon' => 'fa fa-list'
         ],
 
+        PermissionSlug::VIEW_DELIVERY_REQUEST => [
+            'name' => 'view-delivery-requests',
+            'description' => 'View Delivery Request Details',
+            'main_menu'=>'request',
+            'sub_menu'=> 'request',
+            'main_link'=>'requests',
+            'sort' => 5,
+            'icon' => 'fa fa-list'
+        ],
+        PermissionSlug::DELIVERY_RIDES => [
+            'name' => 'view-delivery-rides',
+            'description' => 'View Delivery Rides',
+            'main_menu'=>'request',
+            'sub_menu'=> 'request',
+            'main_link'=>'requests',
+            'sort' => 5,
+            'icon' => 'fa fa-list'
+        ],
+        PermissionSlug::DELIVERY_SCHEDULED_RIDES => [
+            'name' => 'scheduled-delivery-rides',
+            'description' => 'View scheduled delivery Rides',
+            'main_menu'=>'request',
+            'sub_menu'=> 'scheduled-rides',
+            'main_link'=>'requests',
+            'sub_link' =>'scheduled-rides',
+            'sort' => 5,
+            'icon' => 'fa fa-list'
+        ],
+        PermissionSlug::DELIVERY_CANCELLATION_RIDES => [
+            'name' => 'cancellation-delivery-rides',
+            'description' => 'View cancellation delivery Rides',
+            'main_menu'=>'request',
+            'sub_menu'=> 'cancellation-rides',
+            'main_link'=>'requests',
+            'sub_link' =>'cancellation-rides',
+            'sort' => 5,
+            'icon' => 'fa fa-list'
+        ],
+
 /* Vehicle Type */
 
         PermissionSlug::VIEW_TYPES => [
@@ -1650,7 +1689,7 @@ class RolesAndPermissionsSeeder extends Seeder
         RoleSlug::ADMIN => [
             'name' => 'Admin',
             'description' => 'Admin group with restricted access',
-            'permissions' => [PermissionSlug::ACCESS_DASHBOARD,PermissionSlug::MANAGE_FLEET,PermissionSlug::CREATE_FLEET,PermissionSlug::EDIT_FLEET,PermissionSlug::DELETE_FLEET,PermissionSlug::FLEET_TOGGLE_STATUS,PermissionSlug::DRIVERS_MENU,PermissionSlug::VIEW_DRIVERS,PermissionSlug::MANAGE_SUBSCRIPTION,PermissionSlug::MANAGE_ORDER,PermissionSlug::EDIT_AIRPORTS],
+            'permissions' => [PermissionSlug::ACCESS_DASHBOARD,PermissionSlug::MANAGE_FLEET,PermissionSlug::CREATE_FLEET,PermissionSlug::EDIT_FLEET,PermissionSlug::DELETE_FLEET,PermissionSlug::FLEET_TOGGLE_STATUS,PermissionSlug::DRIVERS_MENU,PermissionSlug::VIEW_DRIVERS,PermissionSlug::MANAGE_SUBSCRIPTION,PermissionSlug::MANAGE_ORDER,PermissionSlug::VIEW_TYPES,PermissionSlug::ADD_TYPES,PermissionSlug::EDIT_TYPES,PermissionSlug::DELETE_TYPES,PermissionSlug::TOGGLE_TYPES,PermissionSlug::VIEW_DELIVERY_REQUEST,PermissionSlug::DELIVERY_RIDES,PermissionSlug::DELIVERY_SCHEDULED_RIDES,PermissionSlug::DELIVERY_CANCELLATION_RIDES,PermissionSlug::EDIT_AIRPORTS,PermissionSlug::VEHICLE_FARE,PermissionSlug::ADD_PRICE,PermissionSlug::EDIT_PRICE,PermissionSlug::DELETE_PRICE,PermissionSlug::TOGGLE_PRICE,PermissionSlug::DEFAULT_VEHICLE_TYPE,PermissionSlug::ASSIGN_RENTAL_PACKAGE,PermissionSlug::RENTAL_PACKAGE,PermissionSlug::ADD_RENTAL_PACKAGE,PermissionSlug::EDIT_RENTAL_PACKAGE,PermissionSlug::DELETE_RENTAL_PACKAGE,PermissionSlug::TOGGLE_RENTAL_PACKAGE],
         ],
 
         //  RoleSlug::OWNER=>[

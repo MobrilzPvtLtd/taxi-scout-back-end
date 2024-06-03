@@ -3,7 +3,7 @@
         <tr>
             <th> @lang('view_pages.s_no')</th>
             <th> @lang('view_pages.package_name')</th>
-            <th> Users</th>
+            <th> Company</th>
             <th> @lang('view_pages.start_date')</th>
             <th> End Date</th>
             <th> @lang('view_pages.status')</th>

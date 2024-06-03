@@ -2,7 +2,7 @@
 /*    .custom-nav-link {
         margin-right: 2px; /* Adjust the value as needed */
     }*/
-    
+
     .tab-content {
         margin-top: 35px; /* Add margin to create space between tabs and table */
     }

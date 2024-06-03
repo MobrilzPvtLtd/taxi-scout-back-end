@@ -185,6 +185,21 @@
                     </a>
                 </li>
             @endif
+
+            @if (auth()->user()->can('manage-subscription'))
+                <li class="{{ 'manage-subscription' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ url('/subscription') }}">
+                        <i class="fa fa-solid fa-dollar"></i> <span>@lang('pages_names.subscription')</span>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->can('manage-order'))
+                <li class="{{ 'manage-order' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ url('/order') }}">
+                        <i class="fa fa-first-order"></i> <span>Package Order</span>
+                    </a>
+                </li>
+            @endif
             {{--  @if (auth()->user()->can('view-requests'))
             <li class="{{'request' == $main_menu ? 'active' : '' }}">
                 <a href="{{url('/requests')}}">
@@ -272,7 +287,7 @@
                 <li class="treeview {{ 'delivery-trip-request' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-map"></i>
-                        <span> @lang('pages_names.delivery_request') </span>
+                        <span> Bookings </span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-right pull-right"></i>
                         </span>
@@ -306,15 +321,15 @@
                 </li>
             @endif
 
-            {{-- @if (auth()->user()->can('view-types'))
+            @if (auth()->user()->can('view-vehicle-types'))
                 <li class="{{ 'types' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/types') }}">
                         <i class="fa fa-taxi "></i> <span>@lang('pages_names.types')</span>
                     </a>
                 </li>
-            @endif --}}
+            @endif
 
-            {{-- @if (auth()->user()->can('map-menu'))
+            @if (auth()->user()->can('map-menu'))
                 <li class="treeview {{ 'map' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-map"></i>
@@ -338,7 +353,7 @@
 
                     </ul>
                 </li>
-            @endif --}}
+            @endif
 
             @if (auth()->user()->can('vehicle-fare'))
                 <li class="{{ 'vehicle-fare' == $main_menu ? 'active' : '' }}">
@@ -445,21 +460,6 @@
                         @endif
                     </ul>
 
-                </li>
-            @endif
-
-            @if (auth()->user()->can('manage-subscription'))
-                <li class="{{ 'manage-subscription' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/subscription') }}">
-                        <i class="fa fa-solid fa-dollar"></i> <span>@lang('pages_names.subscription')</span>
-                    </a>
-                </li>
-            @endif
-            @if (auth()->user()->can('manage-order'))
-                <li class="{{ 'manage-order' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/order') }}">
-                        <i class="fa fa-first-order"></i> <span>@lang('pages_names.order')</span>
-                    </a>
                 </li>
             @endif
 

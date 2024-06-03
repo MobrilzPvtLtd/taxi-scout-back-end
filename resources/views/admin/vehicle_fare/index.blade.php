@@ -26,7 +26,7 @@
                                 <button id="search" class="btn btn-success btn-outline btn-sm py-2" type="submit">
                                     @lang('view_pages.search')
                                 </button>
-                            </div> 
+                            </div>
  -->
 
                                 <div class="col-md-12 text-center text-md-right">
@@ -51,7 +51,7 @@
                         <h5 class="modal-title price-modal-title" id="staticBackdropLabel"><strong></h5>
                         <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                     </div>
-        
+
                     <div class="modal-body">
                         <div class="table-responsive">
                             <table class="table table-hover">
@@ -83,7 +83,7 @@
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
 
         {{-- </div> --}}

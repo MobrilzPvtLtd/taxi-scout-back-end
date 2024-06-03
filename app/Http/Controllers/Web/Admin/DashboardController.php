@@ -13,6 +13,7 @@ use App\Base\Constants\Auth\Role as RoleSlug;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use App\Base\Constants\Setting\Settings;
+use App\Models\Admin\AdminDetail;
 
 class DashboardController extends BaseController
 {
@@ -38,12 +39,14 @@ class DashboardController extends BaseController
             $total_drivers = Driver::where('owner_id', null)->count();
             $total_waiting_drivers = Driver::where('approve', false)->where('owner_id', null)->count();
             $total_aproved_drivers = Driver::where('approve', true)->where('owner_id', null)->count();
+            $total_admin = AdminDetail::count();
         }else{
             $total_drivers = Driver::where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
             $total_aproved_drivers = Driver::where('approve', true)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
             $total_waiting_drivers = Driver::where('approve', false)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->where('owner_id', null)->count();
+            $total_admin = '';
         }
 
 
@@ -259,6 +262,6 @@ class DashboardController extends BaseController
     // }
 
         // return redirect('/airport');
-    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng'));
+    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin'));
     }
 }

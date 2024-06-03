@@ -94,7 +94,7 @@ class AdminRegistrationController extends ApiController
             $adminDetail = AdminDetail::where('user_id', $user->id)->first();
             if ($adminDetail) {
                 $adminDetail->is_approval = !$adminDetail->is_approval;
-                $adminDetail->package_id = $request->package_id;
+                // $adminDetail->package_id = $request->package_id;
                 $adminDetail->save();
             }
 

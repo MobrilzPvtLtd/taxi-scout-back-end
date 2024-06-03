@@ -100,8 +100,13 @@ class Permission
    const SCHEDULED_RIDES = 'scheduled-rides';
    const CANCELLATION_RIDES = 'cancellation-rides';
 
+   const VIEW_DELIVERY_REQUEST = 'view-delivery-requests';
+   const DELIVERY_RIDES = 'view-delivery-rides';
+   const DELIVERY_SCHEDULED_RIDES = 'scheduled-delivery-rides';
+   const DELIVERY_CANCELLATION_RIDES = 'cancellation-delivery-rides';
+
 /* Vehicle Types */
-   const VIEW_TYPES = 'view-types';
+   const VIEW_TYPES = 'view-vehicle-types';
    const ADD_TYPES = 'add-vehicle-types';
    const EDIT_TYPES = 'edit-vehicle-types';
    const DELETE_TYPES = 'delete-vehicle-types';
