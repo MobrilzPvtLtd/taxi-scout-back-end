@@ -12,6 +12,10 @@
                         <span style="float: right;">
                         </span>
                     </th>
+                    <th> @lang('view_pages.company_name')
+                        <span style="float: right;">
+                        </span>
+                    </th>
                     <th> @lang('view_pages.company_key')
                         <span style="float: right;">
                         </span>
@@ -28,10 +32,10 @@
                         <span style="float: right;">
                         </span>
                     </th>
-                    <th> @lang('view_pages.role')
+                    {{-- <th> @lang('view_pages.role')
                         <span style="float: right;">
                         </span>
-                    </th>
+                    </th> --}}
                     <th> @lang('view_pages.approve')
                         <span style="float: right;">
                         </span>
@@ -64,11 +68,12 @@
                         <tr>
                             <td>{{ $i++ }} </td>
                             <td> {{ $result->first_name . ' ' . $result->last_name }}</td>
+                            <td>{{ $result->company_name }}</td>
                             <td>{{ $result->user->company_key }}</td>
                             <td>{{ $result->mobile }}</td>
                             <td>{{ $result->email }}</td>
                             <td>{{ $result->service_location_name }}</td>
-                            <td>
+                            {{-- <td>
                                 @foreach ($result->user->roles as $key => $role)
                                     @if ($role->name == 'Dispatcher')
                                         {{ 'Taxi Dispatcher' }}
@@ -76,7 +81,7 @@
                                         {{ $role->name }}
                                     @endif
                                 @endforeach
-                            </td>
+                            </td> --}}
                             <td>
                                 @if ($result->user->company_key != null && $result->is_approval == 1)
                                     <a class="dropdown-item sweet-approval btn btn-primary btn-sm" href="#" data-url="{{ url('admins/approve', $result->user->id) }}" style="background-color: green;">

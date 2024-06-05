@@ -26,7 +26,7 @@ class AdminDetail extends Model
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'address', 'country','state','city','pincode','email','mobile','user_id','created_by','service_location_id'
+        'company_name','first_name', 'last_name', 'address', 'country','state','city','pincode','email','mobile','user_id','created_by','service_location_id'
     ];
 
     /**

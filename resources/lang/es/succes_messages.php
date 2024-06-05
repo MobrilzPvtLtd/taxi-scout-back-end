@@ -15,6 +15,7 @@ return array (
   'sos_status_changed_succesfully' => 'Sos Status Changed Successfully',
   'sos_deleted_succesfully' => 'Sos Deleted Successfully',
   'driver_added_succesfully' => 'Driver Added Successfully',
+  'your_account_succesfully' => 'Your Account Successfully',
   'driver_status_changed_succesfully' => 'Driver Stauts changed Successfully',
   'driver_deleted_succesfully' => 'Driver Deleted Successfully',
   'driver_approve_status_changed_succesfully' => 'Driver Approval Status Changed Succesfully',

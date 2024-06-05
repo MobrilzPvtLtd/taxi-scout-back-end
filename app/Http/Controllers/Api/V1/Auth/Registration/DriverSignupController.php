@@ -99,7 +99,7 @@ class DriverSignupController extends LoginController
         }
 
         $mobileUuid = $request->input('uuid');
-        $created_params = $request->only(['service_location_id', 'company_key', 'name','mobile','email','address','state','city','country','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','smoking','pets','drinking','handica']);
+        $created_params = $request->only(['service_location_id', 'company_key', 'driving_license','name','mobile','email','address','state','city','country','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','smoking','pets','drinking','handica']);
 
         $created_params['postal_code'] = $request->postal_code;
         if ($request->input('service_location_id')) {
@@ -218,14 +218,17 @@ class DriverSignupController extends LoginController
 
         /*mail Template*/
         }
-        event(new UserRegistered($user));
+        // event(new UserRegistered($user));
+		return $this->respondOk("Your account register successfully.");
+        // $this->throwCustomException('Your account is pending approval. Please wait for our team to review and approve your account.');
+
         // } catch (\Exception $e) {
         //     DB::rollBack();
         //     Log::error('Error while Registering a driver account. Input params : ' . json_encode($request->all()));
         //     return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
         // }
         // DB::commit();
-        return $this->authenticateAndRespond($user, $request, $needsToken=true);
+        // return $this->authenticateAndRespond($user, $request, $needsToken=true);
     }
 
     /**

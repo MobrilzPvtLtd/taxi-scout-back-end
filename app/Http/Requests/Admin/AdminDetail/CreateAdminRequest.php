@@ -24,7 +24,7 @@ class CreateAdminRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|max:50',
+            'name' => 'required|max:50',
             // 'last_name' => 'required|max:50',
             'mobile'=>'required|mobile_number|unique:users,mobile',
             'email'=>'required|email|unique:users,email',
@@ -33,7 +33,7 @@ class CreateAdminRequest extends FormRequest
             'city'=>'required',
             'country'=>'required|exists:countries,id',
             'service_location_id' => 'sometimes',
-            'role' => 'required',
+            // 'role' => 'required',
             'postal_code'=>'required|numeric',
             'password'=>'required|min:8|max:32|confirmed'
         ];

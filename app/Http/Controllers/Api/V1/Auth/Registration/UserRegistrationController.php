@@ -195,11 +195,16 @@ class UserRegistrationController extends LoginController
         }
 
         $profile_picture = null;
-
-        if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
-            $profile_picture = $this->imageUploader->file($uploadedFile)
-                ->saveProfilePicture();
+        // if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request->profile_picture)) {
+        //     $profile_picture = $this->imageUploader->file($uploadedFile)
+        //         ->saveProfilePicture();
+        // }
+        if ($request->hasFile('profile_picture')) {
+            $profile_picture = $request->file('profile_picture')->store('profile_picture', 'public');
+            $user_params = $request->except('profile_picture');
+            $user_params['profile_picture'] = $profile_picture;
         }
+
         if ($request->has('email_confirmed') == true)
         {
             $user_params['email_confirmed']= true;
@@ -241,7 +246,7 @@ class UserRegistrationController extends LoginController
 
         // $this->dispatch(new UserRegistrationNotification($user));
 
-        event(new UserRegistered($user));
+        // event(new UserRegistered($user));
 
         if ($request->has('oauth_token') & $request->input('oauth_token')) {
             $oauth_token = $request->oauth_token;
@@ -283,7 +288,8 @@ class UserRegistrationController extends LoginController
     /*mail Template*/
 }
         if ($user) {
-            return $this->authenticateAndRespond($user, $request, $needsToken=true);
+            // return $this->authenticateAndRespond($user, $request, $needsToken=true);
+            return $this->respondOk("Your account register successfully. Please check your email for 6 digit OTP");
         }
         return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
 

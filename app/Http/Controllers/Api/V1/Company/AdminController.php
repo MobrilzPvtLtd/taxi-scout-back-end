@@ -19,6 +19,13 @@ use App\Http\Requests\Admin\AdminDetail\UpdateProfileRequest;
 use App\Models\Admin\Company;
 use App\Models\Country;
 use App\Models\Access\Role;
+use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Admin\Order;
+use App\Models\Admin\Subscription;
+use App\Mail\AdminRegister;
+use App\Mail\SuperAdminNotification;
 use App\Models\Admin\ServiceLocation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -116,49 +123,105 @@ class AdminController extends BaseController
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(CreateAdminRequest $request)
-    { 
-        $created_params = $request->only(['service_location_id', 'first_name',  'last_name','mobile','email','address','state','city','country']);
+    {
+        $created_params = $request->only(['service_location_id', 'company_name','mobile','email','address','state','city','country']);
+        // dd($created_params);
+
         $created_params['pincode'] = $request->postal_code;
-        $created_params['created_by'] = 1;
+        $created_params['first_name'] = $request->name;
+
+        // $created_params['created_by'] = 1;
         if ($request->input('service_location_id')) {
             $timezone = ServiceLocation::where('id', $request->input('service_location_id'))->pluck('timezone')->first();
         } else {
             $timezone = env('SYSTEM_DEFAULT_TIMEZONE');
         }
 
-        $user_params = ['name'=>$request->input('first_name').' '.$request->input('last_name'),
-            'email'=>$request->input('email'),
-            'mobile'=>$request->input('mobile'),
-            'mobile_confirmed'=>true,
-            'timezone'=>$timezone,
-            'country'=>$request->input('country'),
-            'password' => bcrypt($request->input('password'))
-        ];
-
-        if (env('APP_FOR')=='demo') {
-            $user_params['company_key'] = '';
-        }
-        $user = $this->user->create($user_params);
-
-        if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
-            $user->profile_picture = $this->imageUploader->file($uploadedFile)
-                ->saveProfilePicture();
-            $user->save();
+        if ($request->hasFile('profile_picture')) {
+            $profile_picture = $request->file('profile_picture')->store('profile_picture', 'public');
+            $user_params = $request->except('profile_picture');
+            $user_params['profile_picture'] = $profile_picture;
         }
 
-        $user->attachRole($request->role);
+        $uuid = substr(Uuid::uuid4()->toString(), 0, 10);
+        try {
+            $user_params = ['name'=>$request->input('name').' '.$request->input('last_name'),
+                'email'=>$request->input('email'),
+                'mobile'=>$request->input('mobile'),
+                'mobile_confirmed'=>true,
+                'timezone'=>$timezone,
+                'country'=>$request->input('country'),
+                'password' => bcrypt($request->input('password')),
+                'company_key' => $uuid,
+                'profile_picture'=>$profile_picture,
+            ];
 
-        $user->admin()->create($created_params);
+            if (env('APP_FOR')=='demo') {
+                $user_params['company_key'] = '';
+            }
+            $user = $this->user->create($user_params);
 
-        $message = trans('succes_messages.admin_added_succesfully');
-		 return $this->respondOk($message);
+            // if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
+            //     $user->profile_picture = $this->imageUploader->file($uploadedFile)
+            //         ->saveProfilePicture();
+            //     $user->save();
+            // }
+
+            $user->attachRole(RoleSlug::ADMIN);
+            // dd($created_params);
+
+            $user->admin()->create($created_params);
+
+            $admin = User::where('id', 1)->first();
+            $userUuid = User::where('id', $user->id)->first();
+            $subscription = Subscription::where('id', $request->package_id)->first();
+
+            if ($subscription) {
+                $start_date = $subscription->created_at;
+                $end_date = $start_date->clone()->addDays(30);
+            }
+
+            $adminDetail = AdminDetail::where('user_id', $user->id)->first();
+            if ($adminDetail) {
+                $adminDetail->is_approval = !$adminDetail->is_approval;
+                $adminDetail->save();
+            }
+
+            Order::create([
+                'package_id' => $request->package_id,
+                'user_id' => $user->id,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+            ]);
+
+            $data = [
+                'name' => $user->name,
+                'admin_name' => $admin->name,
+                'company_key' => $userUuid->company_key,
+                'email' => $user->email,
+                'is_approval' => $adminDetail->is_approval,
+            ];
+
+            // $this->dispatch(new UserRegistrationNotification($user));
+            if ($request->has('email')) {
+                Mail::to($user->email)->send(new AdminRegister($data));
+            }
+
+            if ($admin->email) {
+                Mail::to($admin->email)->send(new SuperAdminNotification($data));
+            }
+
+            $message = trans('succes_messages.company_added_succesfully');
+		    return $this->respondOk($message);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e . 'Error while Create Admin. Input params : ' . json_encode($request->all()));
+            return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
+        }
     }
-
 
     public function getById(AdminDetail $admin)
     {
-        
-
         $page = trans('pages_names.edit_admin');
 
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
@@ -218,7 +281,7 @@ class AdminController extends BaseController
 
             return redirect('admins')->with('warning', $message);
         }
-        
+
         $status = $user->isActive() ? false: true;
         $user->update(['active' => $status]);
 
@@ -231,7 +294,7 @@ class AdminController extends BaseController
         if(env('APP_FOR')=='demo'){
 
         $message = 'you cannot perform this action due to demo version';
-        
+
         return $message;
 
         }
@@ -258,11 +321,11 @@ class AdminController extends BaseController
         if(env('APP_FOR')=='demo'){
 
         $message = 'you cannot update the profile due to demo version';
-        
+
         return redirect('admins')->with('success', $message);
 
         }
-        
+
         if ($request->action == 'password') {
             $updated_user_params['password'] = bcrypt($request->input('password'));
         } else {

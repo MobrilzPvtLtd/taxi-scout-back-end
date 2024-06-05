@@ -21,9 +21,9 @@ class DriverRegistrationRequest extends BaseRequest
             'password' => 'sometimes|required|min:6|confirmed',
             // 'uuid' => 'required|uuid|exists:mobile_otp_verifications,id,verified,1',
             'mobile' => 'required',
-            'country'=>'required',//|exists:countries,dial_code',
-            'device_token'=>'required',
-            'login_by'=>'required|in:android,ios',
+            // 'country'=>'required',//|exists:countries,dial_code',
+            // 'device_token'=>'required',
+            // 'login_by'=>'required|in:android,ios',
             'vehicle_type'=>'sometimes|required|exists:vehicle_types,id',
             'address'=>'min:15',
             'postal_code'=>'min:6|max:6',
@@ -32,7 +32,7 @@ class DriverRegistrationRequest extends BaseRequest
             'car_color'=>'sometimes|required',
             'car_number'=>'sometimes|required',
             'is_company_driver'=>'sometimes|required|boolean',
-            'service_location_id'=>'required'//|exists,service_locations,id
+            'service_location_id'=>'sometimes'//|exists,service_locations,id
         ];
     }
 }

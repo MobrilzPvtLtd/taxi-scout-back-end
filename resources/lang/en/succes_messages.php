@@ -124,7 +124,7 @@ return array (
   'project_flavour_added_succesfully' => 'Project Flavour Added Succesfully',
   'project_flavour_updated_succesfully' => 'Project Flavour Updated Succesfully',
   'project_flavour_deleted_succesfully' => 'Project Flavour Deleted Succesfully',
-  'company_added_succesfully' => 'Company Added Succesfully',
+  'company_added_succesfully' => 'Company Ragistered Succesfully',
   'company_updated_succesfully' => 'Company Updated Succesfully',
   'company_status_changed_succesfully' => 'Company Stauts changed Succesfully',
   'company_deleted_succesfully' => 'Company Deleted Succesfully',
