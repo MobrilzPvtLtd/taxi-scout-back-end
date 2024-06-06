@@ -68,7 +68,7 @@ Route::prefix('request')->namespace('Request')->middleware('auth')->group(functi
         Route::post('payment-confirm', 'DriverEndRequestController@paymentConfirm');
 
         Route::post('payment-method', 'DriverEndRequestController@paymentMethod');
-        
+
     });
 
     // History
@@ -76,11 +76,11 @@ Route::prefix('request')->namespace('Request')->middleware('auth')->group(functi
     Route::get('history/{id}', 'RequestHistoryController@getById');
     // Rate the Request
     Route::post('rating', 'RatingsController@rateRequest');
-    // Chat 
+    // Chat
     Route::get('chat-history/{request}','ChatController@history');
     //Send Sms
     Route::post('send','ChatController@send');
     // Update Seen
     Route::post('seen','ChatController@updateSeen');
-    
+
 });

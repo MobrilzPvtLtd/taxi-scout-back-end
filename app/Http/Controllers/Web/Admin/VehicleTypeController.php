@@ -110,7 +110,7 @@ class VehicleTypeController extends BaseController
         // }
         // dd($request->transport_type);
         $created_params = $request->only(['name', 'capacity','is_accept_share_ride','description','supported_vehicles','short_description', 'transport_type', 'is_taxi','icon_types_for','trip_dispatch_type']);
-           
+
              $is_taxi = $request->transport_type;
 
 
@@ -121,7 +121,7 @@ class VehicleTypeController extends BaseController
             }else if ($is_taxi == 'both')
             {
                 $created_params['size'] = $request->size;
-                $created_params['capacity'] = $request->maximum_weight_can_carry." ".$request->size; 
+                $created_params['capacity'] = $request->maximum_weight_can_carry." ".$request->size;
             }
 
         if ($uploadedFile = $this->getValidatedUpload('icon', $request)) {
@@ -188,12 +188,12 @@ class VehicleTypeController extends BaseController
                 $created_params['size'] = $request->size;
                 $created_params['capacity'] = $request->maximum_weight_can_carry;
             }
-        
+
 		   $created_params['smoking'] = (int)$request->smoking;
 		   $created_params['pets'] = (int)$request->pets;
 		   $created_params['drinking'] = (int)$request->drinking;
 		   $created_params['handicaped'] = (int)$request->handicaped;
-		
+
         if ($uploadedFile = $this->getValidatedUpload('icon', $request)) {
             $created_params['icon'] = $this->imageUploader->file($uploadedFile)
                 ->saveVehicleTypeImage();

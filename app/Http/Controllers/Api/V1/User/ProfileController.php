@@ -74,13 +74,11 @@ class ProfileController extends ApiController
         if($mobile){
              $validate_exists_mobile = $this->user->belongsTorole(Role::USER)->where('mobile', $mobile)->where('id','!=',$user->id)->exists();
 
-        if ($validate_exists_mobile) {
-            $this->throwCustomException('Provided mobile has already been taken');
-        }
+            if ($validate_exists_mobile) {
+                $this->throwCustomException('Provided mobile has already been taken');
+            }
 
         }
-
-
         $user->update($data);
         $user = fractal($user->fresh(), new UserTransformer);
 
@@ -93,13 +91,13 @@ class ProfileController extends ApiController
     */
     public function updateDriverProfile(UpdateDriverProfileRequest $request)
     {
-		
+
         $user_params = $request->only(['name', 'email', 'last_name','mobile']);
 
 
         $user = auth()->user();
 
-       
+
         $mobile = $request->mobile;
 
         if($mobile){
@@ -117,13 +115,13 @@ class ProfileController extends ApiController
          $driver_params['approve'] = true;
 
          $driver_params['reason'] = 'profile-info-updated';
-		
+
 		$driver_params['smoking'] = $request->smoking;
 		$driver_params['pets'] = $request->pets;
 		$driver_params['drinking'] = $request->drinking;
 		$driver_params['handicaped'] = $request->handicaped;
-		
-       
+
+
 //dd($driver_params);
         if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
             $user_params['profile_picture'] = $this->imageUploader->file($uploadedFile)
@@ -142,7 +140,7 @@ class ProfileController extends ApiController
 
         $user->update($user_params);
 
-        
+
 
         if($request->has('vehicle_type') && $request->vehicle_type){
 
@@ -167,7 +165,7 @@ class ProfileController extends ApiController
             $driver_params['approve']=true;
             $status = true;
 
-            $this->database->getReference('drivers/driver_'.$user->driver->id)->update(['approve'=>(int)$status,'updated_at'=> Database::SERVER_TIMESTAMP]);                
+            $this->database->getReference('drivers/driver_'.$user->driver->id)->update(['approve'=>(int)$status,'updated_at'=> Database::SERVER_TIMESTAMP]);
 
         }
 
@@ -175,22 +173,22 @@ class ProfileController extends ApiController
         $user->driver()->update($driver_params);
 
         $driver_details = $user->driver;
-       
+
 
         if($request->has('vehicle_types')){
 
             $driver_details->driverVehicleTypeDetail()->delete();
 
             foreach (json_decode($request->vehicle_types) as $key => $type) {
-            
+
                 $driver_details->driverVehicleTypeDetail()->create(['vehicle_type'=>$type]);
-            
+
             }
-            
+
         }
 
         $result = fractal($driver_details, new DriverTransformer)->parseIncludes(['onTripRequest.userDetail','onTripRequest.requestBill','metaRequest.userDetail']);
-  
+
         return $this->respondOk($result);
     }
 
@@ -328,8 +326,8 @@ class ProfileController extends ApiController
      * @bodyParam account_no integer required Number of the account
      * @bodyParam bank_code string required Bank code of the account
      * @bodyParam bank_name string required Bank name of the account
-     * 
-     * 
+     *
+     *
      * */
     public function updateBankinfo(Request $request)
     {
@@ -352,8 +350,8 @@ class ProfileController extends ApiController
 
     /**
      * Get Bank info
-     * 
-     * 
+     *
+     *
      * */
     public function getBankInfo()
     {
@@ -367,8 +365,8 @@ class ProfileController extends ApiController
     }
     /**
      * user Account Delete
-     * 
-     * 
+     *
+     *
      * */
     public function userDeleteAccount()
     {

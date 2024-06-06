@@ -285,7 +285,7 @@
                 <li class="treeview {{ 'trip-request' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-map"></i>
-                        <span> @lang('pages_names.request') </span>
+                        <span> Bookings </span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-right pull-right"></i>
                         </span>
@@ -361,7 +361,7 @@
                 <li class="treeview {{ 'delivery-trip-request' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-map"></i>
-                        <span> Bookings </span>
+                        <span> @lang('pages_names.delivery_request') </span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-right pull-right"></i>
                         </span>

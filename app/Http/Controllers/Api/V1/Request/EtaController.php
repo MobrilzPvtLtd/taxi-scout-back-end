@@ -50,54 +50,52 @@ class EtaController extends ApiController
     */
     public function eta(EtaRequest $request)
     {
-		
         $zone_detail = find_zone($request->input('pick_lat'), $request->input('pick_lng'));
 
         if (!$zone_detail) {
             $this->throwCustomException('service not available with this location');
         }
-        
+
         if ($request->has('vehicle_type')) {
             if($request->has('transport_type')){
 
                 $type = $zone_detail->zoneType()->where(function($query)use($request){
                     $query->where('transport_type',$request->transport_type)->orWhere('transport_type','both');
                 })->where('id', $request->input('vehicle_type'))->active()->first();
-               
+
             }else{
-				
+
                 $type = $zone_detail->zoneType()->where('id', $request->input('vehicle_type'))->active()->first();
-				  
+
             }
         } else {
 
-            if($request->has('transport_type')){      
+            if($request->has('transport_type')){
                 $type = $zone_detail->zoneType()->where(function($query)use($request){
                     $query->where('transport_type',$request->transport_type)->orWhere('transport_type','both');
                 })->active()->get();
-             
+
             }else{
 
                 $type = $zone_detail->zoneType;
-              
             }
         }
 
         if(access()->hasRole(Role::DRIVER)){
 
             $type_id = auth()->user()->driver->vehicle_type;
-			 
+
             if($type_id==null){
 
                 $type_id = auth()->user()->driver->driverVehicleTypeDetail()->pluck('vehicle_type')->first();
-            }     
+            }
             $type = $zone_detail->zoneType()->where('type_id', $type_id)->first();
-            
+
             if(!$type){
                 $this->throwCustomException('Your Vehicle Type is not associated with this zone');
             }
         }
-       
+
         $result = fractal($type, new EtaTransformer);
         $user= auth()->user();
        return $this->respondSuccess($result);
@@ -112,7 +110,7 @@ class EtaController extends ApiController
     * @response {
     "success": true,
     "message": "drop_changed_successfully"}
-    * 
+    *
     */
     public function changeDropLocation(Request $request){
 
@@ -170,12 +168,12 @@ class EtaController extends ApiController
             'pick_lng'  => 'required',
         ]);
 
-        
+
         $type = PackageType::where('transport_type',$request->transport_type)->orWhere('transport_type', 'both')->active()->get();
 
         $result = fractal($type, new PackagesTransformer);
 
-        return $this->respondSuccess($result);         
+        return $this->respondSuccess($result);
 
     }
 }

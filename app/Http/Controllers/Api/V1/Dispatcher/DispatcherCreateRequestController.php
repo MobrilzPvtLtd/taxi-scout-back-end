@@ -56,26 +56,12 @@ class DispatcherCreateRequestController extends BaseController
     */
     public function createRequest(CreateTripRequest $request)
     {
-        /**
-        * Validate payment option is available.
-        * if card payment choosen, then we need to check if the user has added thier card.
-        * if the paymenr opt is wallet, need to check the if the wallet has enough money to make the trip request
-        * Check if thge user created a trip and waiting for a driver to accept. if it is we need to cancel the exists trip and create new one
-        * Find the zone using the pickup coordinates & get the nearest drivers
-        * create request along with place details
-        * assing driver to the trip depends the assignment method
-        * send emails and sms & push notifications to the user& drivers as well.
-        */
-
-        // Validate payment option is available.
-        
         if ($request->has('is_later') && $request->is_later) {
             return $this->createRideLater($request);
         }
 
         // get type id
         $zone_type_detail = ZoneType::where('id', $request->vehicle_type)->first();
-
         $type_id = $zone_type_detail->type_id;
 
         // Get currency code of Request
@@ -134,7 +120,7 @@ class DispatcherCreateRequestController extends BaseController
         if($request->has('rental_pack_id') && $request->rental_pack_id){
 
             $request_params['is_rental'] = true;
-            
+
             $request_params['rental_package_id'] = $request->rental_pack_id;
         }
 
@@ -144,10 +130,10 @@ class DispatcherCreateRequestController extends BaseController
 
             $user = User::where('mobile',$request->phone_number)->belongsTorole('user')->first();
             if(!$user){
-                $user = User::create($user_params); 
+                $user = User::create($user_params);
                 $user->attachRole(Role::USER);
             }
-        
+
         $request_params['user_id'] = $user->id;
 
         $request_detail = $this->request->create($request_params);
@@ -164,12 +150,12 @@ class DispatcherCreateRequestController extends BaseController
 
         // Add Request detail to firebase database
          $this->database->getReference('requests/'.$request_detail->id)->update(['request_id'=>$request_detail->id,'request_number'=>$request_detail->request_number,'service_location_id'=>$service_location->id,'user_id'=>$request_detail->user_id,'pick_address'=>$request->pick_address,'active'=>1,'date'=>$request_detail->converted_created_at,'updated_at'=> Database::SERVER_TIMESTAMP]);
-         
+
         $ad_hoc_user_params = $request->only(['customer_name','phone_number']);
         // Store ad hoc user detail of this request
         // $request_detail->adHocuserDetail()->create($ad_hoc_user_params);
 
-        
+
 
 
         $selected_drivers = [];
@@ -275,7 +261,7 @@ class DispatcherCreateRequestController extends BaseController
         $pick_lat = $request->pick_lat;
         $pick_lng = $request->pick_lng;
 
-        // NEW flow        
+        // NEW flow
         $driver_search_radius = get_settings('driver_search_radius')?:30;
 
         $radius = kilometer_to_miles($driver_search_radius);
@@ -301,13 +287,13 @@ class DispatcherCreateRequestController extends BaseController
         $vehicle_type = $type_id;
 
         $fire_drivers = $this->database->getReference('drivers')->orderByChild('g')->startAt($lower_hash)->endAt($higher_hash)->getValue();
-        
+
         $firebase_drivers = [];
 
         $i=-1;
 
         foreach ($fire_drivers as $key => $fire_driver) {
-            $i +=1; 
+            $i +=1;
             $driver_updated_at = Carbon::createFromTimestamp($fire_driver['updated_at'] / 1000)->timestamp;
 
             if(array_key_exists('vehicle_type',$fire_driver) && $fire_driver['vehicle_type']==$vehicle_type && $fire_driver['is_active']==1 && $fire_driver['is_available']==1 && $conditional_timestamp < $driver_updated_at){
@@ -316,18 +302,18 @@ class DispatcherCreateRequestController extends BaseController
 
                 $firebase_drivers[$fire_driver['id']]['distance']= $distance;
 
-            }      
+            }
 
         }
 
         asort($firebase_drivers);
 
         if (!empty($firebase_drivers)) {
-           
+
                 $nearest_driver_ids = [];
 
                 foreach ($firebase_drivers as $key => $firebase_driver) {
-                    
+
                     $nearest_driver_ids[]=$key;
                 }
 
@@ -350,7 +336,7 @@ class DispatcherCreateRequestController extends BaseController
                 }
 
                 return $this->respondSuccess($nearest_drivers, 'drivers_list');
-            
+
         } else {
             return $this->respondFailed('no drivers available');
         }
@@ -359,8 +345,8 @@ class DispatcherCreateRequestController extends BaseController
 
     /**
      * Find User Data
-     * 
-     * 
+     *
+     *
      * */
     public function findUserData(ValidatorRequest $request){
 
@@ -375,7 +361,7 @@ class DispatcherCreateRequestController extends BaseController
         $request_result = null;
 
         if($user){
-            
+
             $request_result =  fractal($user, new UserForDispatcherRideTransformer);
 
             $message = 'user_exists';
@@ -444,7 +430,7 @@ class DispatcherCreateRequestController extends BaseController
         if($request->has('rental_pack_id') && $request->rental_pack_id){
 
             $request_params['is_rental'] = true;
-            
+
             $request_params['rental_package_id'] = $request->rental_pack_id;
         }
 
@@ -463,10 +449,10 @@ class DispatcherCreateRequestController extends BaseController
 
             $user = User::where('mobile',$request->phone_number)->belongsTorole('user')->first();
             if(!$user){
-                $user = User::create($user_params); 
+                $user = User::create($user_params);
                 $user->attachRole(Role::USER);
             }
-        
+
 
             $request_params['user_id'] = $user->id;
 
@@ -505,10 +491,10 @@ class DispatcherCreateRequestController extends BaseController
         return $this->respondSuccess($request_result, 'Request Scheduled Successfully');
     }
 
-    /** 
+    /**
      * Find Request Detail
-     * 
-     * 
+     *
+     *
      * */
     public function requestDetail(Request $request){
 
