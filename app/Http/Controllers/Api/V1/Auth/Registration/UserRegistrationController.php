@@ -174,7 +174,7 @@ class UserRegistrationController extends LoginController
         // die();
         $mobileUuid = $request->input('uuid');
 
-        // $country_id =  $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
+        $country_id =  $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
         $validate_exists_email = $this->user->belongsTorole(Role::USER)->where('email', $request->email)->exists();
 
         if ($validate_exists_email) {
@@ -206,9 +206,9 @@ class UserRegistrationController extends LoginController
             $this->throwCustomException('Provided mobile has already been taken');
         }
 
-        // if (!$country_id) {
-        //     $this->throwCustomException('unable to find country');
-        // }
+        if (!$country_id) {
+            $this->throwCustomException('unable to find country');
+        }
 
 
         if ($request->has('refferal_code')) {
@@ -245,7 +245,7 @@ class UserRegistrationController extends LoginController
             'mobile_confirmed' => true,
             'fcm_token'=>$request->input('device_token'),
             'login_by'=>$request->input('login_by'),
-            // 'country'=>$country_id,
+            'country'=>$country_id,
             'refferal_code'=>str_random(6),
             'profile_picture'=>$profile_picture,
             'lang'=>$request->input('lang')

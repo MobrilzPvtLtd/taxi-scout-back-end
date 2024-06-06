@@ -200,6 +200,71 @@
                     </a>
                 </li>
             @endif
+
+            @if (auth()->user()->can('drivers-menu'))
+                @if (auth()->user()->hasRole('admin'))
+                    @php
+                        $route = 'company/drivers';
+                    @endphp
+                @else
+                    @php
+                        $route = 'drivers';
+                    @endphp
+                @endif
+
+                <li class="treeview {{ 'drivers' == $main_menu ? 'active menu-open' : '' }}">
+                    @if (auth()->user()->hasRole('admin'))
+                        @if (auth()->user()->can('view-drivers'))
+                            <li class="{{ 'driver_details' == $sub_menu ? 'active' : '' }}">
+                                <a href="{{ url($route) }}">
+                                    <i class="fa fa-users"></i>@lang('pages_names.drivers')</a>
+                            </li>
+                        @endif
+                    @endif
+                    @if (!auth()->user()->hasRole('admin'))
+                        <a href="javascript: void(0);">
+                            <i class="fa fa-users"></i>
+                            <span> @lang('pages_names.drivers') </span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-right pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            @if (auth()->user()->can('view-drivers'))
+                                <li class="{{ 'driver_details' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url($route) }}"><i
+                                            class="fa fa-circle-thin"></i>@lang('pages_names.approved_drivers')</a>
+                                </li>
+                            @endif
+
+                            @if (auth()->user()->can('view-approval-pending-drivers'))
+                                <li class="{{ 'driver_approval_pending' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url('/drivers/waiting-for-approval') }}"><i
+                                            class="fa fa-circle-thin"></i>@lang('pages_names.pending_approvals')</a>
+                                </li>
+                            @endif
+                            @if (auth()->user()->can('view-driver-ratings'))
+                                <li class="{{ 'driver_ratings' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url('/driver-ratings') }}"><i
+                                            class="fa fa-circle-thin"></i>@lang('pages_names.driver_ratings')</a>
+                                </li>
+                            @endif
+                            @if (auth()->user()->can('view-driver-withdrawal-requests'))
+                                <li class="{{ 'withdrawal_requests' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url('/withdrawal-requests-lists') }}"><i
+                                            class="fa fa-circle-thin"></i>@lang('pages_names.withdrawal_requests')</a>
+                                </li>
+                            @endif
+                            @if (auth()->user()->can('view-negative-balance-drivers'))
+                                <li class="{{ 'negative_balance_drivers' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url('withdrawal-requests-lists/negative_balance_drivers') }}"><i
+                                            class="fa fa-circle-thin"></i>@lang('pages_names.negative_balance_drivers')</a>
+                                </li>
+                            @endif
+                        </ul>
+                    @endif
+                </li>
+            @endif
             {{--  @if (auth()->user()->can('view-requests'))
             <li class="{{'request' == $main_menu ? 'active' : '' }}">
                 <a href="{{url('/requests')}}">
@@ -207,6 +272,15 @@
                 </a>
             </li>
             @endif --}}
+
+            @if (auth()->user()->can('view-vehicle-types'))
+                <li class="{{ 'types' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ url('/types') }}">
+                        <i class="fa fa-taxi "></i> <span>@lang('pages_names.types')</span>
+                    </a>
+                </li>
+            @endif
+
             @if (auth()->user()->can('view-requests'))
                 <li class="treeview {{ 'trip-request' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
@@ -321,14 +395,6 @@
                 </li>
             @endif
 
-            @if (auth()->user()->can('view-vehicle-types'))
-                <li class="{{ 'types' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/types') }}">
-                        <i class="fa fa-taxi "></i> <span>@lang('pages_names.types')</span>
-                    </a>
-                </li>
-            @endif
-
             @if (auth()->user()->can('map-menu'))
                 <li class="treeview {{ 'map' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
@@ -360,70 +426,7 @@
                     <a href="{{ url('/vehicle_fare') }}"><i class="fa fa-money"></i>@lang('pages_names.set_price')</a>
                 </li>
             @endif
-            @if (auth()->user()->can('drivers-menu'))
-                @if (auth()->user()->hasRole('admin'))
-                    @php
-                        $route = 'company/drivers';
-                    @endphp
-                @else
-                    @php
-                        $route = 'drivers';
-                    @endphp
-                @endif
 
-                <li class="treeview {{ 'drivers' == $main_menu ? 'active menu-open' : '' }}">
-                    @if (auth()->user()->hasRole('admin'))
-                        @if (auth()->user()->can('view-drivers'))
-                            <li class="{{ 'driver_details' == $sub_menu ? 'active' : '' }}">
-                                <a href="{{ url($route) }}">
-                                    <i class="fa fa-users"></i>@lang('pages_names.drivers')</a>
-                            </li>
-                        @endif
-                    @endif
-                    @if (!auth()->user()->hasRole('admin'))
-                        <a href="javascript: void(0);">
-                            <i class="fa fa-users"></i>
-                            <span> @lang('pages_names.drivers') </span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-right pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            @if (auth()->user()->can('view-drivers'))
-                                <li class="{{ 'driver_details' == $sub_menu ? 'active' : '' }}">
-                                    <a href="{{ url($route) }}"><i
-                                            class="fa fa-circle-thin"></i>@lang('pages_names.approved_drivers')</a>
-                                </li>
-                            @endif
-
-                            @if (auth()->user()->can('view-approval-pending-drivers'))
-                                <li class="{{ 'driver_approval_pending' == $sub_menu ? 'active' : '' }}">
-                                    <a href="{{ url('/drivers/waiting-for-approval') }}"><i
-                                            class="fa fa-circle-thin"></i>@lang('pages_names.pending_approvals')</a>
-                                </li>
-                            @endif
-                            @if (auth()->user()->can('view-driver-ratings'))
-                                <li class="{{ 'driver_ratings' == $sub_menu ? 'active' : '' }}">
-                                    <a href="{{ url('/driver-ratings') }}"><i
-                                            class="fa fa-circle-thin"></i>@lang('pages_names.driver_ratings')</a>
-                                </li>
-                            @endif
-                            @if (auth()->user()->can('view-driver-withdrawal-requests'))
-                                <li class="{{ 'withdrawal_requests' == $sub_menu ? 'active' : '' }}">
-                                    <a href="{{ url('/withdrawal-requests-lists') }}"><i
-                                            class="fa fa-circle-thin"></i>@lang('pages_names.withdrawal_requests')</a>
-                                </li>
-                            @endif
-                            @if (auth()->user()->can('view-negative-balance-drivers'))
-                                <li class="{{ 'negative_balance_drivers' == $sub_menu ? 'active' : '' }}">
-                                    <a href="{{ url('withdrawal-requests-lists/negative_balance_drivers') }}"><i
-                                            class="fa fa-circle-thin"></i>@lang('pages_names.negative_balance_drivers')</a>
-                                </li>
-                            @endif
-                        </ul>
-                    @endif
-                </li>
-            @endif
             @if (auth()->user()->can('fleet-drivers-menu'))
                 @if (auth()->user()->hasRole('admin'))
                     @php
