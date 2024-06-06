@@ -36,6 +36,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Jobs\Mails\SendMailNotification;
 use App\Models\MailOtp;
 use App\Mail\OtpMail;
+use App\Mail\AdminRegister;
+use App\Mail\SuperAdminNotification;
 use App\Http\Requests\Auth\Registration\ValidateEmailOTPRequest;
 use App\Http\Requests\Auth\Registration\SendRegistrationMailOTPRequest;
 
@@ -129,17 +131,42 @@ class UserRegistrationController extends LoginController
         $otp = $request->otp;
         $email = $request->email;
 
+        $admin = User::where('id', 1)->first();
+        $user = User::where('email', $email)->first();
+        $adminDetail = $user->admin()->first();
+
         $verify_otp = MailOtp::where('email' ,$email)->where('otp', $otp)->exists();
-
-
-        if ($verify_otp == false)
-        {
+        if ($verify_otp == false){
             $this->throwCustomValidationException(['message' => "The otp provided has Invaild" ]);
         }
 
-        MailOtp::where('email' ,$email)->where('otp', $otp)->update(['verified' => true]);
+        $verify_otp_expire = MailOtp::where('email' ,$email)->where('otp', $otp)->where('verified', true)->first();
+        if ($verify_otp_expire){
+            $this->throwCustomValidationException(['message' => "The otp provided has Expired" ]);
+        }
 
-        return response()->json(['success'=>true]);
+        MailOtp::where('email' ,$email)->where('otp', $otp)->update(['verified' => true]);
+        User::where('email' ,$email)->update(['email_confirmed' => true]);
+
+        if ($adminDetail) {
+            $data = [
+                'name' => $user->name,
+                'admin_name' => $admin->name,
+                'company_key' => $user->company_key,
+                'email' => $user->email,
+                'is_approval' => $adminDetail->is_approval,
+            ];
+
+            if ($email) {
+                Mail::to($user->email)->send(new AdminRegister($data));
+            }
+
+            if ($admin->email) {
+                Mail::to($admin->email)->send(new SuperAdminNotification($data));
+            }
+        }
+
+        return response()->json(['success'=>true, 'message' => 'Your email has been verified. You can now login to your account.']);
     }
 
     public function register(UserRegistrationRequest $request)
@@ -260,6 +287,23 @@ class UserRegistrationController extends LoginController
             $user->social_avatar_original = $social_user->avatar_original;
             $user->save();
         }
+
+        $otpDigit = mt_rand(100000, 999999);
+
+        $mail_otp = MailOtp::create([
+            'email' => $request->email,
+            'otp' => $otpDigit,
+        ]);
+
+        $otp = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'otp' => $mail_otp->otp,
+        ];
+
+        if ($request->has('email')) {
+            Mail::to($user->email)->send(new OtpMail($otp));
+        }
         //     DB::commit();
         // } catch (\Exception $e) {
         //     DB::rollBack();
@@ -267,26 +311,26 @@ class UserRegistrationController extends LoginController
         //     Log::error('Error while Registering a user account. Input params : ' . json_encode($request->all()));
         //     return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
         // }
-   if(($user->email_confirmed) == true){
+        // if(($user->email_confirmed) == true){
 
-        /*mail Template*/
-            $user_name = $user->name;
-            $mail_template = MailTemplate::where('mail_type', 'welcome_mail')->first();
+        // /*mail Template*/
+        //     $user_name = $user->name;
+        //     $mail_template = MailTemplate::where('mail_type', 'welcome_mail')->first();
 
-            $description = $mail_template->description;
+        //     $description = $mail_template->description;
 
-            $description = str_replace('$user_name', $user_name, $description);
+        //     $description = str_replace('$user_name', $user_name, $description);
 
-            $mail_template->description = $description;
+        //     $mail_template->description = $description;
 
-            $mail_template = $mail_template->description;
+        //     $mail_template = $mail_template->description;
 
-            $user_mail = $user->email;
+        //     $user_mail = $user->email;
 
-        // dispatch(new SendMailNotification($mail_template, $user_mail));
+        // // dispatch(new SendMailNotification($mail_template, $user_mail));
 
-    /*mail Template*/
-}
+        // /*mail Template*/
+        // }
         if ($user) {
             // return $this->authenticateAndRespond($user, $request, $needsToken=true);
             return $this->respondOk("Your account register successfully. Please check your email for 6 digit OTP");

@@ -39,6 +39,7 @@ class OtpMail extends Mailable
 
         $app_name = get_settings('app_name');
 
-        return $this->view('emails.otp', ['otp' => $otp, 'app_name' => $app_name]);
+        return $this->view('emails.otp', ['otp' => $otp, 'app_name' => $app_name])
+                    ->subject($otp['otp'] . ' for ' . 'Verify Your Email Address');
     }
 }

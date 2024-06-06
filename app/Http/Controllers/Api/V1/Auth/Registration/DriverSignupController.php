@@ -136,10 +136,6 @@ class DriverSignupController extends LoginController
                 ->saveProfilePicture();
         }
 
-        if ($request->has('email_confirmed') == true)
-        {
-            $data['email_confirmed'] = true;
-        }
         $data = [
             'name' => $request->input('name'),
             'email' => $request->input('email'),

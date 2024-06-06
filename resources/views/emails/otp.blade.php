@@ -52,8 +52,9 @@
 </head>
 <body>
     <div class="container">
-        <h1> Verification Mail.</h1>
-        <p>  Your {!! $app_name !!} Verification Otp Is : {!! $otp !!}</p>
+        <h1> Verification Email.</h1>
+        <p> Hello {{ $otp['name'] }}.</p>
+        <p>  Your {!! $app_name !!} Verification Otp Is : <h3 style="color: #000">{!! $otp['otp'] !!}</h3></p>
         <p>Thank you for signing up on our website. We are excited to have you as a member of our community.</p>
         <p>If you didn't sign up for our website, you can safely ignore this email.</p>
         <div class="footer">

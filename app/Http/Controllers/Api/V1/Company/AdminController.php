@@ -25,8 +25,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\Admin\Order;
 use App\Models\Admin\Subscription;
 use App\Mail\AdminRegister;
+use App\Mail\OtpMail;
 use App\Mail\SuperAdminNotification;
 use App\Models\Admin\ServiceLocation;
+use App\Models\MailOtp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -172,8 +174,8 @@ class AdminController extends BaseController
 
             $user->admin()->create($created_params);
 
-            $admin = User::where('id', 1)->first();
-            $userUuid = User::where('id', $user->id)->first();
+            // $admin = User::where('id', 1)->first();
+            // $userUuid = User::where('id', $user->id)->first();
             $subscription = Subscription::where('id', $request->package_id)->first();
 
             if ($subscription) {
@@ -194,25 +196,47 @@ class AdminController extends BaseController
                 'end_date' => $end_date,
             ]);
 
-            $data = [
+            // $data = [
+            //     'name' => $user->name,
+            //     'admin_name' => $admin->name,
+            //     'company_key' => $userUuid->company_key,
+            //     'email' => $user->email,
+            //     'is_approval' => $adminDetail->is_approval,
+            // ];
+
+            // // $this->dispatch(new UserRegistrationNotification($user));
+            // if ($request->has('email')) {
+            //     Mail::to($user->email)->send(new AdminRegister($data));
+            // }
+
+            // if ($admin->email) {
+            //     Mail::to($admin->email)->send(new SuperAdminNotification($data));
+            // }
+
+            $otpDigit = mt_rand(100000, 999999);
+
+            $mail_otp = MailOtp::create([
+                'email' => $request->email,
+                'otp' => $otpDigit,
+            ]);
+
+            $otp = [
                 'name' => $user->name,
-                'admin_name' => $admin->name,
-                'company_key' => $userUuid->company_key,
                 'email' => $user->email,
-                'is_approval' => $adminDetail->is_approval,
+                'otp' => $mail_otp->otp,
             ];
 
-            // $this->dispatch(new UserRegistrationNotification($user));
             if ($request->has('email')) {
-                Mail::to($user->email)->send(new AdminRegister($data));
+                Mail::to($user->email)->send(new OtpMail($otp));
             }
 
-            if ($admin->email) {
-                Mail::to($admin->email)->send(new SuperAdminNotification($data));
+            if ($user) {
+                return $this->respondOk("Your account register successfully. Please check your email for 6 digit OTP");
             }
 
-            $message = trans('succes_messages.company_added_succesfully');
-		    return $this->respondOk($message);
+            return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
+            // $message = trans('succes_messages.company_added_succesfully');
+		    // return $this->respondOk($message);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e . 'Error while Create Admin. Input params : ' . json_encode($request->all()));
