@@ -131,9 +131,15 @@ class DriverSignupController extends LoginController
 
         $profile_picture = null;
 
-        if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
-            $profile_picture = $this->imageUploader->file($uploadedFile)
-                ->saveProfilePicture();
+        // if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
+        //     $profile_picture = $this->imageUploader->file($uploadedFile)
+        //         ->saveProfilePicture();
+        // }
+
+        if ($request->hasFile('profile_picture')) {
+            $profile_picture = $request->file('profile_picture')->store('profile_picture', 'public');
+            $data = $request->except('profile_picture');
+            $data['profile_picture'] = $profile_picture;
         }
 
         $data = [
@@ -155,9 +161,9 @@ class DriverSignupController extends LoginController
             'handica'=>$request->input('handica'),
         ];
 
-        if (env('APP_FOR')=='demo' && $request->has('company_key') && $request->input('company_key')) {
-            $data['company_key'] = $request->input('company_key');
-        }
+        // if (env('APP_FOR')=='demo' && $request->has('company_key') && $request->input('company_key')) {
+        //     $data['company_key'] = $request->input('company_key');
+        // }
 
 
         if($request->has('is_bid_app')){

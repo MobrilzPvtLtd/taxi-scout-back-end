@@ -32,24 +32,8 @@ class UserCancelRequestController extends BaseController
         $this->database = $database;
     }
 
-    /**
-    * User Cancel Request
-    * @bodyParam request_id uuid required id of request
-    * @bodyParam reason string optional reason provided by user
-    * @bodyParam custom_reason string optional custom reason provided by user
-    *@response {
-    "success": true,
-    "message": "success"}
-    */
     public function cancelRequest(CancelTripRequest $request)
     {
-        /**
-        * Validate the request which is authorised by current authenticated user
-        * Cancel the request by updating is_cancelled true with reason if there is any reason
-        * Available the driver who belongs to the request
-        * Notify the driver that the user is cancelled the trip request
-        */
-        // Validate the request which is authorised by current authenticated user
         $user = auth()->user();
         $request_detail = $user->requestDetail()->where('id', $request->request_id)->first();
         // Throw an exception if the user is not authorised for this request
@@ -87,7 +71,7 @@ class UserCancelRequestController extends BaseController
 
                 $charge_applicable = false;
             }
-            
+
         }
 
         /**
@@ -137,7 +121,7 @@ class UserCancelRequestController extends BaseController
         // Delete Meta Driver From Firebase
             $this->database->getReference('request-meta/'.$request_detail->id)->remove();
 
-        
+
         if ($driver) {
 
             // $this->database->getReference('request-meta/'.$request_detail.'/'.$driver->id)->remove();
@@ -163,16 +147,16 @@ class UserCancelRequestController extends BaseController
             // $socket_message = structure_for_socket($driver->id, 'driver', $socket_data, 'request_handler');
 
             // dispatch(new NotifyViaSocket('transfer_msg', $socket_message));
-            
+
             // Send data via Mqtt
             // dispatch(new NotifyViaMqtt('request_handler_'.$driver->id, json_encode($socket_data), $driver->id));
 
-           
+
             dispatch(new SendPushNotification($notifiable_driver,$title,$body));;
         }
         // Delete meta records
         // RequestMeta::where('request_id', $request_detail->id)->delete();
-        
+
         $request_detail->requestMeta()->delete();
 
         return $this->respondSuccess();
@@ -195,7 +179,7 @@ class UserCancelRequestController extends BaseController
         if($request_detail->payment_opt == 0){
 
          $request_detail->update([
-            'is_paid'=>false, 
+            'is_paid'=>false,
         ]);
 
         }
@@ -214,7 +198,7 @@ class UserCancelRequestController extends BaseController
         }
         $request_detail->update([
             'user_confirmed'=>true,
-            'is_paid'=>true, 
+            'is_paid'=>true,
 
         ]);
         return $this->respondSuccess();
