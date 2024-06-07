@@ -54,31 +54,6 @@
                             </div>
 
                             <div class="row">
-
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="address">@lang('view_pages.address')</label>
-                                        <input class="form-control" type="text" id="address" name="address" value="{{old('address')}}" required="" placeholder="@lang('view_pages.enter_address')">
-                                        <span class="text-danger">{{ $errors->first('address') }}</span>
-
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="">@lang('view_pages.transport_type') <span class="text-danger">*</span></label>
-                                        <select name="transport_type" id="transport_type" class="form-control" required>
-                                            <option value="" selected disabled>@lang('view_pages.select')</option>
-                                            <option value="taxi" {{ old('transport_type') == 'taxi' ? 'selected' : '' }}>@lang('view_pages.taxi')</option>
-                                            <option value="delivery" {{ old('transport_type') == 'delivery' ? 'selected' : '' }}>@lang('view_pages.delivery')</option>
-                                            <option value="rental" {{ old('transport_type') == 'rental' ? 'selected' : '' }}>@lang('view_pages.rental')</option>
-                                            <option value="both" {{ old('transport_type') == 'both' ? 'selected' : '' }}>@lang('view_pages.all')</option>
-                                        </select>
-                                        <span class="text-danger">{{ $errors->first('transport_type') }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="name">@lang('view_pages.mobile') <span class="text-danger">*</span></label>
@@ -98,13 +73,12 @@
                                 </div>
                             </div>
 
-                           <!--  <div class="row">
+                            <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="password">@lang('view_pages.password') <span class="text-danger">*</span></label>
                                         <input class="form-control" type="password" id="password" name="password" value="{{old('password')}}" required="" placeholder="@lang('view_pages.enter_password')">
                                         <span class="text-danger">{{ $errors->first('password') }}</span>
-
                                     </div>
                                 </div>
 
@@ -113,13 +87,33 @@
                                         <label for="password_confrim">@lang('view_pages.confirm_password') <span class="text-danger">*</span></label>
                                         <input class="form-control" type="password" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}" required="" placeholder="@lang('view_pages.enter_password_confirmation')">
                                         <span class="text-danger">{{ $errors->first('password') }}</span>
-
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
+                            {{-- <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="address">@lang('view_pages.address')</label>
+                                        <input class="form-control" type="text" id="address" name="address" value="{{old('address')}}" required="" placeholder="@lang('view_pages.enter_address')">
+                                        <span class="text-danger">{{ $errors->first('address') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">@lang('view_pages.transport_type') <span class="text-danger">*</span></label>
+                                        <select name="transport_type" id="transport_type" class="form-control" required>
+                                            <option value="" selected disabled>@lang('view_pages.select')</option>
+                                            <option value="taxi" {{ old('transport_type') == 'taxi' ? 'selected' : '' }}>@lang('view_pages.taxi')</option>
+                                            <option value="delivery" {{ old('transport_type') == 'delivery' ? 'selected' : '' }}>@lang('view_pages.delivery')</option>
+                                            <option value="rental" {{ old('transport_type') == 'rental' ? 'selected' : '' }}>@lang('view_pages.rental')</option>
+                                            <option value="both" {{ old('transport_type') == 'both' ? 'selected' : '' }}>@lang('view_pages.all')</option>
+                                        </select>
+                                        <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                    </div>
+                                </div>
+                            </div> --}}
 
-                            <div class="row">
-
+                            {{-- <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="country">@lang('view_pages.select_country')
@@ -144,9 +138,9 @@
 
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="city">@lang('view_pages.city')</label>
@@ -163,7 +157,7 @@
 
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="row">
                                 <div class="col-6">
@@ -195,29 +189,29 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="car_model">@lang('view_pages.car_model')<span class="text-danger">*</span></label>
-                                        <select name="car_model" id="car_model" class="form-control select2" required>
+                                        <input type="text" name="car_model" id="car_model" class="form-control" placeholder="Enter Car Model">
+                                        {{-- <select name="car_model" id="car_model" class="form-control select2" required>
                                             <option value="" selected disabled>@lang('view_pages.select')</option>
-                                        </select>
+                                        </select> --}}
                                     </div>
                                 </div>
 
-                                <div class="col-sm-6">
+                                {{-- <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="car_color">@lang('view_pages.car_color') <span class="text-danger">*</span></label>
                                         <input class="form-control" type="text" id="car_color" name="car_color" value="{{old('car_color')}}" required="" placeholder="@lang('view_pages.enter') @lang('view_pages.car_color')">
                                         <span class="text-danger">{{ $errors->first('car_color') }}</span>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label for="car_number">@lang('view_pages.car_number') <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" id="car_number" name="car_number" value="{{old('car_number')}}" required="" placeholder="@lang('view_pages.enter') @lang('view_pages.car_number')">
-                                        <span class="text-danger">{{ $errors->first('car_number') }}</span>
+                                        <label for="driving_license">License Number<span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" id="driving_license" name="driving_license" value="{{old('driving_license')}}" required="" placeholder="@lang('view_pages.enter') License Number">
+                                        <span class="text-danger">{{ $errors->first('driving_license') }}</span>
                                     </div>
                                 </div>
                             </div>
-
 
                             <div class="form-group">
                                 <div class="col-6">

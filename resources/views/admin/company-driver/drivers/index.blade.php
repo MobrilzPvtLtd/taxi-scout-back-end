@@ -17,7 +17,6 @@
         <div class="row">
             <div class="col-12">
                 <div class="box">
-
                     <div class="box-header with-border">
                         <div class="row text-right">
                             <div class="col-8 col-md-3">
@@ -277,7 +276,7 @@
             $(document).on('click', '.driver-approval', function(e) {
                 e.preventDefault();
                 let url = $(this).attr('data-url');
-                let approve = $(this).hasClass('btn-primary');
+                let approve = $(this).hasClass('text-approval');
 
                 let confirmButtonText = approve ? "Disapproval" : "Approval";
 

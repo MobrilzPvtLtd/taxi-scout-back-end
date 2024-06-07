@@ -42,21 +42,36 @@
                             </a>
                         </td>
 
-                        @if($result->approve == 1)
-                            <td>
-                                <a class="dropdown-item driver-approval btn btn-primary btn-sm" href="#" data-url="{{ url('company/drivers/approve', $result->id) }}" style="background-color: green;">
-                                    @lang('view_pages.approved')
-                                </a>
-                                {{-- <button class="btn btn-success btn-sm">{{ trans('view_pages.approved') }}</button> --}}
-                            </td>
-                        @else
-                            <td>
-                                <a class="dropdown-item driver-approval btn btn-danger btn-sm" href="#" data-url="{{ url('company/drivers/approve', $result->id) }}">
-                                    @lang('view_pages.disapproved')
-                                </a>
-                                {{-- <button class="btn btn-danger btn-sm">{{ trans('view_pages.disapproved') }}</button> --}}
-                            </td>
-                        @endif
+                        <td>
+                            @if($result->approve == 1)
+                                <button type="button" class="dropdown-item btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: green;color:#fff">@lang('view_pages.approved')
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item driver-approval text-approval" href="#" data-url="{{ url('company/drivers/approve', $result->id) }}/?status=0">
+                                        Disapprove
+                                    </a>
+                                </div>
+                            @elseif($result->approve == 0)
+                                <button type="button" class="dropdown-item btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #fc4b6c;color:#fff">@lang('view_pages.disapproved')
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item driver-approval" href="#" data-url="{{ url('company/drivers/approve', $result->id) }}/?status=1">
+                                        Approve
+                                    </a>
+                                </div>
+                            @else
+                                <button type="button" class="dropdown-item btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #f4c529;color:#fff">Pending
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item driver-approval" href="#" data-url="{{ url('company/drivers/approve', $result->id) }}/?status=1">
+                                        Approve
+                                    </a>
+                                    <a class="dropdown-item driver-approval text-approval" href="#" data-url="{{ url('company/drivers/approve', $result->id) }}/?status=0">
+                                        Disapprove
+                                    </a>
+                                </div>
+                            @endif
+                        </td>
                         <td>
                             @if ($result->available)
                             <span class="badge badge-success font-size-10">{{trans('view_pages.online')}}</span>

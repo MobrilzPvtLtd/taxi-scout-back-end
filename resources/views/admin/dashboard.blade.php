@@ -144,8 +144,7 @@
                                                 </div>
                                                 <!--/.bg-holder-->
                                                 <div class="card-body position-relative">
-                                                    <h6>@lang('view_pages.drivers_registered')
-                                                    </h6>
+                                                    <h6>Pending Drivers</h6>
                                                     <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-warning"
                                                         data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
                                                         {{ $total_drivers }}
@@ -186,12 +185,12 @@
                                                 </div>
                                                 <!--/.bg-holder-->
                                                 <div class="card-body position-relative">
-                                                    <h6>@lang('view_pages.drivers_waiting_for_approval')<span
+                                                    <h6>Disapproved Drivers<span
                                                             class="badge badge-soft-success rounded-pill ml-2">
                                                             {{-- {{ number_format($total_drivers[0]['decline_percentage'], 2) }}% --}}
                                                         </span>
                                                     </h6>
-                                                    <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-warning"
+                                                    <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-danger"
                                                         data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
                                                         {{-- {{ $total_drivers[0]['declined'] }} --}}
                                                         {{ $total_waiting_drivers }}
@@ -214,7 +213,7 @@
                                                     <div class="card-body position-relative">
                                                         <h6> @lang('view_pages.users_registered')
                                                         </h6>
-                                                        <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-danger"
+                                                        <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-info"
                                                             data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
                                                             {{ $total_users }}</div>
                                                         <a class="font-weight-semi-bold fs--1 text-nowrap"
@@ -233,7 +232,7 @@
                                                     <!--/.bg-holder-->
                                                     <div class="card-body position-relative">
                                                         <h6>Registered Taxi Company</h6>
-                                                        <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-danger"
+                                                        <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-primary"
                                                             data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
                                                             {{ $total_admin }}</div>
                                                         <a class="font-weight-semi-bold fs--1 text-nowrap"

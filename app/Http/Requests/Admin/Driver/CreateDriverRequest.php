@@ -17,7 +17,7 @@ class CreateDriverRequest extends BaseRequest
             'name' => 'required|max:50',
             'mobile'=>'required|mobile_number|min:8',
             'email'=>'required|email',
-            'transport_type'=>'required',
+            // 'transport_type'=>'required',
             // 'address'=>'required|min:10',
             // 'state'=>'max:100',
             // 'city'=>'required',
@@ -25,7 +25,7 @@ class CreateDriverRequest extends BaseRequest
             // 'gender'=>'required|in:male,female,others',
             // 'is_company_driver' => 'sometimes|required|in:0,1',
             'company'=>'sometimes',
-            // 'type' => 'sometimes|required',
+            'type' => 'sometimes|required',
             // 'owner_id'=>'required',
 
 

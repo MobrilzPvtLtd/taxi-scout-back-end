@@ -99,7 +99,7 @@ class DriverSignupController extends LoginController
         }
 
         $mobileUuid = $request->input('uuid');
-        $created_params = $request->only(['service_location_id', 'company_key', 'driving_license','name','mobile','email','address','state','city','country','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','smoking','pets','drinking','handica']);
+        $created_params = $request->only(['service_location_id', 'company_key', 'driving_license','name','mobile','email','address','state','city','country','approve','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','smoking','pets','drinking','handica']);
 
         $created_params['postal_code'] = $request->postal_code;
         if ($request->input('service_location_id')) {
@@ -128,6 +128,7 @@ class DriverSignupController extends LoginController
         $country_id = $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
 
         $created_params['country'] = $country_id;
+        $created_params['approve'] = 2;
 
         $profile_picture = null;
 

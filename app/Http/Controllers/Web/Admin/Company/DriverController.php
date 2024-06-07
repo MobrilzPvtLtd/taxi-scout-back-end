@@ -51,6 +51,7 @@ class DriverController extends BaseController
      * @var \App\Models\Admin\Driver
      */
     protected $driver;
+    protected $country;
 
     /**
      * The User model instance.
@@ -72,11 +73,12 @@ class DriverController extends BaseController
      *
      * @param \App\Models\Admin\Driver $driver
      */
-    public function __construct(Driver $driver, ImageUploaderContract $imageUploader, User $user)
+    public function __construct(Driver $driver, ImageUploaderContract $imageUploader, User $user,Country $country)
     {
         $this->driver = $driver;
         $this->imageUploader = $imageUploader;
         $this->user = $user;
+        $this->country = $country;
     }
 
     /**
@@ -131,6 +133,7 @@ class DriverController extends BaseController
         // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
         $services = ServiceLocation::companyKey()->whereActive(true)->get();
         $types = VehicleType::whereActive(true)->get();
+        // dd($types);
         $countries = Country::all();
         $carmake = CarMake::active()->get();
 
@@ -150,11 +153,12 @@ class DriverController extends BaseController
      */
     public function store(CreateDriverRequest $request)
     {
-        $created_params = $request->only(['company_key','name','mobile','email','address','state','city','gender','car_color','car_number','transport_type']);
-        $created_params['owner_id'] = auth()->user()->owner->id;
-        $created_params['service_location_id'] = auth()->user()->owner->service_location_id;
+        $created_params = $request->only(['company_key','name', 'driving_license','mobile','email','address','state','city','gender','car_color','car_number','transport_type']);
+        // $created_params['owner_id'] = auth()->user()->admin->id;
+        $created_params['service_location_id'] = auth()->user()->admin->service_location_id;
         $created_params['postal_code'] = $request->postal_code;
         $created_params['uuid'] = driver_uuid();
+        $created_params['company_key'] = auth()->user()->company_key;
 
         $validate_exists_email = $this->user->belongsTorole(Role::DRIVER)->where('email', $request->email)->exists();
 
@@ -167,11 +171,10 @@ class DriverController extends BaseController
             return redirect()->back()->withErrors(['mobile'=>'Provided mobile has already been taken'])->withInput();
         }
 
-        $service_location = ServiceLocation::find(auth()->user()->owner->service_location_id);
+        $service_location = ServiceLocation::find(auth()->user()->admin->service_location_id);
 
-        $country_id = $service_location->country;
-
-
+        // $country_id = $service_location->country;
+        $country_id =  $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
         DB::beginTransaction();
         try {
             $user = $this->user->create(['name'=>$request->input('name'),
@@ -191,7 +194,6 @@ class DriverController extends BaseController
             }
 
             $user->attachRole(RoleSlug::DRIVER);
-
             $driver = $user->driver()->create($created_params);
 
             $driver_detail = $driver->driverDetail()->create([
@@ -456,7 +458,8 @@ class DriverController extends BaseController
     {
         $driverApprove = Driver::where('id', $driver->id)->first();
         if ($driverApprove) {
-            $driverApprove->approve = !$driverApprove->approve;
+            // $driverApprove->approve = !$driverApprove->approve;
+            $driverApprove->approve = request()->status;
             $driverApprove->save();
         }
 

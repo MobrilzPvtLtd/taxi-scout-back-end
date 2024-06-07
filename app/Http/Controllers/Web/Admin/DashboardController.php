@@ -36,16 +36,16 @@ class DashboardController extends BaseController
         $today = date('Y-m-d');
 
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $total_drivers = Driver::where('owner_id', null)->count();
-            $total_waiting_drivers = Driver::where('approve', false)->where('owner_id', null)->count();
-            $total_aproved_drivers = Driver::where('approve', true)->where('owner_id', null)->count();
+            $total_drivers = Driver::where('approve', 2)->where('owner_id', null)->count();
+            $total_waiting_drivers = Driver::where('approve', 0)->where('owner_id', null)->count();
+            $total_aproved_drivers = Driver::where('approve', 1)->where('owner_id', null)->count();
             $total_admin = AdminDetail::count();
         }else{
-            $total_drivers = Driver::where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+            $total_drivers = Driver::where('approve', 2)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
-            $total_aproved_drivers = Driver::where('approve', true)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+            $total_aproved_drivers = Driver::where('approve', 1)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
-            $total_waiting_drivers = Driver::where('approve', false)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->where('owner_id', null)->count();
+            $total_waiting_drivers = Driver::where('approve', 0)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->where('owner_id', null)->count();
             $total_admin = '';
         }
 
