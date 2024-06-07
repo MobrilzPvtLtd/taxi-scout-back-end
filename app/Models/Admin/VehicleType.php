@@ -29,7 +29,7 @@ class VehicleType extends Model
      * @var array
      */
     protected $fillable = [
-         'name', 'icon', 'capacity','is_accept_share_ride','active','company_key','description','supported_vehicles','short_description','size','is_taxi', 'icon_types_for','trip_dispatch_type','smoking','pets','drinking','handicaped'
+         'name', 'icon', 'capacity', 'model_name', 'price', 'is_accept_share_ride','active','company_key','description','supported_vehicles','short_description','size','is_taxi', 'icon_types_for','trip_dispatch_type','smoking','pets','drinking','handicaped'
     ];
 
     /**

@@ -16,10 +16,10 @@ class UpdateVehicleTypeRequest extends BaseRequest
         return [
             'name' => 'required|max:50',
             'icon'=>$this->vechicleTypeImageRule(),
-            'description'=>'required|max:300',
-            'short_description'=>'required|max:35',
-            'supported_vehicles'=>'required',
-            'icon_types_for'=>'required'
+            // 'description'=>'required|max:300',
+            // 'short_description'=>'required|max:35',
+            // 'supported_vehicles'=>'required',
+            // 'icon_types_for'=>'required'
             // 'is_accept_share_ride'=>'required|boolean',
         ];
     }

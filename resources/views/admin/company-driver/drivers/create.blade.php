@@ -63,19 +63,19 @@
 
                                     </div>
                                 </div>
- <div class="col-sm-6">
-           <div class="form-group">
-               <label for="">@lang('view_pages.transport_type') <span class="text-danger">*</span></label>
-               <select name="transport_type" id="transport_type" class="form-control" required>
-                   <option value="" selected disabled>@lang('view_pages.select')</option>
-                   <option value="taxi" {{ old('transport_type') == 'taxi' ? 'selected' : '' }}>@lang('view_pages.taxi')</option>
-                   <option value="delivery" {{ old('transport_type') == 'delivery' ? 'selected' : '' }}>@lang('view_pages.delivery')</option>
-                   <option value="rental" {{ old('transport_type') == 'rental' ? 'selected' : '' }}>@lang('view_pages.rental')</option>
-                   <option value="both" {{ old('transport_type') == 'both' ? 'selected' : '' }}>@lang('view_pages.all')</option>
-               </select>
-               <span class="text-danger">{{ $errors->first('transport_type') }}</span>
-           </div>
-       </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">@lang('view_pages.transport_type') <span class="text-danger">*</span></label>
+                                        <select name="transport_type" id="transport_type" class="form-control" required>
+                                            <option value="" selected disabled>@lang('view_pages.select')</option>
+                                            <option value="taxi" {{ old('transport_type') == 'taxi' ? 'selected' : '' }}>@lang('view_pages.taxi')</option>
+                                            <option value="delivery" {{ old('transport_type') == 'delivery' ? 'selected' : '' }}>@lang('view_pages.delivery')</option>
+                                            <option value="rental" {{ old('transport_type') == 'rental' ? 'selected' : '' }}>@lang('view_pages.rental')</option>
+                                            <option value="both" {{ old('transport_type') == 'both' ? 'selected' : '' }}>@lang('view_pages.all')</option>
+                                        </select>
+                                        <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">
@@ -166,21 +166,21 @@
                             </div>
 
                             <div class="row">
-                                <!-- <div class="col-6">
-                                        <div class="form-group">
-                                        <label for="type">@lang('view_pages.select_type')
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <select name="type" id="type" class="form-control" required>
-                                            <option value="" >@lang('view_pages.select_type')</option>
-                                            @foreach($types as $key=>$type)
-                                            <option value="{{$type->id}}" {{ old('type') == $type->id ? 'selected' : '' }}>{{$type->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        </div>
-                                        </div> -->
+                                <div class="col-6">
+                                    <div class="form-group">
+                                    <label for="type">@lang('view_pages.select_type')
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select name="type" id="type" class="form-control" required>
+                                        <option value="" >@lang('view_pages.select_type')</option>
+                                        @foreach($types as $key=>$type)
+                                        <option value="{{$type->id}}" {{ old('type') == $type->id ? 'selected' : '' }}>{{$type->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    </div>
+                                </div>
 
-                                <!-- <div class="col-6">
+                                <div class="col-6">
                                     <div class="form-group">
                                         <label for="car_make">@lang('view_pages.car_make')<span class="text-danger">*</span></label>
                                         <select name="car_make" id="car_make" class="form-control select2" required>
@@ -199,7 +199,7 @@
                                             <option value="" selected disabled>@lang('view_pages.select')</option>
                                         </select>
                                     </div>
-                                </div> -->
+                                </div>
 
                                 <div class="col-sm-6">
                                     <div class="form-group">
@@ -230,7 +230,6 @@
                                 </div>
                             </div>
 
-
                             <div class="form-group">
                                 <div class="col-12">
                                     <button class="btn btn-primary btn-sm m-5 pull-right" type="submit">
@@ -238,13 +237,9 @@
                                     </button>
                                 </div>
                             </div>
-
                         </form>
-
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -257,7 +252,7 @@
 <!-- jQuery 3 -->
 <script src="{{asset('assets/vendor_components/jquery/dist/jquery.js')}}"></script>
 <script>
-   
+
 </script>
 
 @endsection

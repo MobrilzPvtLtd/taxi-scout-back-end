@@ -201,6 +201,14 @@
                 </li>
             @endif
 
+            @if (auth()->user()->can('view-vehicle-types'))
+                <li class="{{ 'types' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ url('/types') }}">
+                        <i class="fa fa-taxi "></i> <span>@lang('pages_names.types')</span>
+                    </a>
+                </li>
+            @endif
+
             @if (auth()->user()->can('drivers-menu'))
                 @if (auth()->user()->hasRole('admin'))
                     @php
@@ -272,14 +280,6 @@
                 </a>
             </li>
             @endif --}}
-
-            @if (auth()->user()->can('view-vehicle-types'))
-                <li class="{{ 'types' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/types') }}">
-                        <i class="fa fa-taxi "></i> <span>@lang('pages_names.types')</span>
-                    </a>
-                </li>
-            @endif
 
             @if (auth()->user()->can('view-requests'))
                 <li class="treeview {{ 'trip-request' == $main_menu ? 'active menu-open' : '' }}">
@@ -437,7 +437,6 @@
                         $route = 'fleet-drivers';
                     @endphp
                 @endif
-
 
                 <li class="treeview {{ 'fleet-drivers' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">

@@ -109,20 +109,24 @@ class VehicleTypeController extends BaseController
         //     return redirect('types')->with('warning', $message);
         // }
         // dd($request->transport_type);
-        $created_params = $request->only(['name', 'capacity','is_accept_share_ride','description','supported_vehicles','short_description', 'transport_type', 'is_taxi','icon_types_for','trip_dispatch_type']);
+        $created_params = $request->only(['name', 'capacity', 'model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description', 'transport_type', 'is_taxi','icon_types_for','trip_dispatch_type']);
 
-             $is_taxi = $request->transport_type;
+        $is_taxi = $request->transport_type;
 
+        if ($is_taxi == 'delivery')
+        {
+            $created_params['size'] = $request->size;
+            $created_params['capacity'] = $request->maximum_weight_can_carry;
+        }else if ($is_taxi == 'both')
+        {
+            $created_params['size'] = $request->size;
+            $created_params['capacity'] = $request->maximum_weight_can_carry." ".$request->size;
+        }
 
-            if ($is_taxi == 'delivery')
-            {
-                $created_params['size'] = $request->size;
-                $created_params['capacity'] = $request->maximum_weight_can_carry;
-            }else if ($is_taxi == 'both')
-            {
-                $created_params['size'] = $request->size;
-                $created_params['capacity'] = $request->maximum_weight_can_carry." ".$request->size;
-            }
+        $created_params['smoking'] = (int)$request->smoking;
+        $created_params['pets'] = (int)$request->pets;
+        $created_params['drinking'] = (int)$request->drinking;
+        $created_params['handicaped'] = (int)$request->handicaped;
 
         if ($uploadedFile = $this->getValidatedUpload('icon', $request)) {
             $created_params['icon'] = $this->imageUploader->file($uploadedFile)
@@ -148,7 +152,6 @@ class VehicleTypeController extends BaseController
     {
         $page = trans('pages_names.edit_type');
         $type = $this->vehicle_type->where('id', $id)->first();
-//          dd($type);
         // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
         // $services = ServiceLocation::whereActive(true)->get();
         $main_menu = 'types';
@@ -171,6 +174,7 @@ class VehicleTypeController extends BaseController
      */
     public function update(UpdateVehicleTypeRequest $request, VehicleType $vehicle_type)
     {
+
         // if (env('APP_FOR')=='demo') {
         //     $message = trans('succes_messages.you_are_not_authorised');
 
@@ -179,20 +183,20 @@ class VehicleTypeController extends BaseController
         // dd($request->all());
         $this->validateAdmin();
 
-        $created_params = $request->only(['name', 'capacity','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
+        $created_params = $request->only(['name', 'capacity','model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
 
-             $is_taxi = $request->transport_type;
+        $is_taxi = $request->transport_type;
 
-            if ($is_taxi == 'delivery')
-            {
-                $created_params['size'] = $request->size;
-                $created_params['capacity'] = $request->maximum_weight_can_carry;
-            }
+        if ($is_taxi == 'delivery')
+        {
+            $created_params['size'] = $request->size;
+            $created_params['capacity'] = $request->maximum_weight_can_carry;
+        }
 
-		   $created_params['smoking'] = (int)$request->smoking;
-		   $created_params['pets'] = (int)$request->pets;
-		   $created_params['drinking'] = (int)$request->drinking;
-		   $created_params['handicaped'] = (int)$request->handicaped;
+        $created_params['smoking'] = (int)$request->smoking;
+        $created_params['pets'] = (int)$request->pets;
+        $created_params['drinking'] = (int)$request->drinking;
+        $created_params['handicaped'] = (int)$request->handicaped;
 
         if ($uploadedFile = $this->getValidatedUpload('icon', $request)) {
             $created_params['icon'] = $this->imageUploader->file($uploadedFile)
