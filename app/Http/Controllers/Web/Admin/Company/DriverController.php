@@ -35,6 +35,7 @@ use App\Models\Admin\DriverPrivilegedVehicle;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\Notifications\SendPushNotification;
 use App\Mail\ApprovedDriver;
+use App\Mail\Driver\DriverCreateByCompanyMail;
 use App\Models\Admin\DriverDetail;
 use Illuminate\Support\Facades\Mail;
 
@@ -136,7 +137,6 @@ class DriverController extends BaseController
         // dd($types);
         $countries = Country::all();
         $carmake = CarMake::active()->get();
-
         $companies = Company::active()->get();
 
         $main_menu = 'drivers';
@@ -153,7 +153,7 @@ class DriverController extends BaseController
      */
     public function store(CreateDriverRequest $request)
     {
-        $created_params = $request->only(['company_key','name', 'driving_license','mobile','email','address','state','city','gender','car_color','car_number','transport_type']);
+        $created_params = $request->only(['company_key','name', 'driving_license','mobile','email','address','state','city','gender','car_color','car_number','transport_type','approve','vehicle_type','car_make','car_model']);
         // $created_params['owner_id'] = auth()->user()->admin->id;
         $created_params['service_location_id'] = auth()->user()->admin->service_location_id;
         $created_params['postal_code'] = $request->postal_code;
@@ -175,6 +175,7 @@ class DriverController extends BaseController
 
         // $country_id = $service_location->country;
         $country_id =  $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
+
         DB::beginTransaction();
         try {
             $user = $this->user->create(['name'=>$request->input('name'),
@@ -199,6 +200,19 @@ class DriverController extends BaseController
             $driver_detail = $driver->driverDetail()->create([
                 'is_company_driver' => true
             ]);
+
+            $data = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'mobile' => $user->mobile,
+                'password' => $request->input('password'),
+                'approve' => $request->approve,
+                'comapny_name' => auth()->user()->name
+            ];
+
+            if ($user->email) {
+                Mail::to($user->email)->send(new DriverCreateByCompanyMail($data));
+            }
 
             $message = trans('succes_messages.driver_added_succesfully');
 
@@ -233,7 +247,7 @@ class DriverController extends BaseController
 
     public function update(Driver $driver, UpdateDriverRequest $request)
     {
-        $updatedParams = $request->only(['name','mobile','email','address','state','city','country','gender','car_color','car_number','postal_code']);
+        $updatedParams = $request->only(['name','mobile','email','driving_license','address','state','city','country','gender','car_color','car_number','car_model','car_make','postal_code','vehicle_type']);
 
         $validate_exists_email = $this->user->belongsTorole(Role::DRIVER)->where('email', $request->email)->where('id', '!=', $driver->user_id)->exists();
 

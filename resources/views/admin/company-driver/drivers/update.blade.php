@@ -61,7 +61,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="address">@lang('view_pages.address') <span class="text-danger">*</span></label>
@@ -84,7 +84,7 @@
                                                <span class="text-danger">{{ $errors->first('transport_type') }}</span>
                                            </div>
                                        </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -109,6 +109,48 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                        <label for="type">Assign Taxi
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <select name="type" id="type" class="form-control" required>
+                                            <option value="" >Select Taxi Type</option>
+                                            @foreach($types as $key=>$type)
+                                            <option value="{{$type->id}}" {{ $item->vehicle_type == $type->id ? 'selected' : '' }}>{{$type->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="car_make">@lang('view_pages.car_make')<span class="text-danger">*</span></label>
+                                            <select name="car_make" id="car_make" class="form-control select2" required>
+                                                <option value="" selected disabled>@lang('view_pages.select')</option>
+                                                @foreach($carmake as $key=>$make)
+                                                <option value="{{$make->id}}" {{ $item->car_make == $make->id ? 'selected' : '' }}>{{$make->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="car_model">@lang('view_pages.car_model')<span class="text-danger">*</span></label>
+                                            {{-- <input type="text" name="car_model" id="car_model" class="form-control" placeholder="Enter Car Model"> --}}
+                                            <select name="car_model" id="car_model" class="form-control select2">
+                                                <option value="" selected disabled>@lang('view_pages.select')</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="driving_license">License Number<span class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" id="driving_license" name="driving_license" value="{{old('driving_license',$item->driving_license)}}" required="" placeholder="@lang('view_pages.enter') License Number">
+                                            <span class="text-danger">{{ $errors->first('driving_license') }}</span>
+                                        </div>
+                                    </div>
                                 </div>
 
 
@@ -166,7 +208,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="car_color">@lang('view_pages.car_color') <span class="text-danger">*</span></label>
@@ -186,10 +228,7 @@
                                             <span class="text-danger">{{ $errors->first('car_number') }}</span>
                                         </div>
                                     </div>
-                                </div>
-
-
-
+                                </div> --}}
 
                                 <div class="form-group">
                                     <div class="col-6">
@@ -218,8 +257,6 @@
 
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>

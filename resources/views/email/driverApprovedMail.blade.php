@@ -16,13 +16,13 @@
                     <tr style="padding:0">
                         <td style="border-collapse:collapse!important;word-break:break-word;padding:24px 32px 30px"
                             class="m_-3343331283272028414content" align="left" valign="top">
-                            <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">Hello {{ $data['name'] }}</p>
+                            <p style="font-size:14px;padding-bottom:10px;margin:0;color: #000;">Hello {{ $data['name'] }}</p>
 
-                            <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">
+                            <p style="font-size:14px;padding-bottom:10px;margin:0;color: #000;">
                                 Welcome to your new Let's get you started with the right product:
                             </p>
                             <br>
-                            <p style="font-size:14px;padding-bottom:10px;margin:0color: #000;">In case you have more questions or just feel like saying hi, reply to this email!</p>
+                            <p style="font-size:14px;padding-bottom:10px;margin:0;color: #000;">In case you have more questions or just feel like saying hi, reply to this email!</p>
                         </td>
                     </tr>
                 </tbody>

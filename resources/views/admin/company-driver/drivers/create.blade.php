@@ -162,13 +162,13 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
-                                    <label for="type">@lang('view_pages.select_type')
+                                    <label for="vehicle_type">Assign Taxi
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <select name="type" id="type" class="form-control" required>
-                                        <option value="" >@lang('view_pages.select_type')</option>
+                                    <select name="vehicle_type" id="vehicle_type" class="form-control" required>
+                                        <option value="" >Select Taxi Type</option>
                                         @foreach($types as $key=>$type)
-                                        <option value="{{$type->id}}" {{ old('type') == $type->id ? 'selected' : '' }}>{{$type->name}}</option>
+                                        <option value="{{$type->id}}" {{ old('vehicle_type') == $type->id ? 'selected' : '' }}>{{$type->name}}</option>
                                         @endforeach
                                     </select>
                                     </div>
@@ -186,13 +186,12 @@
                                     </div>
                                 </div>
 
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div class="form-group">
                                         <label for="car_model">@lang('view_pages.car_model')<span class="text-danger">*</span></label>
-                                        <input type="text" name="car_model" id="car_model" class="form-control" placeholder="Enter Car Model">
-                                        {{-- <select name="car_model" id="car_model" class="form-control select2" required>
+                                        <select name="car_model" id="car_model" class="form-control select2" required>
                                             <option value="" selected disabled>@lang('view_pages.select')</option>
-                                        </select> --}}
+                                        </select>
                                     </div>
                                 </div>
 
@@ -204,11 +203,22 @@
                                     </div>
                                 </div> --}}
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="driving_license">License Number<span class="text-danger">*</span></label>
                                         <input class="form-control" type="text" id="driving_license" name="driving_license" value="{{old('driving_license')}}" required="" placeholder="@lang('view_pages.enter') License Number">
                                         <span class="text-danger">{{ $errors->first('driving_license') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="approve">Approval Status<span class="text-danger">*</span></label>
+                                        <select name="approve" id="approve" class="form-control select2" required>
+                                            <option value="" selected disabled>@lang('view_pages.select')</option>
+                                            <option value="1">Approve</option>
+                                            <option value="0">Disapprove</option>
+                                            <option value="2">Pending</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +256,26 @@
 <!-- jQuery 3 -->
 <script src="{{asset('assets/vendor_components/jquery/dist/jquery.js')}}"></script>
 <script>
+$(document).on('change', '#car_make', function() {
+            let value = $(this).val();
 
+            $.ajax({
+                url: "{{ route('getCarModel') }}",
+                type: 'GET',
+                data: {
+                    'car_make': value,
+                },
+                success: function(result) {
+                    $('#car_model').empty();
+                    $("#car_model").append('<option value="" selected disabled>Select</option>');
+                    result.forEach(element => {
+                        $("#car_model").append('<option value=' + element.id + '>' + element
+                            .name + '</option>')
+                    });
+                    $('#car_model').select();
+                }
+            });
+        });
 </script>
 
 @endsection

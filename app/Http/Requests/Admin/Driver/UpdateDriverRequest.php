@@ -17,7 +17,7 @@ class UpdateDriverRequest extends BaseRequest
             'name' => 'required|max:50',
             'mobile'=>'required|mobile_number|min:8',
             'email'=>'required|email',
-            'transport_type'=>'required',
+            // 'transport_type'=>'required',
             // 'address'=>'required|min:10',
             // 'state'=>'max:100',
             // 'city'=>'required',

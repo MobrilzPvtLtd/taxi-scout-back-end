@@ -316,7 +316,7 @@ Route::middleware('auth:web')->group(function () {
             Route::post('update/{admin}', 'AdminController@update');
             Route::get('toggle_status/{user}', 'AdminController@toggleStatus');
             Route::get('delete/{user}', 'AdminController@delete');
-            Route::get('approve/{user}', 'AdminController@approveUser');
+            Route::get('approve/{user}', 'AdminController@approveUser'); // taxi company approve by superadmin
             Route::get('profile/{user}', 'AdminController@viewProfile');
             Route::post('profile/update/{user}', 'AdminController@updateProfile');
         });
