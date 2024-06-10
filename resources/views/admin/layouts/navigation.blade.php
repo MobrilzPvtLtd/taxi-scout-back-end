@@ -424,7 +424,7 @@
                 </li>
             @endif --}}
 
-            @if (auth()->user()->can('fleet-drivers-menu'))
+            {{-- @if (auth()->user()->can('fleet-drivers-menu'))
                 @if (auth()->user()->hasRole('admin'))
                     @php
                         $route = 'company/drivers';
@@ -460,7 +460,7 @@
                     </ul>
 
                 </li>
-            @endif
+            @endif --}}
 
             @if (auth()->user()->can('view-users'))
                 <li class="{{ 'user_details' == $sub_menu ? 'active' : '' }}">
@@ -503,22 +503,22 @@
                 </li>
             @endif --}}
 
-            @if (auth()->user()->can('view-notifications'))
+            {{-- @if (auth()->user()->can('view-notifications'))
                 <li class="{{ 'push_notification' == $sub_menu ? 'active' : '' }}">
                     <a href="{{ url('/notifications/push') }}"><i
                             class="fa fa-paper-plane"></i>Notification</a>
                 </li>
-            @endif
+            @endif --}}
 
-            @if (auth()->user()->can('cancellation-reason'))
+            {{-- @if (auth()->user()->can('cancellation-reason'))
                 <li class="{{ 'cancellation-reason' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/cancellation') }}">
                         <i class="fa fa-ban"></i> <span>@lang('pages_names.cancellation')</span>
                     </a>
                 </li>
-            @endif
+            @endif --}}
 
-            @if (auth()->user()->can('complaints'))
+            {{-- @if (auth()->user()->can('complaints'))
                 <li class="treeview {{ 'complaints' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-list-alt"></i>
@@ -546,7 +546,6 @@
                                     </span>
                                 </a>
 
-                                {{--   <a href="{{url('/complaint/users')}}"><i class="fa fa-circle-thin"></i>@lang('pages_names.user_complaints')</a> --}}
                                 <ul class="treeview-menu">
                                     <li class="{{ 'user-general-complaint' == $sub_menu ? 'active' : '' }}">
                                         <a href="{{ url('/complaint/users/general') }}">@lang('pages_names.general_complaints')</a>
@@ -568,7 +567,6 @@
                                         <i class="fa fa-angle-right pull-right"></i>
                                     </span>
                                 </a>
-                                {{--  <a href="{{url('/complaint/drivers')}}"><i class="fa fa-circle-thin"></i>@lang('pages_names.driver_complaints')</a> --}}
 
                                 <ul class="treeview-menu">
                                     <li class="{{ 'driver-general-complaint' == $sub_menu ? 'active' : '' }}">
@@ -592,7 +590,6 @@
                                     </span>
                                 </a>
 
-                                {{--   <a href="{{url('/complaint/owner')}}"><i class="fa fa-circle-thin"></i>@lang('pages_names.owner_complaints')</a> --}}
                                 <ul class="treeview-menu">
                                     <li class="{{ 'owner-general-complaint' == $sub_menu ? 'active' : '' }}">
                                         <a href="{{ url('/complaint/owner/general') }}">@lang('pages_names.general_complaints')</a>
@@ -606,9 +603,9 @@
                         @endif
                     </ul>
                 </li>
-            @endif
+            @endif --}}
 
-            @if (auth()->user()->can('reports'))
+            {{-- @if (auth()->user()->can('reports'))
                 <li class="treeview {{ 'reports' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-file-pdf-o"></i>
@@ -653,7 +650,7 @@
                         @endif
                     </ul>
                 </li>
-            @endif
+            @endif --}}
 
             @if (auth()->user()->can('manage-map'))
                 <li class="treeview {{ 'manage-map' == $main_menu ? 'active menu-open' : '' }}">

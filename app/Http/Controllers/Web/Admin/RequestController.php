@@ -32,7 +32,8 @@ class RequestController extends Controller
 
     public function getAllRequest(QueryFilterContract $queryFilter)
     {
-        $query = RequestRequest::companyKey()->where('transport_type','taxi');
+        // $query = RequestRequest::companyKey()->where('transport_type','taxi');
+        $query = RequestRequest::where('transport_type','taxi');
 
         $results = $queryFilter->builder($query)->customFilter(new RequestFilter)->defaultSort('-created_at')->paginate();
 
@@ -63,7 +64,7 @@ class RequestController extends Controller
         $item = $request;
 
         return view('admin.request.requestview', compact('page', 'main_menu', 'sub_menu', 'item'));
-    } 
+    }
 
     public function fetchSingleRequest(RequestRequest $request){
         return $request;
@@ -74,7 +75,7 @@ class RequestController extends Controller
         $page = trans('pages_names.request');
          $main_menu = 'trip-request';
         $sub_menu = 'request';
-        
+
         return view('admin.request.trip-request',compact('item','page', 'main_menu', 'sub_menu'));
     }
 
@@ -115,23 +116,23 @@ class RequestController extends Controller
 
     /**
      * View Invoice
-     * 
+     *
      * */
     public function viewCustomerInvoice(RequestRequest $request_detail){
 
         $data = $request_detail;
-        
+
         return view('email.invoice',compact('data'));
 
     }
     /**
      * View Invoice
-     * 
+     *
      * */
     public function viewDriverInvoice(RequestRequest $request_detail){
 
         $data = $request_detail;
-        
+
         return view('email.driver_invoice',compact('data'));
 
     }
@@ -145,6 +146,6 @@ class RequestController extends Controller
         // dd($item->cancelReason);
 
         return view('admin.request.Cancelledview', compact('page', 'main_menu', 'sub_menu', 'item'));
-    } 
-     
+    }
+
 }

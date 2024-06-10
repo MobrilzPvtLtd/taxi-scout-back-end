@@ -133,7 +133,11 @@ class DriverController extends BaseController
 
         // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
         $services = ServiceLocation::companyKey()->whereActive(true)->get();
-        $types = VehicleType::whereActive(true)->get();
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $types = VehicleType::whereActive(true)->get();
+        } else {
+            $types = VehicleType::where('company_key', auth()->user()->company_key)->get();
+        }
         // dd($types);
         $countries = Country::all();
         $carmake = CarMake::active()->get();

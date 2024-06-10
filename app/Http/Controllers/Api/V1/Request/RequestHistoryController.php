@@ -39,7 +39,7 @@ class RequestHistoryController extends BaseController
             $query = $this->request->where('driver_id', $driver_id)->orderBy('created_at', 'desc');
             $includes = ['userDetail','requestBill'];
         }
-        if (access()->hasRole(Role::OWNER)) {
+        if (access()->hasRole(Role::ADMIN)) {
             $owner_id = auth()->user()->owner->id;
             $query = $this->request->where('owner_id', $owner_id)->orderBy('created_at', 'desc');
             $includes = ['userDetail','requestBill','driverDetail'];

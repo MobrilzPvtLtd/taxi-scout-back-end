@@ -30,6 +30,18 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
+                                            <label for="">Taxi Company<span class="text-danger">*</span></label>
+                                            <select name="company_key" id="company_key" class="form-control" required>
+                                                <option value="" selected disabled>Select Taxi Company</option>
+                                                @foreach ($admin as $company)
+                                                    <option value="{{ $company->user->company_key }}" {{ $company->user->company_key == $type->company_key ? 'selected' : null }}>{{ $company->first_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
                                             <label for="">@lang('view_pages.transport_type') <span
                                                     class="text-danger">*</span></label>
                                             <select name="transport_type" id="transport_type" class="form-control"

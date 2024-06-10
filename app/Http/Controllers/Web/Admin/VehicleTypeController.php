@@ -15,6 +15,7 @@ use App\Base\Libraries\QueryFilter\QueryFilterContract;
 use App\Base\Services\ImageUploader\ImageUploaderContract;
 use App\Http\Requests\Admin\VehicleTypes\CreateVehicleTypeRequest;
 use App\Http\Requests\Admin\VehicleTypes\UpdateVehicleTypeRequest;
+use App\Models\Admin\AdminDetail;
 
 /**
  * @resource Vechicle-Types
@@ -57,7 +58,11 @@ class VehicleTypeController extends BaseController
     {
         $url = request()->fullUrl(); //get full url
         return cache()->tags('vehilce_types')->remember($url, Carbon::parse('10 minutes'), function () use ($queryFilter,$url) {
-            $query = VehicleType::query();
+            if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+                $query = VehicleType::query();
+            } else {
+                $query = VehicleType::where('company_key', auth()->user()->company_key);
+            }
             $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
             return view('admin.types._types', compact('results'))->render();
         });
@@ -84,10 +89,11 @@ class VehicleTypeController extends BaseController
         // $services = ServiceLocation::whereActive(true)->get();
         $main_menu = 'types';
         $sub_menu = '';
-        return view('admin.types.create', compact('page', 'main_menu', 'sub_menu'));
+        $admin = AdminDetail::whereHas('user', function ($query) {
+            $query->whereNotNull('company_key');
+        })->get();
+        return view('admin.types.create', compact('page', 'main_menu', 'sub_menu','admin'));
     }
-
-
 
 
     /**
@@ -109,9 +115,12 @@ class VehicleTypeController extends BaseController
         //     return redirect('types')->with('warning', $message);
         // }
         // dd($request->transport_type);
-        $created_params = $request->only(['name', 'capacity', 'model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description', 'transport_type', 'is_taxi','icon_types_for','trip_dispatch_type']);
+        $created_params = $request->only(['name', 'company_key', 'capacity', 'model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description', 'transport_type', 'is_taxi','icon_types_for','trip_dispatch_type']);
 
         $is_taxi = $request->transport_type;
+        if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $created_params['company_key'] = auth()->user()->company_key;
+        }
 
         if ($is_taxi == 'delivery')
         {
@@ -156,7 +165,10 @@ class VehicleTypeController extends BaseController
         // $services = ServiceLocation::whereActive(true)->get();
         $main_menu = 'types';
         $sub_menu = '';
-        return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type'));
+        $admin = AdminDetail::whereHas('user', function ($query) {
+            $query->whereNotNull('company_key');
+        })->get();
+        return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type','admin'));
     }
 
 
@@ -183,9 +195,12 @@ class VehicleTypeController extends BaseController
         // dd($request->all());
         $this->validateAdmin();
 
-        $created_params = $request->only(['name', 'capacity','model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
+        $created_params = $request->only(['name', 'capacity','company_key','model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
 
         $is_taxi = $request->transport_type;
+        if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $created_params['company_key'] = auth()->user()->company_key;
+        }
 
         if ($is_taxi == 'delivery')
         {

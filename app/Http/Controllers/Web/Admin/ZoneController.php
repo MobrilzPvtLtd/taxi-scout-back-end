@@ -91,7 +91,7 @@ class ZoneController extends BaseController
 
             return redirect('zone')->with('warning', $message);
         }
-        
+
         $page = trans('pages_names.add_zone');
 
         $main_menu = 'map';
@@ -109,8 +109,6 @@ class ZoneController extends BaseController
     */
     public function zoneEdit($id)
     {
-       
-
         $zone = $this->zone->where('id', $id)->first();
         $page = trans('pages_names.add_zone');
         $main_menu = 'map';
@@ -162,15 +160,16 @@ class ZoneController extends BaseController
      */
     public function store(CreateZoneRequest $request)
     {
-        if (env('APP_FOR')=='demo') {
-            $message = trans('succes_messages.you_are_not_authorised');
+        // if (env('APP_FOR')=='demo') {
+        //     $message = trans('succes_messages.you_are_not_authorised');
 
-            return redirect('zone')->with('warning', $message);
-        }
+        //     return redirect('zone')->with('warning', $message);
+        // }
 
         $created_params = $request->only(['unit']);
         $created_params['service_location_id'] = $request->admin_id;
         $set = [];
+        // dd($request->coordinates);
 
         if($request->coordinates==null){
             throw ValidationException::withMessages(['zone_name' => __('Please Complete the shape before submit')]);
@@ -208,7 +207,7 @@ class ZoneController extends BaseController
 
         $zone = $this->zone->create($created_params);
 
-        
+
         $message = trans('succes_messages.zone_added_succesfully');
 
         return redirect('zone')->with('success', $message);
@@ -235,7 +234,7 @@ class ZoneController extends BaseController
         if($request->coordinates==null){
             throw ValidationException::withMessages(['zone_name' => __('Please Complete the shape before submit')]);
         }
-        
+
         foreach (json_decode($request->coordinates) as $key => $coordinates) {
             $points = [];
             $lineStrings = [];
@@ -363,15 +362,15 @@ class ZoneController extends BaseController
         if ($zone->default_vehicle_type == null) {
             $zone->default_vehicle_type = $request->type;
             $zone->save();
-        }    
+        }
         }else{
             if ($zone->default_vehicle_type_for_delivery == null) {
             $zone->default_vehicle_type_for_delivery = $request->type;
             $zone->save();
-            } 
+            }
 
         }
-        
+
 
         $zoneType = $zone->zoneType()->create([
             'type_id' => $request->type,
@@ -498,7 +497,7 @@ class ZoneController extends BaseController
         $message = trans('succes_messages.type_assigned_succesfully');
 
         return redirect('zone/assigned/types/'.$zone_type->zone_id)->with('success', $message);
-    
+
     }
 
 
@@ -509,7 +508,7 @@ class ZoneController extends BaseController
 
             return redirect('zone')->with('warning', $message);
         }
-        
+
         $status = $zone->isActive() ? false : true;
         $zone->update(['active' => $status]);
 
@@ -542,7 +541,7 @@ class ZoneController extends BaseController
 
             return redirect('zone/assigned/types/'.$zone->id)->with('warning', $message);
         }
-        
+
         $zone_type->delete();
 
         $message = trans('succes_messages.zone_type_deleted_succesfully');
@@ -609,7 +608,7 @@ class ZoneController extends BaseController
             // dd($zone_price->zoneType->zone);
 
             $zone_price->zoneType->zone->default_vehicle_type = $zone_price->zoneType->type_id;
-            
+
             $zone_price->zoneType->zone->save();
 
         }else{
@@ -617,7 +616,7 @@ class ZoneController extends BaseController
             $zone_price->zoneType->zone->default_vehicle_type_for_delivery = $zone_price->zoneType->type_id;
             $zone_price->zoneType->zone->save();
         }
-        
+
 
         $message = trans('succes_messages.default_type_set_successfully');
         return redirect('vehicle_fare')->with('success', $message);
@@ -659,7 +658,7 @@ class ZoneController extends BaseController
     {
         $multi_polygons = [];
         return json_encode($multi_polygons);
-        
+
         // Prepare our stream to be read with a 1kb buffer
         $filePath = env('COORDINATES_PATH');
         $stream = new Stream\File($filePath, 1024);
@@ -709,15 +708,15 @@ class ZoneController extends BaseController
         $results = $zone_type->zoneTypePackage()->paginate();
 
         $page = trans('pages_names.zone_type_package');
-       
+
         $main_menu = 'vehicle_fare';
         $sub_menu = '';
 
         return view('admin.zone_type_package.index', compact('results', 'page', 'main_menu', 'sub_menu', 'zone_type'));
-   
+
     }
 
-    
+
      public function packageCreate(ZoneType $zone_type)
     {
         $page = trans('pages_names.zone_type_package');
@@ -725,7 +724,7 @@ class ZoneController extends BaseController
 
         $ids = $zone_type->zoneTypePackage()->pluck('package_type_id')->toArray();
         $types = PackageType::whereNotIn('id', $ids)->active()->get();
-     
+
        $main_menu = 'vehicle_fare';
        $sub_menu = '';
 
@@ -753,7 +752,7 @@ class ZoneController extends BaseController
             'cancellation_fee' => $request->cancellation_fee,
             'zone_type_id' => $zone_type->id,
              'zone_id' => $zone_type->zone_id,
-  
+
         ]);
 
          $message = trans('succes_messages.zone_package_store_succesfully');
@@ -791,7 +790,7 @@ class ZoneController extends BaseController
             'free_distance' => $request->free_distance,
             'free_min' => $request->free_minute,
             'cancellation_fee' => $request->cancellation_fee,
-            'zone_id' => $package->zoneType->zone_id,   
+            'zone_id' => $package->zoneType->zone_id,
          ]);
 
          $message = trans('succes_messages.zone_package_update_succesfully');
@@ -817,14 +816,14 @@ class ZoneController extends BaseController
         }
 
         $status = $package->active == 1 ? 0 : 1;
-        
+
         $pack = ZoneTypePackagePrice::find($package->id);
         $pack->active = $status;
         $pack->save();
-        
+
 
         $message = trans('succes_messages.zone_type_package_status_changed_succesfully');
         return redirect()->back()->with('success', $message);
-        
+
     }
 }

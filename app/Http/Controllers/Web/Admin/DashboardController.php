@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\BaseController;
 use App\Models\Admin\Driver;
 use App\Models\Request\Request;
 use App\Models\Request\RequestBill;
+use App\Models\Request\Request as RequestRequest;
 use App\Models\User;
 use App\Base\Constants\Auth\Role;
 use App\Models\Admin\Zone;
@@ -40,12 +41,16 @@ class DashboardController extends BaseController
             $total_waiting_drivers = Driver::where('approve', 0)->where('owner_id', null)->count();
             $total_aproved_drivers = Driver::where('approve', 1)->where('owner_id', null)->count();
             $total_admin = AdminDetail::count();
+            $total_booking = RequestRequest::companyKey()->where('transport_type','taxi')->count();
         }else{
             $total_drivers = Driver::where('approve', 2)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
             $total_aproved_drivers = Driver::where('approve', 1)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
             $total_waiting_drivers = Driver::where('approve', 0)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->where('owner_id', null)->count();
+
+            $total_booking = RequestRequest::companyKey()->where('transport_type','taxi')->count();
+            // dd($total_booking);
             $total_admin = '';
         }
 
@@ -262,6 +267,6 @@ class DashboardController extends BaseController
     // }
 
         // return redirect('/airport');
-    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin'));
+    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin','total_booking'));
     }
 }
