@@ -28,7 +28,7 @@
                                 {{ csrf_field() }}
 
                                 <div class="row">
-                                    {{-- <div class="col-6">
+                                    <div class="col-6">
                                         <div class="form-group">
                                         <label for="service_location_id">@lang('view_pages.select_area')
                                             <span class="text-danger">*</span>
@@ -40,19 +40,23 @@
                                             @endforeach
                                         </select>
                                         </div>
-                                        </div> --}}
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label for="">Taxi Company<span class="text-danger">*</span></label>
-                                            <select name="company_key" id="company_key" class="form-control" required>
-                                                <option value="" selected disabled>Select Taxi Company</option>
-                                                @foreach ($admin as $company)
-                                                    <option value="{{ $company->user->company_key }}">{{ $company->first_name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <span class="text-danger">{{ $errors->first('transport_type') }}</span>
-                                        </div>
                                     </div>
+
+                                    @if(auth()->user()->id == 1)
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="">Taxi Company<span class="text-danger">*</span></label>
+                                                <select name="company_key" id="company_key" class="form-control" required>
+                                                    <option value="" selected disabled>Select Taxi Company</option>
+                                                    @foreach ($admin as $company)
+                                                        <option value="{{ $company->user->company_key }}">{{ $company->first_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="">@lang('view_pages.transport_type') <span

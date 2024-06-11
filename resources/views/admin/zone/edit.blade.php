@@ -76,7 +76,7 @@
                             <form method="post" class="form-horizontal" action="{{ url('zone/update', request()->id) }}"
                                 enctype="multipart/form-data">
                                 {{ csrf_field() }}
-                                <input type="text" id="info" name="coordinates" value="">
+                                <input type="hidden" id="info" name="coordinates" value="">
 
                                 <div class="row">
                                     <div class="col-sm-6">

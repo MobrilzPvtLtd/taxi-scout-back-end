@@ -40,6 +40,7 @@ use App\Mail\AdminRegister;
 use App\Mail\SuperAdminNotification;
 use App\Http\Requests\Auth\Registration\ValidateEmailOTPRequest;
 use App\Http\Requests\Auth\Registration\SendRegistrationMailOTPRequest;
+use App\Models\Admin\AdminDetail;
 
 /**
  * @group SignUp-And-Otp-Validation
@@ -86,35 +87,47 @@ class UserRegistrationController extends LoginController
     }
     public function sendMailOTP(SendRegistrationMailOTPRequest $request)
     {
-
         $email = $request->input('email');
 
-        $mail_otp_exists =  MailOtp::where('email', $email)->exists();
+        $user = User::where('email', $email)->first();
 
+        $mail_otp_exists =  MailOtp::where('email', $email)->exists();
         if($mail_otp_exists == false)
         {
-        $otp = mt_rand(100000, 999999);
+            $mail_otp = mt_rand(100000, 999999);
 
-        $newOTP = MailOtp::create([
-            'email' => $email,
-            'otp' => $otp,
-        ]);
+            $newOTP = MailOtp::create([
+                'email' => $email,
+                'otp' => $mail_otp,
+            ]);
 
+            $otp = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'otp' => $mail_otp,
+            ];
 
-          Mail::to($email)->send(new OtpMail($otp));
+            Mail::to($email)->send(new OtpMail($otp));
 
         }else{
-
            $mailOtp = MailOtp::where('email', $email)->first();
 
-           $otp = mt_rand(100000, 999999);
+           $mail_otp = mt_rand(100000, 999999);
 
-           $mailOtp->update(['otp' => $otp]);
+           $mailOtp->update(['otp' => $mail_otp]);
 
-           Mail::to($email)->send(new OtpMail($otp));
+            $otp = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'otp' => $mail_otp,
+            ];
+
+            if ($request->has('email')) {
+                Mail::to($email)->send(new OtpMail($otp));
+            }
 
         }
-        return response()->json(['success'=>true]);
+        return $this->respondOk("An OTP has been resent to your email. Please check for the 6-digit code.");
 
     }
     /**
@@ -133,20 +146,25 @@ class UserRegistrationController extends LoginController
 
         $admin = User::where('id', 1)->first();
         $user = User::where('email', $email)->first();
-        $adminDetail = $user->admin()->first();
 
-        $verify_otp = MailOtp::where('email' ,$email)->where('otp', $otp)->exists();
-        if ($verify_otp == false){
-            $this->throwCustomValidationException(['message' => "The otp provided has Invaild" ]);
+        $verify_otp = MailOtp::where('email', $email)->where('otp', $otp)->exists();
+
+        if (!$verify_otp) {
+            $this->throwCustomValidationException(['message' => "The OTP provided is invalid"]);
         }
 
-        $verify_otp_expire = MailOtp::where('email' ,$email)->where('otp', $otp)->where('verified', true)->first();
-        if ($verify_otp_expire){
-            $this->throwCustomValidationException(['message' => "The otp provided has Expired" ]);
+        $verify_otp_expire = MailOtp::where('email', $email)->where('otp', $otp)->where('verified', true)->first();
+
+        if ($verify_otp_expire && $user->email_confirmed == 1) {
+            $this->throwCustomValidationException(['message' => "The OTP provided has expired"]);
         }
 
-        MailOtp::where('email' ,$email)->where('otp', $otp)->update(['verified' => true]);
-        User::where('email' ,$email)->update(['email_confirmed' => true]);
+        MailOtp::where('email', $email)->where('otp', $otp)->update(['verified' => true]);
+        $user->update(['email_confirmed' => true]);
+
+        $adminDetail = AdminDetail::whereHas('user', function ($query) use ($email) {
+            $query->where('email', $email);
+        })->first();
 
         if ($adminDetail) {
             $data = [

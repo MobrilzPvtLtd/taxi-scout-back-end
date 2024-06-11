@@ -7,7 +7,6 @@
 
                 <th> @lang('view_pages.s_no')
                     <span style="float: right;">
-
                     </span>
                 </th>
 
@@ -15,6 +14,12 @@
                     <span style="float: right;">
                     </span>
                 </th>
+                @if(auth()->user()->id == 1)
+                    <th> Taxi Company
+                        <span style="float: right;">
+                        </span>
+                    </th>
+                @endif
                 <th> @lang('view_pages.tansport_type')
                     <span style="float: right;">
                     </span>
@@ -60,10 +65,17 @@
                 @php  $i= $results->firstItem(); @endphp
 
                 @foreach($results as $key => $result)
-
+                    @php
+                        $admin = App\Models\Admin\AdminDetail::whereHas('user', function ($query) use   ($result) {
+                            $query->where('company_key', $result->company_key);
+                        })->first();
+                    @endphp
                     <tr>
                         <td>{{ $i++ }} </td>
                         <td> {{$result->name}}</td>
+                        @if(auth()->user()->id == 1)
+                            <td> {{$admin->first_name}}</td>
+                        @endif
 
                         <td>
                             @if($result->is_taxi == 'taxi' )
