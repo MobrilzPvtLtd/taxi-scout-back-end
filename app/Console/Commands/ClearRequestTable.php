@@ -58,7 +58,7 @@ class ClearRequestTable extends Command
             $currentTime = Carbon::now();
             $timeDifference = $currentTime->diffInMinutes($otpGenerationTime);
 
-            if ($timeDifference > 5) {
+            if ($timeDifference > 1) {
                 $user->delete();
                 MailOtp::where('email', $user->email)->delete();
                 $this->info('User deleted: ' . $user->email);
