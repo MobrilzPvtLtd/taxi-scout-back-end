@@ -49,8 +49,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('offline:drivers')->everyFiveMinutes();
         $schedule->command('notify:document:expires')->daily();
         $schedule->command('clear:otp')->everyFiveMinutes();
-        $schedule->command('order:expire')->everyMinute();
+        // $schedule->command('order:expire')->everyMinute();
         $schedule->command('order:expire')->daily();
+        $schedule->command('clear:request')->everyMinute();
         // $schedule->command('clear:database')
         //          ->daily();
     }

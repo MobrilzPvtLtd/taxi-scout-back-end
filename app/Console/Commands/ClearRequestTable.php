@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Request\Request;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\MailOtp;
 
 
 
@@ -46,7 +48,23 @@ class ClearRequestTable extends Command
 
         $request = Request::where( 'created_at', '<', $date)->delete();
 
-       $this->info('Records cleard ');
+       // Delete inactive users with expired OTPs
+        $usersToDelete = User::where('active', 0)
+            ->where('email_confirmed', 0)
+            ->get();
 
+        foreach ($usersToDelete as $user) {
+            $otpGenerationTime = User::where('email', $user->email)->first()->created_at;
+            $currentTime = Carbon::now();
+            $timeDifference = $currentTime->diffInMinutes($otpGenerationTime);
+
+            if ($timeDifference > 5) {
+                $user->delete();
+                MailOtp::where('email', $user->email)->delete();
+                $this->info('User deleted: ' . $user->email);
+            }
+        }
+
+        $this->info('Records cleard ');
     }
 }

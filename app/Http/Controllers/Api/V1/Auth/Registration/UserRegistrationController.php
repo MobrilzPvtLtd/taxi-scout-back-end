@@ -91,7 +91,12 @@ class UserRegistrationController extends LoginController
 
         $user = User::where('email', $email)->first();
 
+        if (!$user) {
+            $this->throwCustomValidationException(['message' => "The Email provided is invalid"]);
+        }
         $mail_otp_exists =  MailOtp::where('email', $email)->exists();
+
+
         if($mail_otp_exists == false)
         {
             $mail_otp = mt_rand(100000, 999999);
@@ -160,7 +165,7 @@ class UserRegistrationController extends LoginController
         }
 
         MailOtp::where('email', $email)->where('otp', $otp)->update(['verified' => true]);
-        $user->update(['email_confirmed' => true]);
+        $user->update(['active' => true, 'email_confirmed' => true]);
 
         $adminDetail = AdminDetail::whereHas('user', function ($query) use ($email) {
             $query->where('email', $email);
@@ -260,6 +265,7 @@ class UserRegistrationController extends LoginController
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'mobile' => $mobile,
+            'active' => 0,
             'mobile_confirmed' => true,
             'fcm_token'=>$request->input('device_token'),
             'login_by'=>$request->input('login_by'),
@@ -274,9 +280,9 @@ class UserRegistrationController extends LoginController
             $user_params['is_bid_app']=1;
         }
 
-        if (env('APP_FOR')=='demo' && $request->has('company_key') && $request->input('company_key')) {
-            $user_params['company_key'] = $request->input('company_key');
-        }
+        // if (env('APP_FOR')=='demo' && $request->has('company_key') && $request->input('company_key')) {
+        //     $user_params['company_key'] = $request->input('company_key');
+        // }
         if ($request->has('password') && $request->input('password')) {
             $user_params['password'] = bcrypt($request->input('password'));
         }
@@ -322,6 +328,7 @@ class UserRegistrationController extends LoginController
         if ($request->has('email')) {
             Mail::to($user->email)->send(new OtpMail($otp));
         }
+
         //     DB::commit();
         // } catch (\Exception $e) {
         //     DB::rollBack();
