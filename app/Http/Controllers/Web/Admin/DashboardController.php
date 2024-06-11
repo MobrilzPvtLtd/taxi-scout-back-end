@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use App\Base\Constants\Setting\Settings;
 use App\Models\Admin\AdminDetail;
+use App\Models\Admin\VehicleType;
 
 class DashboardController extends BaseController
 {
@@ -40,12 +41,15 @@ class DashboardController extends BaseController
             $total_drivers = Driver::where('approve', 2)->where('owner_id', null)->count();
             $total_waiting_drivers = Driver::where('approve', 0)->where('owner_id', null)->count();
             $total_aproved_drivers = Driver::where('approve', 1)->where('owner_id', null)->count();
+            $total_vehicleType = VehicleType::count();
             $total_admin = AdminDetail::count();
             $total_booking = RequestRequest::companyKey()->where('transport_type','taxi')->count();
         }else{
             $total_drivers = Driver::where('approve', 2)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
             $total_aproved_drivers = Driver::where('approve', 1)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+
+            $total_vehicleType = VehicleType::where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
             $total_waiting_drivers = Driver::where('approve', 0)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->where('owner_id', null)->count();
 
@@ -267,6 +271,6 @@ class DashboardController extends BaseController
     // }
 
         // return redirect('/airport');
-    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin','total_booking'));
+    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin','total_booking','total_vehicleType'));
     }
 }

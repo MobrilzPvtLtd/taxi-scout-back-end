@@ -253,6 +253,26 @@
                                                     <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-primary"
                                                         data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
                                                         {{ $total_booking }}</div>
+                                                        <a class="font-weight-semi-bold fs--1 text-nowrap"
+                                                            href="{{ url('requests') }}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1"
+                                                                data-fa-transform="down-1"></span></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card overflow-hidden" style="min-width: 12rem">
+                                                <div class="bg-holder bg-card"
+                                                    style="background-image:url({{ asset('assets/images/corner-1.png') }});">
+                                                </div>
+                                                <!--/.bg-holder-->
+                                                <div class="card-body position-relative">
+                                                    <h6>Total Vehicle Type</h6>
+                                                    <div class="display-4 fs-4 mb-2 font-weight-normal font-sans-serif text-primary"
+                                                        data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
+                                                        {{ $total_vehicleType }}</div>
+                                                        <a class="font-weight-semi-bold fs--1 text-nowrap"
+                                                            href="{{ url('types') }}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1"
+                                                                data-fa-transform="down-1"></span></a>
                                                 </div>
                                             </div>
                                         </div>

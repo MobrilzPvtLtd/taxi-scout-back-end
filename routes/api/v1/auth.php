@@ -24,6 +24,7 @@ Route::namespace('Auth')->group(function () {
      */
     // Login normal user from first-party clients (Mobile App etc.) using Password Grant.
     Route::post('user/login', 'LoginController@loginUser');
+    Route::post('user/login/validate-otp', 'LoginController@loginValidateOTP');
     // Login driver using mobile or email
     Route::post('driver/login', 'LoginController@loginDriver');
 
