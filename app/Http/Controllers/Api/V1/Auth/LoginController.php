@@ -116,6 +116,59 @@ class LoginController extends BaseLoginController
         // }
 
         $user = User::where("email", $request->email)->first();
+
+        $mail_otp_exists =  MailOtp::where('email', $request->email)->exists();
+
+        $mail_otp = mt_rand(100000, 999999);
+
+        if($mail_otp_exists == false) {
+            $mailOtp = MailOtp::create([
+                'email' => $request->email,
+                'otp' => $mail_otp,
+            ]);
+        }else{
+           $mailOtp = MailOtp::where('email', $request->email)->first();
+           $mailOtp->update(['otp' => $mail_otp, 'verified' => 0]);
+        }
+
+        $otp = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'otp' => $mailOtp->otp,
+        ];
+
+        if ($request->has('email')) {
+            Mail::to($user->email)->send(new OtpMail($otp));
+        }
+
+        return $this->respondOk("Your OTP has been sent for login. Please check your email for the 6-digit code.");
+
+        // if($deriver->approve == 1){
+        //     return $this->loginUserAccountApp($request, Role::DRIVER);
+        // }
+    }
+
+    public function driverLoginValidateOTP(ValidateEmailOTPRequest $request)
+    {
+        $otp = $request->otp;
+        $email = $request->email;
+
+        $user = User::where('email', $email)->first();
+
+        $verify_otp = MailOtp::where('email', $email)->where('otp', $otp)->exists();
+
+        if (!$verify_otp) {
+            $this->throwCustomValidationException(['message' => "The OTP provided is invalid"]);
+        }
+
+        $verify_otp_expire = MailOtp::where('email', $email)->where('otp', $otp)->where('verified', true)->first();
+
+        if ($verify_otp_expire) {
+            $this->throwCustomValidationException(['message' => "The OTP provided has expired"]);
+        }
+
+        MailOtp::where('email', $email)->where('otp', $otp)->update(['verified' => true]);
+
         $deriver = Driver::where("user_id", $user->id)->where("email", $request->email)->first();
 
         if($deriver->approve != 1) {
@@ -125,7 +178,6 @@ class LoginController extends BaseLoginController
         if($deriver->approve == 1){
             return $this->loginUserAccountApp($request, Role::DRIVER);
         }
-
     }
 
     public function loginAdmin(GenericAppLoginRequest $request)
@@ -136,10 +188,61 @@ class LoginController extends BaseLoginController
             $this->throwCustomException('Your account email has not been verified. Please verify your email to proceed.');
         }
 
-        if($user->email_confirmed == 1){
-            return $this->loginUserAccountApp($request, Role::adminRoles());
+        $mail_otp_exists =  MailOtp::where('email', $request->email)->exists();
+
+        $mail_otp = mt_rand(100000, 999999);
+
+        if($mail_otp_exists == false) {
+            $mailOtp = MailOtp::create([
+                'email' => $request->email,
+                'otp' => $mail_otp,
+            ]);
+        }else{
+           $mailOtp = MailOtp::where('email', $request->email)->first();
+           $mailOtp->update(['otp' => $mail_otp, 'verified' => 0]);
         }
 
+        $otp = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'otp' => $mailOtp->otp,
+        ];
+
+        if ($request->has('email')) {
+            Mail::to($user->email)->send(new OtpMail($otp));
+        }
+
+        return $this->respondOk("Your OTP has been sent for login. Please check your email for the 6-digit code.");
+
+        // if($user->email_confirmed == 1){
+        //     return $this->loginUserAccountApp($request, Role::adminRoles());
+        // }
+    }
+
+    public function adminLoginValidateOTP(ValidateEmailOTPRequest $request)
+    {
+        $otp = $request->otp;
+        $email = $request->email;
+
+        $user = User::where('email', $email)->first();
+
+        $verify_otp = MailOtp::where('email', $email)->where('otp', $otp)->exists();
+
+        if (!$verify_otp) {
+            $this->throwCustomValidationException(['message' => "The OTP provided is invalid"]);
+        }
+
+        $verify_otp_expire = MailOtp::where('email', $email)->where('otp', $otp)->where('verified', true)->first();
+
+        if ($verify_otp_expire) {
+            $this->throwCustomValidationException(['message' => "The OTP provided has expired"]);
+        }
+
+        MailOtp::where('email', $email)->where('otp', $otp)->update(['verified' => true]);
+
+        if($user->email_confirmed == 1){
+            return $this->loginUserAccountApp($request, Role::ADMIN);
+        }
     }
 
     public function socialAuth(Request $request, $provider)

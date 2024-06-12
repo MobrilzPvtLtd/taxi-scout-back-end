@@ -25,10 +25,12 @@ use App\Models\Master\MailTemplate;
 use App\Mail\WelcomeMail;
 use Illuminate\Support\Facades\Mail;
 use App\Jobs\Mails\SendMailNotification;
+use App\Mail\OtpMail;
 use App\Models\Admin\AdminDetail;
 use App\Models\Admin\DriverVehicleType;
 use App\Models\Admin\Subscription;
 use App\Models\Admin\UserDetails;
+use App\Models\MailOtp;
 
 /**
  * @group SignUp-And-Otp-Validation
@@ -149,6 +151,7 @@ class DriverSignupController extends LoginController
             'password' => bcrypt($request->input('password')),
             'mobile' => $mobile,
             'mobile_confirmed' => true,
+            'active' => 0,
             'fcm_token'=>$request->input('device_token'),
             'login_by'=>$request->input('login_by'),
             'timezone'=>$timezone,
@@ -201,28 +204,49 @@ class DriverSignupController extends LoginController
         $driver_wallet = $driver->driverWallet()->create(['amount_added'=>0]);
 
         $user->attachRole(Role::DRIVER);
-        if(($user->email_confirmed) == true){
 
-            /*mail Template*/
-            $user_name = $user->name;
-            $mail_template = MailTemplate::where('mail_type', 'welcome_mail_driver')->first();
+        // if(($user->email_confirmed) == true){
 
-            $description = $mail_template->description;
+        //     /*mail Template*/
+        //     $user_name = $user->name;
+        //     $mail_template = MailTemplate::where('mail_type', 'welcome_mail_driver')->first();
 
-            $description = str_replace('$user_name', $user_name, $description);
+        //     $description = $mail_template->description;
 
-            $mail_template->description = $description;
+        //     $description = str_replace('$user_name', $user_name, $description);
 
-            $mail_template = $mail_template->description;
+        //     $mail_template->description = $description;
 
-            $user_mail = $user->email;
+        //     $mail_template = $mail_template->description;
 
-            // dispatch(new SendMailNotification($mail_template, $user_mail));
+        //     $user_mail = $user->email;
 
-        /*mail Template*/
-        }
+        //     // dispatch(new SendMailNotification($mail_template, $user_mail));
+
+        // /*mail Template*/
+        // }
         // event(new UserRegistered($user));
-		return $this->respondOk("Your account register successfully.");
+
+        $otpDigit = mt_rand(100000, 999999);
+
+        $mail_otp = MailOtp::create([
+            'email' => $request->email,
+            'otp' => $otpDigit,
+        ]);
+
+        $otp = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'otp' => $mail_otp->otp,
+        ];
+
+        if ($request->has('email')) {
+            Mail::to($user->email)->send(new OtpMail($otp));
+        }
+
+		// return $this->respondOk("Your account register successfully.");
+        return $this->respondOk("Your account register successfully. Please check your email for 6 digit OTP");
+
         // $this->throwCustomException('Your account is pending approval. Please wait for our team to review and approve your account.');
 
         // } catch (\Exception $e) {

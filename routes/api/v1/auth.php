@@ -25,17 +25,21 @@ Route::namespace('Auth')->group(function () {
     // Login normal user from first-party clients (Mobile App etc.) using Password Grant.
     Route::post('user/login', 'LoginController@loginUser');
     Route::post('user/login/validate-otp', 'LoginController@loginValidateOTP');
+
     // Login driver using mobile or email
     Route::post('driver/login', 'LoginController@loginDriver');
+    Route::post('driver/login/validate-otp', 'LoginController@driverLoginValidateOTP');
 
     // Login admin user from first-party clients (Mobile App etc) using Password Grant.
     Route::post('admin/login', 'LoginController@loginAdmin');
+    Route::post('admin/login/validate-otp', 'LoginController@adminLoginValidateOTP');
+
     Route::post('dispatcher/login', 'LoginController@loginDispatcher');
 
     // Logout the user by revoking the access token.
     Route::post('logout', 'LoginController@logout')->middleware('auth');
     // Reset password
-    Route::post('reset-password', 'Password\PasswordResetController@validateUserMobileIsExistForForgetPassword');
+    Route::post('reset-password',  'Password\PasswordResetController@validateUserMobileIsExistForForgetPassword');
 
     /**
      * Root namespace 'App\Http\Controllers\Api\V1\Auth\Registration'.

@@ -135,15 +135,7 @@ class UserRegistrationController extends LoginController
         return $this->respondOk("An OTP has been resent to your email. Please check for the 6-digit code.");
 
     }
-    /**
-     * Validate the mobile number verification OTP during registration.
-     * @bodyParam otp string required Provided otp
-     * @bodyParam uuid uuid required uuid comes from sen otp api response
-     *
-     * @param \App\Http\Requests\Auth\Registration\ValidateRegistrationOTPRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @response {"success":true,"message":"success"}
-     */
+
     public function validateEmailOTP(ValidateEmailOTPRequest $request)
     {
         $otp = $request->otp;
@@ -194,7 +186,6 @@ class UserRegistrationController extends LoginController
 
     public function register(UserRegistrationRequest $request)
     {
-        // die();
         $mobileUuid = $request->input('uuid');
 
         $country_id =  $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
@@ -365,15 +356,7 @@ class UserRegistrationController extends LoginController
         // return $this->respondSuccess();
     }
 
-    /**
-    * Validate Mobile-For-User
-    * @bodyParam mobile integer required mobile of user
-     * @response {
-     * "success":true,
-     * "message":"mobile_validated",
-     * }
-    *
-    */
+
     public function validateUserMobile(Request $request)
     {
         $mobile = $request->mobile;
@@ -386,15 +369,7 @@ class UserRegistrationController extends LoginController
 
         return $this->respondSuccess(null, 'mobile_validated');
     }
-    /**
-    * Validate Mobile-For-User-Login
-    * @bodyParam mobile integer required mobile of user
-    * @response {
-    * "success":true,
-    * "message":"mobile_exists",
-    * }
-    *
-    */
+
      public function validateUserMobileForLogin(Request $request)
     {
 

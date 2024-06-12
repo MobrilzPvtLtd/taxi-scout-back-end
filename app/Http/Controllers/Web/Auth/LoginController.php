@@ -118,7 +118,7 @@ class LoginController extends ApiController
     {
         if (auth()->user()->hasRole(Role::dispatchRoles())) {
             $redirect = 'dispatch-login';
-        } 
+        }
         else if (auth()->user()->hasRole('owner')) {
             $redirect = 'company-login';
         }else{
@@ -169,8 +169,6 @@ class LoginController extends ApiController
      */
     protected function loginUserAccount($request, $role, $needsToken = true, array $conditions = [])
     {
-        
-
         if ($request->has('social_id')) {
             return $this->setLoginIdentifier('social_id')
                 ->loginUserWithSocialUniqueId($request, $role, $needsToken, $conditions);
@@ -237,11 +235,11 @@ class LoginController extends ApiController
             // dd($verify_otp);
 
 
-        if ($verify_otp == false) 
+        if ($verify_otp == false)
         {
             $this->throwCustomValidationException(['message' => "The otp provided has Invaild" ]);
         }
-       
+
        if (method_exists($this, $method = 'resolveUserFrom' . Str::studly($identifier))) {
             $user = $this->{$method}($email, $role);
         }
@@ -502,7 +500,7 @@ class LoginController extends ApiController
         event(new UserLogin($user));
 
         DB::table('oauth_access_tokens')->where('user_id',$user->id)->delete();
-        
+
         if ($needsToken) {
             $client_tokens = DB::table('oauth_clients')->where('password_client', 1)->first();
             // dd($client_tokens);
