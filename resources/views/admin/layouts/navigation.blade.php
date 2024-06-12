@@ -418,11 +418,11 @@
                 </li>
             @endif
 
-            {{-- @if (auth()->user()->can('vehicle-fare'))
+            @if (auth()->user()->can('vehicle-fare'))
                 <li class="{{ 'vehicle-fare' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/vehicle_fare') }}"><i class="fa fa-money"></i>@lang('pages_names.set_price')</a>
                 </li>
-            @endif --}}
+            @endif
 
             {{-- @if (auth()->user()->can('fleet-drivers-menu'))
                 @if (auth()->user()->hasRole('admin'))

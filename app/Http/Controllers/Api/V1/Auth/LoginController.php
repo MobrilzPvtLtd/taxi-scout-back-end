@@ -115,6 +115,12 @@ class LoginController extends BaseLoginController
         //     return $this->loginUserAccountApp($request, Role::ADMIN);
         // }
 
+        $validate_exists_email = User::belongsTorole([Role::ADMIN,Role::USER])->where('email', $request->email)->exists();
+
+        if ($validate_exists_email) {
+            $this->throwCustomException('The selected email is invalid.');
+        }
+
         $user = User::where("email", $request->email)->first();
 
         $mail_otp_exists =  MailOtp::where('email', $request->email)->exists();

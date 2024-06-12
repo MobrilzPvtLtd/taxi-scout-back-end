@@ -112,7 +112,7 @@ class DriverSignupController extends LoginController
 
         $country_code = $this->country->where('dial_code', $request->input('country'))->exists();
 
-        $validate_exists_email = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN])->where('email', $request->email)->exists();
+        $validate_exists_email = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN,Role::USER])->where('email', $request->email)->exists();
 
         if ($validate_exists_email) {
             $this->throwCustomException('Provided email has already been taken');
@@ -121,7 +121,7 @@ class DriverSignupController extends LoginController
         $mobile = $request->mobile;
         $company_key = $request->company_key;
 
-        $validate_exists_mobile = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN])->where('mobile', $mobile)->exists();
+        $validate_exists_mobile = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN,Role::USER])->where('mobile', $mobile)->exists();
 
         if ($validate_exists_mobile) {
             $this->throwCustomException('Provided mobile has already been taken');
