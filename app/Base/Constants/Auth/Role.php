@@ -39,7 +39,7 @@ class Role
             ];
         }
 
-    
+
     /**
      * Get all the admin roles.
      *
@@ -113,7 +113,7 @@ class Role
         return [
             self::USER,
             self::DRIVER,
-            self::OWNER,
+            self::ADMIN,
         ];
     }
 }

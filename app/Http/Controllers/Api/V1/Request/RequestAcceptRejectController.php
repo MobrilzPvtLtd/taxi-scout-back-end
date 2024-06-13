@@ -43,16 +43,6 @@ class RequestAcceptRejectController extends BaseController
     */
     public function respondRequest(AcceptRejectRequest $request)
     {
-        /**
-        * Get Request Detail
-        * Validate the request i,e the request is already accepted by some one and it is a valid request for accept or reject state.
-        * If is_accept is true then update the driver's id to the request detail.
-        * And Update the driver's available state as false. And delete all meta driver records from request_meta table
-        * Send the notification to the user with request detail.
-        * If is_accept is false, then delete the driver record from request_meta table
-        * And Send the request to next driver who is available in the request_meta table
-        * If there is no driver available in request_meta table, then send notification with no driver available state to the user.
-        */
         // Get Request Detail
         $request_detail = $this->request->where('id', $request->input('request_id'))->first();
         // Validate the request i,e the request is already accepted by some one and it is a valid request for accept or reject state.
@@ -119,7 +109,7 @@ class RequestAcceptRejectController extends BaseController
             $push_request_detail = $request_result->toJson();
             // Delete Driver record from meta table
             RequestMeta::where('request_id', $request->input('request_id'))->where('driver_id', $driver->id)->delete();
-            
+
             // Send request to next driver
             $request_meta = RequestMeta::where('request_id', $request->input('request_id'))->first();
             if ($request_meta) {

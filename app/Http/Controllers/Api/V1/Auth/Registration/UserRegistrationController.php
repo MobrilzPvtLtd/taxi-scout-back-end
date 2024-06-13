@@ -119,7 +119,7 @@ class UserRegistrationController extends LoginController
 
            $mail_otp = mt_rand(100000, 999999);
 
-           $mailOtp->update(['otp' => $mail_otp]);
+           $mailOtp->update(['otp' => $mail_otp,'verified' => 0]);
 
             $otp = [
                 'name' => $user->name,

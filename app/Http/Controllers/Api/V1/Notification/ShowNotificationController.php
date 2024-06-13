@@ -16,7 +16,6 @@ class ShowNotificationController extends BaseController
     public function getNotifications()
     {
         $user = auth()->user();
-
         if (access()->hasRole('user'))
         {
             $user_id = auth()->user()->id;
@@ -31,7 +30,7 @@ class ShowNotificationController extends BaseController
             $notifications = Notification::whereIn('id', $user_notification)->orderBy('created_at','desc');
             UserDriverNotification::whereIn('driver_id', [$user_id])->update(['is_read' => true]);
         }
-        elseif ($user->hasRole('owner')){
+        elseif ($user->hasRole('admin')){
             $user_id = $user->owner->id;
             $user_notification = UserDriverNotification::where('owner_id', $user_id)->pluck('notify_id');
             $notifications = Notification::whereIn('id', $user_notification)->orderBy('created_at','desc');
