@@ -186,9 +186,16 @@ class UserRegistrationController extends LoginController
             $query->where('email', $email);
         })->first();
 
-        // return response()->json(['success'=>true, 'message' => 'Your email has been verified. You can now login to your account.']);
         if ($user->email_confirmed == 1 && $user->active == 1) {
             if ($deriver) {
+                if($deriver->approve != 1) {
+                    $this->throwCustomException('Your account is pending approval. Please wait for our team to review and approve your account.');
+                }
+
+                if($deriver->approve == 1){
+                    return $this->loginUserAccountApp($request, Role::DRIVER);
+                }
+
                 return $this->loginUserAccountApp($request, Role::DRIVER);
             } elseif ($adminDetail) {
                 return $this->loginUserAccountApp($request, Role::ADMIN);
@@ -196,6 +203,8 @@ class UserRegistrationController extends LoginController
                 return $this->loginUserAccountApp($request, Role::USER);
             }
         }
+
+        // return response()->json(['success'=>true, 'message' => 'Your email has been verified. You can now login to your account.']);
     }
 
     public function register(UserRegistrationRequest $request)

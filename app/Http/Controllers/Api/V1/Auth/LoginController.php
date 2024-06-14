@@ -114,6 +114,11 @@ class LoginController extends BaseLoginController
         // if($request->has('role') && $request->role=='admin'){
         //     return $this->loginUserAccountApp($request, Role::ADMIN);
         // }
+        $user = User::where('email', $request->email)->first();
+
+        if($user->email_confirmed != 1) {
+            $this->throwCustomException('Your account email has not been verified. Please verify your email to proceed.');
+        }
 
         $validate_exists_email = User::belongsTorole([Role::ADMIN,Role::USER])->where('email', $request->email)->exists();
 
