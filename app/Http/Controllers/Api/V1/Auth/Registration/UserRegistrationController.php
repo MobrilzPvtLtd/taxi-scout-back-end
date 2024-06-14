@@ -41,6 +41,7 @@ use App\Mail\SuperAdminNotification;
 use App\Http\Requests\Auth\Registration\ValidateEmailOTPRequest;
 use App\Http\Requests\Auth\Registration\SendRegistrationMailOTPRequest;
 use App\Models\Admin\AdminDetail;
+use App\Models\Admin\Driver;
 
 /**
  * @group SignUp-And-Otp-Validation
@@ -181,7 +182,20 @@ class UserRegistrationController extends LoginController
             }
         }
 
-        return response()->json(['success'=>true, 'message' => 'Your email has been verified. You can now login to your account.']);
+        $deriver = Driver::whereHas('user', function ($query) use ($email) {
+            $query->where('email', $email);
+        })->first();
+
+        // return response()->json(['success'=>true, 'message' => 'Your email has been verified. You can now login to your account.']);
+        if ($user->email_confirmed == 1 && $user->active == 1) {
+            if ($deriver) {
+                return $this->loginUserAccountApp($request, Role::DRIVER);
+            } elseif ($adminDetail) {
+                return $this->loginUserAccountApp($request, Role::ADMIN);
+            } else {
+                return $this->loginUserAccountApp($request, Role::USER);
+            }
+        }
     }
 
     public function register(UserRegistrationRequest $request)

@@ -136,9 +136,14 @@
                             </div>
 
                             <div class="box-body row">
-                                <div class="col-md-6 m-auto">
+                                <div class="col-12">
+                                    <div id="map"></div>
+                                </div>
+                            </div>
+                            <div class="box-body row">
+                                <div class="col-md-12 m-auto">
                                     <div class="row">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-3">
                                             <div class="card overflow-hidden" style="min-width: 12rem">
                                                 <div class="bg-holder bg-card" style="background-image:url({{ asset('assets/images/corner-3.png') }});">
                                                 </div>
@@ -157,7 +162,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-3">
                                             <div class="card overflow-hidden" style="min-width: 12rem">
                                                 <div class="bg-holder bg-card" style="background-image:url({{ asset('assets/images/corner-2.png') }});">
                                                 </div>
@@ -179,7 +184,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-3">
                                             <div class="card overflow-hidden" style="min-width: 12rem">
                                                 <div class="bg-holder bg-card" style="background-image:url({{ asset('assets/images/corner-2.png') }});">
                                                 </div>
@@ -204,7 +209,7 @@
                                             </div>
                                         </div>
                                         @if (!auth()->user()->hasRole('admin'))
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-3">
                                                 <div class="card overflow-hidden" style="min-width: 12rem">
                                                     <div class="bg-holder bg-card"
                                                         style="background-image:url({{ asset('assets/images/corner-1.png') }});">
@@ -224,7 +229,7 @@
                                             </div>
                                         @endif
                                         @if (!auth()->user()->hasRole('admin'))
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-3">
                                                 <div class="card overflow-hidden" style="min-width: 12rem">
                                                     <div class="bg-holder bg-card"
                                                         style="background-image:url({{ asset('assets/images/corner-1.png') }});">
@@ -242,7 +247,7 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-3">
                                             <div class="card overflow-hidden" style="min-width: 12rem">
                                                 <div class="bg-holder bg-card"
                                                     style="background-image:url({{ asset('assets/images/corner-1.png') }});">
@@ -259,7 +264,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-3">
                                             <div class="card overflow-hidden" style="min-width: 12rem">
                                                 <div class="bg-holder bg-card"
                                                     style="background-image:url({{ asset('assets/images/corner-1.png') }});">
@@ -277,9 +282,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-6">
-                                    <div id="map"></div>
                                 </div>
                             </div>
                         </div>
@@ -639,14 +641,175 @@
     </section>
 
     <script type="text/javascript"
-        src="https://maps.google.com/maps/api/js?key={{ get_settings('google_map_key') }}&libraries=visualization"></script>
+        src="https://maps.google.com/maps/api/js?key={{ get_settings('google_map_key') }}&libraries=places"></script>
 
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-database.js"></script>
     <!-- TODO: Add SDKs for Firebase products that you want to use https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-analytics.js"></script>
 
-    <script type="text/javascript">
+    {{-- var lat = '{{ $default_lat }}';
+    var lng = '{{ $default_lng }}'; --}}
+    <script>
+        var lat = "{{ $item->pick_lat }}"
+        var lng = "{{ $item->pick_lng }}"
+
+        var pickLat = [];
+        var pickLng = [];
+        var default_lat = lat;
+        var default_lng = lng;
+        var driverLat, driverLng, bearing, type;
+        var marker = [];
+        var onTrip, available;
+        onTrip = available = true;
+        var requestId = "{{ $item->id }}"
+        var driverId = "{{ $item->driver_id }}"
+        var directionsService = new google.maps.DirectionsService();
+        var directionsRenderer = new google.maps.DirectionsRenderer({
+            suppressMarkers: true
+        });
+
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "{{ get_settings('firebase-api-key') }}",
+            authDomain: "{{ get_settings('firebase-auth-domain') }}",
+            databaseURL: "{{ get_settings('firebase-db-url') }}",
+            projectId: "{{ get_settings('firebase-project-id') }}",
+            storageBucket: "{{ get_settings('firebase-storage-bucket') }}",
+            messagingSenderId: "{{ get_settings('firebase-messaging-sender-id') }}",
+            appId: "{{ get_settings('firebase-app-id') }}",
+            measurementId: "{{ get_settings('firebase-measurement-id') }}"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: new google.maps.LatLng(default_lat, default_lng),
+            zoom: 10,
+            mapTypeId: 'roadmap',
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                position: google.maps.ControlPosition.TOP_CENTER,
+            },
+            zoomControl: true,
+            zoomControlOptions: {
+                position: google.maps.ControlPosition.RIGHT_BOTTOM,
+            },
+            scaleControl: true,
+            streetViewControl: false,
+            fullscreenControl: true,
+        });
+
+        directionsRenderer.setMap(map);
+
+        var iconBase = "{{ asset('map/icon/') }}";
+        var icons = {
+            available: {
+                name: 'Available',
+                icon: iconBase + '/taxi1.svg'
+            },
+            ontrip: {
+                name: 'OnTrip',
+                icon: iconBase + '/taxi.svg'
+            },
+            pickup: {
+                name: 'PickUp',
+                icon: iconBase + '/driver_available.png'
+            },
+            drop: {
+                name: 'Drop',
+                icon: iconBase + '/driver_on_trip.png'
+            }
+        };
+
+        var requestRef = firebase.database().ref();
+        // console.log(requestRef);
+
+        requestRef.on('value', async function() {
+            // var tripData = snapshot.val();
+
+            // if (typeof tripData.request_id != 'undefined') {
+            // }
+            await loadDriverIcons();
+            await getDriverOnMap();
+        });
+
+        function loadDriverIcons() {
+            // deleteAllMarkers();
+
+            var iconImg = icons['ontrip'].icon;
+
+            var carIcon = new google.maps.Marker({
+                position: new google.maps.LatLng(lat, lng),
+                icon: {
+                    url: iconImg,
+                    scaledSize: new google.maps.Size(40, 40)
+                },
+                map: map
+            });
+
+            marker.push(carIcon);
+            carIcon.setMap(map);
+
+            // setTimeout(() => {
+            //     rotateMarker(iconImg, val.bearing);
+            // }, 3000);
+        }
+
+        function getDriverOnMap() {
+            var basePath = "{{ asset('storage/uploads/request/delivery-proof') }}/"
+            // if (requestId) {
+                let url = "{{ url('driver/dashboard-map') }}/";
+                fetch(url)
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result);
+                        if (result) {
+                            var pickLat = result.pick_lat
+                            var pickLng = result.pick_lng
+                            var dropLat = result.drop_lat
+                            var dropLng = result.drop_lng
+
+                            var pickUpLocation = new google.maps.LatLng(pickLat, pickLng);
+                            var dropLocation = new google.maps.LatLng(dropLat, dropLng);
+                            calcRoute(pickUpLocation, dropLocation)
+                        }
+                });
+            // }
+        }
+
+        // Draw path from pickup to drop - map api
+        function calcRoute(pickup, drop) {
+            var request = {
+                origin: pickup,
+                destination: drop,
+                travelMode: google.maps.TravelMode['DRIVING']
+            };
+
+            directionsService.route(request, function(response, status) {
+                if (status == 'OK') {
+                    directionsRenderer.setDirections(response);
+                    var leg = response.routes[0].legs[0];
+                    makeMarker(leg.start_location, icons['pickup'].icon, icons['pickup'].name, map);
+                    makeMarker(leg.end_location, icons['drop'].icon, icons['drop'].name, map);
+                }
+            });
+        }
+
+        function makeMarker(position, icon, title, map) {
+            new google.maps.Marker({
+                position: position,
+                map: map,
+                icon: icon,
+                title: title
+            });
+        }
+    </script>
+
+    {{-- <script type="text/javascript">
         var heatmapData = [];
         var pickLat = [];
         var pickLng = [];
@@ -855,7 +1018,7 @@
                 marker[i].setMap(null);
             }
         }
-    </script>
+    </script> --}}
 
     <script src="{{ asset('assets/vendor_components/jquery.peity/jquery.peity.js') }}"></script>
 
@@ -903,7 +1066,7 @@
                 hideHover: 'auto',
                 color: '#666666'
             });
-            console.log(barChartData, bar);
+            // console.log(barChartData, bar);
 
             if ($('#chart_1').length > 0) {
                 var ctx1 = document.getElementById("chart_1").getContext("2d");

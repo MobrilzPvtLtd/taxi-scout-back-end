@@ -48,8 +48,8 @@ class DriverProfileTransformer extends Transformer
     {
         $params = [
             'id' => $user->id,
-            'owner_id' => $user->owner_id,
-            'transport_type' => $user->transport_type,
+            // 'owner_id' => $user->owner_id,
+            // 'transport_type' => $user->transport_type,
             'name' => $user->name,
             'email' => $user->email,
             'mobile' => $user->mobile,
@@ -79,7 +79,7 @@ class DriverProfileTransformer extends Transformer
             'timezone'=>$user->timezone,
             'refferal_code'=>$user->user->refferal_code,
             //'map_key'=>get_settings('google_map_key'),
-            'company_key'=>$user->user->company_key,
+            'company_key'=>$user->company_key,
             'show_instant_ride'=>false,
             'country_id'=>$user->user->countryDetail->id,
             'currency_symbol' => get_settings(Settings::CURRENCY),
@@ -92,7 +92,7 @@ class DriverProfileTransformer extends Transformer
         ];
 
         $params['vehicle_types'] = [];
-       
+
         $params['enable_my_route_booking_feature'] =  false;
 
 
@@ -100,7 +100,7 @@ class DriverProfileTransformer extends Transformer
         if($user->driverVehicleTypeDetail()->exists()){
             foreach ($user->driverVehicleTypeDetail as $key => $type) {
                 $params['vehicle_type_icon_for'] = $type->vehicleType->icon_types_for;
-            
+
                 $params['vehicle_types'][] = $type->vehicle_type;
 
                 if($type->vehicleType->trip_dispatch_type=='bidding'){
@@ -115,7 +115,7 @@ class DriverProfileTransformer extends Transformer
 
           }
         }
-        
+
 
         $notifications_count= UserDriverNotification::where('driver_id',$user->id)
             ->where('is_read',0)->count();
@@ -130,17 +130,17 @@ class DriverProfileTransformer extends Transformer
             $params['car_color'] = $user->fleetDetail->car_color;
 
         }
-        
+
         $params['enable_modules_for_applications'] =  get_settings('enable_modules_for_applications');
-        
+
         $params['contact_us_mobile1'] =  get_settings('contact_us_mobile1');
         $params['contact_us_mobile2'] =  get_settings('contact_us_mobile2');
         $params['contact_us_link'] =  get_settings('contact_us_link');
          $params['show_wallet_feature_on_mobile_app'] =  get_settings('show_wallet_feature_on_mobile_app');
-        $params['show_bank_info_feature_on_mobile_app'] =  get_settings('show_bank_info_feature_on_mobile_app');       
+        $params['show_bank_info_feature_on_mobile_app'] =  get_settings('show_bank_info_feature_on_mobile_app');
         $params['how_many_times_a_driver_can_enable_the_my_route_booking_per_day'] =  get_settings('how_many_times_a_driver_can_enable_the_my_route_booking_per_day');
 
-        
+
         $current_date = Carbon::now();
 
         $total_earnings = RequestBill::whereHas('requestDetail', function ($query) use ($user,$current_date) {
@@ -164,7 +164,7 @@ class DriverProfileTransformer extends Transformer
                 $query->where('account_type','individual')->orWhere('account_type','both');
             })->get();
         }
-        
+
         foreach ($driver_documents as $key => $needed_document) {
             if (DriverDocument::where('driver_id', $user->id)->where('document_id', $needed_document->id)->exists()) {
                 $params['uploaded_document'] = true;
@@ -190,7 +190,7 @@ class DriverProfileTransformer extends Transformer
             $owner_wallet = $user->owner->ownerWalletDetail;
 
             $wallet_balance= $owner_wallet?$owner_wallet->amount_balance:0;
-                
+
             }
 
             if($minimum_balance >0){
@@ -199,36 +199,36 @@ class DriverProfileTransformer extends Transformer
                 $user->active = false;
 
                 $user->save();
-                
+
                 $params['active'] = false;
 
 
                 $low_balance = true;
             }
-                
+
             }
     // check if balance is in negative
 
           if($minimum_balance < 0)
           {
-                if ($minimum_balance > $wallet_balance) 
+                if ($minimum_balance > $wallet_balance)
                 {
 
                 $user->active = false;
 
                 $user->save();
-                
+
                 $params['active'] = false;
 
 
                 $low_balance = true;
               }
-                    
+
          }
             $params['trip_accept_reject_duration_for_driver'] = get_settings(Settings::TRIP_ACCEPT_REJECT_DURATION_FOR_DRIVER);
-           
+
             // $params['maximum_time_for_find_drivers_for_bidding_ride'] = (get_settings(Settings::MAXIMUM_TIME_FOR_FIND_DRIVERS_FOR_BIDDING_RIDE) * 60);
-            
+
              $params['maximum_time_for_find_drivers_for_bitting_ride'] = (get_settings(Settings::MAXIMUM_TIME_FOR_FIND_DRIVERS_FOR_BIDDING_RIDE) * 60);
 
             $params['low_balance'] = $low_balance;
@@ -265,7 +265,6 @@ class DriverProfileTransformer extends Transformer
     */
     public function includeSos(Driver $user)
     {
-
         $request = Sos::select('id', 'name', 'number', 'user_type', 'created_by')
         ->where('created_by', auth()->user()->id)
         ->orWhere('user_type', 'admin')

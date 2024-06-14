@@ -30,12 +30,7 @@
                     </a>
                 </li>
             @endif --}}
-            @if (auth()->user()->can('view-system-settings'))
-                <li class="{{ 'system_settings' == $sub_menu ? 'active' : '' }}">
-                    <a href="{{ url('/system/settings') }}"><i
-                            class="fa fa-cogs"></i>@lang('pages_names.system_settings')</a>
-                </li>
-            @endif
+
             {{-- @if (auth()->user()->menucheck_roll == 'A')
                 @if (auth()->user()->can('view-settings'))
                     <li class="treeview {{ 'settings' == $main_menu ? 'active menu-open' : '' }}">
@@ -182,21 +177,6 @@
                 <li class="{{ 'admin' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/admins') }}">
                         <i class="fa fa-user-circle-o"></i> <span>Taxi Company</span>
-                    </a>
-                </li>
-            @endif
-
-            @if (auth()->user()->can('manage-subscription'))
-                <li class="{{ 'manage-subscription' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/subscription') }}">
-                        <i class="fa fa-solid fa-dollar"></i> <span>@lang('pages_names.subscription')</span>
-                    </a>
-                </li>
-            @endif
-            @if (auth()->user()->can('manage-order'))
-                <li class="{{ 'manage-order' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/order') }}">
-                        <i class="fa fa-first-order"></i> <span>Package Order</span>
                     </a>
                 </li>
             @endif
@@ -462,9 +442,31 @@
                 </li>
             @endif --}}
 
+            @if (auth()->user()->can('manage-subscription'))
+                <li class="{{ 'manage-subscription' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ url('/subscription') }}">
+                        <i class="fa fa-solid fa-dollar"></i> <span>@lang('pages_names.subscription')</span>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->can('manage-order'))
+                <li class="{{ 'manage-order' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ url('/order') }}">
+                        <i class="fa fa-first-order"></i> <span>Package Order</span>
+                    </a>
+                </li>
+            @endif
+
             @if (auth()->user()->can('view-users'))
                 <li class="{{ 'user_details' == $sub_menu ? 'active' : '' }}">
                     <a href="{{ url('/users') }}"><i class="fa fa-user"></i>@lang('pages_names.user_details')</a>
+                </li>
+            @endif
+
+            @if (auth()->user()->can('view-system-settings'))
+                <li class="{{ 'system_settings' == $sub_menu ? 'active' : '' }}">
+                    <a href="{{ url('/system/settings') }}"><i
+                            class="fa fa-cogs"></i>@lang('pages_names.system_settings')</a>
                 </li>
             @endif
             {{-- @if (auth()->user()->can('user-menu'))
@@ -652,7 +654,7 @@
                 </li>
             @endif --}}
 
-            @if (auth()->user()->can('manage-map'))
+            {{-- @if (auth()->user()->can('manage-map'))
                 <li class="treeview {{ 'manage-map' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-globe"></i>
@@ -682,7 +684,7 @@
                         @endif
                     </ul>
                 </li>
-            @endif
+            @endif --}}
 
             {{-- @if (auth()->user()->can('manage-faq'))
                 <li class="{{ 'faq' == $main_menu ? 'active' : '' }}">

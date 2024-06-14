@@ -142,7 +142,7 @@ class AdminController extends BaseController
             return redirect('admins')->with('warning', $message);
         }
 
-        $created_params = $request->only(['service_location_id', 'first_name', 'last_name','mobile','email','address','state','city','country']);
+        $created_params = $request->only(['service_location_id', 'first_name', 'company_name','mobile','email','address','state','city','country']);
         $created_params['pincode'] = $request->postal_code;
         $created_params['created_by'] = auth()->user()->id;
 
@@ -156,14 +156,15 @@ class AdminController extends BaseController
             'email'=>$request->input('email'),
             'mobile'=>$request->input('mobile'),
             'mobile_confirmed'=>true,
+            'email_confirmed'=>true,
             'timezone'=>$timezone,
             'country'=>$request->input('country'),
             'password' => bcrypt($request->input('password'))
         ];
 
-        if (env('APP_FOR')=='demo') {
-            $user_params['company_key'] = auth()->user()->company_key;
-        }
+        // if (env('APP_FOR')=='demo') {
+        //     $user_params['company_key'] = auth()->user()->company_key;
+        // }
         $user = $this->user->create($user_params);
 
         if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
@@ -172,7 +173,7 @@ class AdminController extends BaseController
             $user->save();
         }
 
-        $user->attachRole($request->role);
+        $user->attachRole(RoleSlug::ADMIN);
 
         $user->admin()->create($created_params);
 
@@ -183,8 +184,6 @@ class AdminController extends BaseController
 
     public function getById(AdminDetail $admin)
     {
-
-
         $page = trans('pages_names.edit_admin');
 
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {

@@ -16,12 +16,23 @@ use Illuminate\Support\Facades\Session;
 use App\Base\Constants\Setting\Settings;
 use App\Models\Admin\AdminDetail;
 use App\Models\Admin\VehicleType;
+use App\Models\Request\RequestPlace;
 
 class DashboardController extends BaseController
 {
 
-    public function dashboard()
+    public function fetchDriverDashboardMap(){
+        $items = RequestRequest::whereHas('zoneType.zone')->get();
+        // dd($items);
+        foreach ($items as $value) {
+            $result = $value;
+        }
+        return $result;
+    }
+
+    public function dashboard(Request $request)
     {
+
         if(!Session::get('applocale')){
             Session::put('applocale', 'en');
         }
@@ -244,33 +255,17 @@ class DashboardController extends BaseController
 
     $default_lat = get_settings('default_latitude');
     $default_lng = get_settings('default_longitude');
+    // $zone = Zone::active()->companyKey()->get();
 
-    $zone = Zone::active()->companyKey()->first();
+    $items = RequestRequest::whereHas('zoneType.zone')->get();
+    // dd($results);
 
-    // if ($zone) {
-    //     if (access()->hasRole(Role::SUPER_ADMIN)) {
-    //     } else {
-    //         $admin_detail = auth()->user()->admin;
-    //         $zone = $admin_detail->serviceLocationDetail->zones()->first();
-    //     }
-    //     $coordinates = $zone->coordinates->toArray();
-    //     $multi_polygon = [];
-    //     foreach ($coordinates as $key => $coordinate) {
-    //         $polygon = [];
-    //         foreach ($coordinate[0] as $key => $point) {
-    //             $pp = new \stdClass;
-    //             $pp->lat = $point->getLat();
-    //             $pp->lng = $point->getLng();
-    //             $polygon [] = $pp;
-    //         }
-    //         $multi_polygon[] = $polygon;
-    //     }
+    $item = '';
+    foreach ($items as $value) {
+        $item = $value;
+    }
 
-    //     $default_lat = $polygon[0]->lat;
-    //     $default_lng = $polygon[0]->lng;
-    // }
-
-        // return redirect('/airport');
-    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin','total_booking','total_vehicleType'));
+    // return redirect('/airport');
+    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin','total_booking','total_vehicleType','item'));
     }
 }

@@ -21,7 +21,7 @@ class DriverRegistrationRequest extends BaseRequest
             'password' => 'sometimes|required|min:6|confirmed',
             // 'uuid' => 'required|uuid|exists:mobile_otp_verifications,id,verified,1',
             'mobile' => 'required',
-            // 'country'=>'required',//|exists:countries,dial_code',
+            'country'=>'required',//|exists:countries,dial_code',
             // 'device_token'=>'required',
             // 'login_by'=>'required|in:android,ios',
             'vehicle_type'=>'sometimes|required|exists:vehicle_types,id',
