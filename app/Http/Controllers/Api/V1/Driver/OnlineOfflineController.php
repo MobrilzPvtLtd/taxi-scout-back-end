@@ -28,13 +28,13 @@ class OnlineOfflineController extends BaseController
     {
         $driver = Driver::where('user_id', auth()->user()->id)->first();
 
-        $status = $driver->active?0:1;
+        $status = $driver->active ? 0 : 1;
         $current_date = Carbon::now();
-
 
         if ($status) {
             // check if any record is exists with same date
             $availability = $driver->driverAvailabilities()->whereDate('online_at', $current_date)->orderBy('online_at', 'desc')->first();
+
 
             $created_params['is_online'] = true;
             $created_params['online_at'] = $current_date->toDateTimeString();
@@ -103,8 +103,8 @@ class OnlineOfflineController extends BaseController
      * @bodyParam my_route_lat double required latitude of the address
      * @bodyParam my_route_lng double required longitude of the address
      * @bodyParam my_route_address string required address text of the address
-     * 
-     * 
+     *
+     *
      * */
     public function addMyRouteAddress(Request $request){
 
@@ -128,8 +128,8 @@ class OnlineOfflineController extends BaseController
 
     /**
      * Enable My Route Booking
-     * 
-     * 
+     *
+     *
      * */
     public function enableMyRouteBooking(Request $request){
 
@@ -164,7 +164,7 @@ class OnlineOfflineController extends BaseController
 
         $driver_detail->update(['route_coordinates'=>$route_coordinates,'enable_my_route_booking'=>$request->is_enable]);
 
-        
+
 
         $driver_detail->enabledRoutes()->create([
             'current_lat'=>$request->current_lat,

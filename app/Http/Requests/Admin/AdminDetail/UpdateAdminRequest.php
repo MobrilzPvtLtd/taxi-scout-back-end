@@ -29,14 +29,14 @@ class UpdateAdminRequest extends FormRequest
             'mobile'=>'required|mobile_number|unique:users,mobile,'.$this->admin->user->id,
             'email'=>'required|email|unique:users,email,'.$this->admin->user->id,
             'address'=>'required|min:10',
-            'state'=>'max:100',
+            // 'state'=>'max:100',
             'city'=>'required',
             'country'=>'required|exists:countries,id',
             'service_location_id' => 'sometimes',
-            'role' => 'required',
+            // 'role' => 'required',
             'postal_code'=>'required|numeric',
-            'password' => 'required|confirmed|min:6',
-            
+            // 'password' => 'required|confirmed|min:6',
+
         ];
     }
 }

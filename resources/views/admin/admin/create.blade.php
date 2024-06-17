@@ -28,9 +28,7 @@
                             <form method="post" class="form-horizontal" action="{{ url('admins/store') }}"
                                 enctype="multipart/form-data">
                                 {{ csrf_field() }}
-
-
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="role">@lang('view_pages.select_role')
@@ -69,17 +67,42 @@
                                             </select>
                                         </div>
                                     </div>
+                                </div> --}}
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="package_id">Select Package
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select name="package_id" id="package_id"  class="form-control"
+                                                onchange="getServiceLocation(this)" required>
+                                                <option value="" selected disabled>Select Package</option>
+                                                @foreach (App\Models\Admin\Subscription::get() as $key => $subscription)
+                                                    <option value="{{ $subscription->id }}">
+                                                        {{$subscription->package_name}}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="first_name">@lang('view_pages.name') <span class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" id="first_name" name="first_name"
-                                                value="{{ old('first_name') }}" required=""
-                                                placeholder="@lang('view_pages.enter_name')">
-                                            <span class="text-danger">{{ $errors->first('first_name') }}</span>
+                                            <label for="company_name">Company Name <span class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" id="company_name" name="company_name"
+                                                value="{{ old('company_name') }}" required=""
+                                                placeholder="Enter Company Name">
+                                            <span class="text-danger">{{ $errors->first('company_name') }}</span>
 
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="name">@lang('view_pages.name') <span class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" id="name" name="name" value="{{ old('name') }}" required="" placeholder="@lang('view_pages.enter_name')">
+                                            <span class="text-danger">{{ $errors->first('name') }}</span>
                                         </div>
                                     </div>
 
@@ -92,31 +115,21 @@
                                             <span class="text-danger">{{ $errors->first('last_name') }}</span>
 
                                         </div>
-                                    </div>
-                                </div> -->
+                                        </div>
+                                    </div> -->
 
                                 <!-- <div class="row"> -->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="address">@lang('view_pages.address') <span class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" id="address" name="address"
-                                                value="{{ old('address') }}" required=""
-                                                placeholder="@lang('view_pages.enter_address')">
-                                            <span class="text-danger">{{ $errors->first('address') }}</span>
 
-                                        </div>
-                                    </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="name">@lang('view_pages.mobile') <span class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" id="mobile" name="mobile"
+                                            <input class="form-control" type="number" id="mobile" name="mobile"
                                                 value="{{ old('mobile') }}" required=""
                                                 placeholder="@lang('view_pages.enter_mobile')">
                                             <span class="text-danger">{{ $errors->first('mobile') }}</span>
-
                                         </div>
                                     </div>
 
@@ -127,12 +140,9 @@
                                                 value="{{ old('email') }}" required=""
                                                 placeholder="@lang('view_pages.enter_email')">
                                             <span class="text-danger">{{ $errors->first('email') }}</span>
-
                                         </div>
                                     </div>
-
                                 </div>
-
 
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -141,7 +151,6 @@
                                             <input class="form-control" type="password" id="password" name="password"
                                                 value="" required="" placeholder="@lang('view_pages.enter_password')">
                                             <span class="text-danger">{{ $errors->first('password') }}</span>
-
                                         </div>
                                     </div>
 
@@ -156,7 +165,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <div class="row">
                                     <div class="col-6">
@@ -201,6 +209,16 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
+                                            <label for="address">@lang('view_pages.address') <span class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" id="address" name="address"
+                                                value="{{ old('address') }}" required=""
+                                                placeholder="@lang('view_pages.enter_address')">
+                                            <span class="text-danger">{{ $errors->first('address') }}</span>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
                                             <label for="postal_code">@lang('view_pages.postal_code') <span class="text-danger">*</span></label>
                                             <input class="form-control" type="number" id="city" name="postal_code" min="1"
                                                 value="{{ old('postal_code') }}" required=""
@@ -210,7 +228,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <div class="form-group">
                                     <div class="col-6">

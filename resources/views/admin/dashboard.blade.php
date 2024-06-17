@@ -649,12 +649,14 @@
     <!-- TODO: Add SDKs for Firebase products that you want to use https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-analytics.js"></script>
 
-    {{-- var lat = '{{ $default_lat }}';
-    var lng = '{{ $default_lng }}'; --}}
-    <script>
-        var lat = "{{ $item->pick_lat }}"
-        var lng = "{{ $item->pick_lng }}"
 
+    {{-- var lat = "{{ $item->pick_lat }}"
+    var lng = "{{ $item->pick_lng }}" --}}
+    {{-- var requestId = "{{ $item->id }}" --}}
+    {{-- var driverId = "{{ $item->driver_id }}" --}}
+    <script>
+        var lat = '{{ $default_lat }}';
+        var lng = '{{ $default_lng }}';
         var pickLat = [];
         var pickLng = [];
         var default_lat = lat;
@@ -663,8 +665,7 @@
         var marker = [];
         var onTrip, available;
         onTrip = available = true;
-        var requestId = "{{ $item->id }}"
-        var driverId = "{{ $item->driver_id }}"
+
         var directionsService = new google.maps.DirectionsService();
         var directionsRenderer = new google.maps.DirectionsRenderer({
             suppressMarkers: true

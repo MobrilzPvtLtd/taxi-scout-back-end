@@ -16,11 +16,14 @@ use App\Base\Filters\Master\CommonMasterFilter;
 use App\Http\Requests\Admin\AdminDetail\CreateAdminRequest;
 use App\Http\Requests\Admin\AdminDetail\UpdateAdminRequest;
 use App\Http\Requests\Admin\AdminDetail\UpdateProfileRequest;
+use App\Mail\AdminRegister;
 use App\Mail\ApprovedUser;
 use App\Models\Admin\Company;
 use App\Models\Country;
 use App\Models\Access\Role;
+use App\Models\Admin\Order;
 use App\Models\Admin\ServiceLocation;
+use App\Models\Admin\Subscription;
 use App\Models\Admin\UserDetails;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -145,6 +148,7 @@ class AdminController extends BaseController
         $created_params = $request->only(['service_location_id', 'first_name', 'company_name','mobile','email','address','state','city','country']);
         $created_params['pincode'] = $request->postal_code;
         $created_params['created_by'] = auth()->user()->id;
+        $created_params['first_name'] = $request->name;
 
         if ($request->input('service_location_id')) {
             $timezone = ServiceLocation::where('id', $request->input('service_location_id'))->pluck('timezone')->first();
@@ -152,13 +156,16 @@ class AdminController extends BaseController
             $timezone = env('SYSTEM_DEFAULT_TIMEZONE');
         }
 
-        $user_params = ['name'=>$request->input('first_name').' '.$request->input('last_name'),
+        $uuid = substr(Uuid::uuid4()->toString(), 0, 10);
+
+        $user_params = ['name'=>$request->input('name').' '.$request->input('last_name'),
             'email'=>$request->input('email'),
             'mobile'=>$request->input('mobile'),
             'mobile_confirmed'=>true,
             'email_confirmed'=>true,
             'timezone'=>$timezone,
             'country'=>$request->input('country'),
+            'company_key' => $uuid,
             'password' => bcrypt($request->input('password'))
         ];
 
@@ -176,6 +183,46 @@ class AdminController extends BaseController
         $user->attachRole(RoleSlug::ADMIN);
 
         $user->admin()->create($created_params);
+
+        // $admin = User::where('id', 1)->first();
+        $userUuid = User::where('id', $user->id)->first();
+        $subscription = Subscription::where('id', $request->package_id)->first();
+
+            if ($subscription) {
+                $start_date = $subscription->created_at;
+                $end_date = $start_date->clone()->addDays(30);
+            }
+
+            $adminDetail = AdminDetail::where('user_id', $user->id)->first();
+            if ($adminDetail) {
+                $adminDetail->is_approval = !$adminDetail->is_approval;
+                $adminDetail->save();
+            }
+
+            Order::create([
+                'package_id' => $request->package_id,
+                'user_id' => $user->id,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+            ]);
+
+            $data = [
+                'name' => $user->name,
+                // 'admin_name' => $admin->name,
+                'company_key' => $userUuid->company_key,
+                'email' => $user->email,
+                'is_approval' => $adminDetail->is_approval,
+            ];
+
+            // $this->dispatch(new UserRegistrationNotification($user));
+            if ($request->has('email')) {
+                Mail::to($user->email)->send(new AdminRegister($data));
+            }
+
+            // if ($admin->email) {
+            //     Mail::to($admin->email)->send(new SuperAdminNotification($data));
+            // }
+
 
         $message = trans('succes_messages.admin_added_succesfully');
         return redirect('admins')->with('success', $message);
@@ -198,7 +245,9 @@ class AdminController extends BaseController
         $main_menu = 'admins';
         $sub_menu = null;
 
-        return view('admin.admin.update', compact('item', 'services', 'page', 'countries', 'main_menu', 'sub_menu', 'roles'));
+        $order = Order::where('user_id', $item->user_id)->first();
+
+        return view('admin.admin.update', compact('item', 'services', 'page', 'countries', 'main_menu', 'sub_menu', 'roles','order'));
     }
 
 
@@ -210,7 +259,7 @@ class AdminController extends BaseController
             return redirect('admins')->with('warning', $message);
         }
 
-        $updatedParams = $request->only(['service_location_id', 'first_name', 'last_name','mobile','email','address','state','city','country']);
+        $updatedParams = $request->only(['service_location_id', 'first_name', 'company_name','mobile','email','address','state','city','country']);
         $updatedParams['pincode'] = $request->postal_code;
 
 
@@ -227,9 +276,9 @@ class AdminController extends BaseController
 
         $admin->user->update($updated_user_params);
 
-        $admin->user->roles()->detach();
+        // $admin->user->roles()->detach();
 
-        $admin->user->attachRole($request->role);
+        // $admin->user->attachRole($request->role);
 
         $admin->update($updatedParams);
 

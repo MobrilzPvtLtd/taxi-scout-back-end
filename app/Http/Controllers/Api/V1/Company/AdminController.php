@@ -127,7 +127,6 @@ class AdminController extends BaseController
     public function store(CreateAdminRequest $request)
     {
         $created_params = $request->only(['service_location_id', 'company_name','mobile','email','address','state','city','country']);
-        // dd($created_params);
 
         $created_params['pincode'] = $request->postal_code;
         $created_params['first_name'] = $request->name;
@@ -155,12 +154,12 @@ class AdminController extends BaseController
                 'country'=>$request->input('country'),
                 'password' => bcrypt($request->input('password')),
                 'company_key' => $uuid,
-                'profile_picture'=>$profile_picture,
+                'profile_picture'=>$profile_picture ?? '',
             ];
 
-            if (env('APP_FOR')=='demo') {
-                $user_params['company_key'] = '';
-            }
+            // if (env('APP_FOR')=='demo') {
+            //     $user_params['company_key'] = '';
+            // }
             $user = $this->user->create($user_params);
 
             // if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
@@ -170,7 +169,6 @@ class AdminController extends BaseController
             // }
 
             $user->attachRole(RoleSlug::ADMIN);
-            // dd($created_params);
 
             $user->admin()->create($created_params);
 
