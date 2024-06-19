@@ -205,7 +205,8 @@
                         @if (auth()->user()->can('view-drivers'))
                             <li class="{{ 'driver_details' == $sub_menu ? 'active' : '' }}">
                                 <a href="{{ url($route) }}">
-                                    <i class="fa fa-users"></i>@lang('pages_names.drivers')</a>
+                                    <i class="fa fa-users"></i>@lang('pages_names.drivers')
+                                </a>
                             </li>
                         @endif
                     @endif
@@ -237,7 +238,7 @@
                                             class="fa fa-circle-thin"></i>@lang('pages_names.driver_ratings')</a>
                                 </li>
                             @endif
-                            @if (auth()->user()->can('view-driver-withdrawal-requests'))
+                            {{-- @if (auth()->user()->can('view-driver-withdrawal-requests'))
                                 <li class="{{ 'withdrawal_requests' == $sub_menu ? 'active' : '' }}">
                                     <a href="{{ url('/withdrawal-requests-lists') }}"><i
                                             class="fa fa-circle-thin"></i>@lang('pages_names.withdrawal_requests')</a>
@@ -248,7 +249,7 @@
                                     <a href="{{ url('withdrawal-requests-lists/negative_balance_drivers') }}"><i
                                             class="fa fa-circle-thin"></i>@lang('pages_names.negative_balance_drivers')</a>
                                 </li>
-                            @endif
+                            @endif --}}
                         </ul>
                     @endif
                 </li>
@@ -453,6 +454,13 @@
                 <li class="{{ 'manage-order' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/order') }}">
                         <i class="fa fa-first-order"></i> <span>Package Order</span>
+                    </a>
+                </li>
+            @endif
+            @if (auth()->user()->can('manage-chat'))
+                <li class="{{ 'manage-chat' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ url('/chat') }}">
+                        <i class="fa fa-comment"></i> <span>Chat</span>
                     </a>
                 </li>
             @endif

@@ -510,6 +510,16 @@ Route::middleware('auth:web')->group(function () {
             Route::get('delete/{order}', 'OrderController@delete');
         });
 
+         // Order Reason CRUD
+         Route::group(['prefix' => 'chat',  'middleware' => 'permission:manage-chat'], function () {
+            Route::get('/', 'ChatController@index');
+            Route::get('/fetch', 'ChatController@fetch');
+            Route::post('send', 'ChatController@store');
+            Route::get('/{user_id}', 'ChatController@getById')->name('chatGetById');
+            Route::post('update/{chat}', 'ChatController@update');
+            Route::get('delete/{chat}', 'ChatController@delete');
+        });
+
 
         // Promo Codes CRUD
         Route::group(['prefix' => 'promo',  'middleware' => 'permission:manage-promo'], function () {

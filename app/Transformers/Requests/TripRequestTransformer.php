@@ -113,9 +113,8 @@ class TripRequestTransformer extends Transformer
             'converted_cancelled_at'=>$request->converted_cancelled_at,
             'converted_created_at'=>$request->converted_created_at,
             'payment_type'=>$request->zoneType->payment_type,
-            
-        ];
 
+        ];
         $maximum_time_for_find_drivers_for_regular_ride = (get_settings(Settings::MAXIMUM_TIME_FOR_FIND_DRIVERS_FOR_REGULAR_RIDE) * 60);
 
         $current_time = $current_time = Carbon::now();
@@ -132,20 +131,16 @@ class TripRequestTransformer extends Transformer
             $final_interval =1;
         }
         $params['maximum_time_for_find_drivers_for_regular_ride'] = $final_interval;
-
-
-            $ride_type = 1;
-
-
+        $ride_type = 1;
         $zone_type_price = $request->zoneType->zoneTypePrice()->where('price_type', $ride_type)->first();
 
         if ($request->is_bid_ride == false) {
          $zone_type_price = $request->zoneType->zoneTypePrice()->where('price_type', $ride_type)->first();
 
          if($zone_type_price){
-            $params['free_waiting_time_in_mins_before_trip_start'] = $zone_type_price->free_waiting_time_in_mins_before_trip_start;   
+            $params['free_waiting_time_in_mins_before_trip_start'] = $zone_type_price->free_waiting_time_in_mins_before_trip_start;
          }
-         
+
         }
 
         if($request->requestRating()->exists()){
@@ -207,7 +202,7 @@ class TripRequestTransformer extends Transformer
         $params['enable_shipment_load_feature'] = get_settings(Settings::ENABLE_SHIPMENT_LOAD_FEATURE);
         $params['enable_shipment_unload_feature'] = get_settings(Settings::ENABLE_SHIPMENT_UNLOAD_FEATURE);
         $params['enable_digital_signature'] = get_settings(Settings::ENABLE_DIGITAL_SIGNATURE);
-        
+
         }
 
         return $params;

@@ -214,6 +214,8 @@ class Permission
     const ADD_SUBSCRIPTION = 'add-subscription';
     const EDIT_SUBSCRIPTION = 'edit-subscription';
     const DELETE_SUBSCRIPTION = 'delete-subscription';
+// Chat
+    const MANAGE_CHAT = 'manage-chat';
 //* Order code */
     const MANAGE_ORDER = 'manage-order';
     const ADD_ORDER = 'add-order';

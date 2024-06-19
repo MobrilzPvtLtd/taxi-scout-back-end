@@ -11,7 +11,6 @@
                         </span>
                     </th>
 
-
                     <th> @lang('view_pages.name')
                         <span style="float: right;">
                         </span>
@@ -42,7 +41,7 @@
                     </span>
                     </th>
                     <th> @lang('view_pages.approve_status')<span style="float: right;"></span></th>
-                    <th> @lang('view_pages.declined_reason')<span style="float: right;"></span></th>
+                    {{-- <th> @lang('view_pages.declined_reason')<span style="float: right;"></span></th> --}}
                     <th> @lang('view_pages.rating')
                         <span style="float: right;">
                         </span>
@@ -110,11 +109,11 @@
                                         class="btn btn-danger btn-sm">{{ trans('view_pages.disapproved') }}</button>
                                 </td>
                             @endif
-                            @if ($result->reason)
+                            {{-- @if ($result->reason)
                                 <td>{{ $result->reason }}</td>
                             @else
                                 <td>--</td>
-                            @endif
+                            @endif --}}
                             <td>
                                 @php $rating = $result->rating($result->user_id); @endphp
 

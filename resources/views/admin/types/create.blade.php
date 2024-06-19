@@ -28,7 +28,7 @@
                                 {{ csrf_field() }}
 
                                 <div class="row">
-                                    <div class="col-6">
+                                    {{-- <div class="col-6">
                                         <div class="form-group">
                                         <label for="service_location_id">@lang('view_pages.select_area')
                                             <span class="text-danger">*</span>
@@ -40,7 +40,7 @@
                                             @endforeach
                                         </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     @if(auth()->user()->id == 1)
                                         <div class="col-6">
