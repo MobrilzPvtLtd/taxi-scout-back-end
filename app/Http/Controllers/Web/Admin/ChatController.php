@@ -41,8 +41,9 @@ class ChatController extends BaseController
         $main_menu = 'manage-chat';
         $sub_menu = '';
 
-        $messages = Chat::orderBy('created_at', 'asc')->get();
+        $messages = Chat::where('from_type', 4)->orderBy('created_at', 'asc')->get();
         return view('admin.chat.index', compact('page', 'main_menu', 'sub_menu','messages'));
+
     }
 
     public function fetch(QueryFilterContract $queryFilter)
@@ -51,11 +52,11 @@ class ChatController extends BaseController
         //     $query = $query->where('orders.user_id', auth()->user()->id);
         // }
 
-        $subquery = DB::table('chats')->select(DB::raw('MAX(id) as max_id'))->groupBy('user_id');
+        $subquery = DB::table('chats')->select(DB::raw('MAX(id) as max_id'))->groupBy('from_type');
 
         $query = $this->chat->select('chats.*', 'users.name', 'users.profile_picture')
                             ->join('users', 'chats.user_id', '=', 'users.id')
-                            ->where('from_type', 4)
+                            ->where('from_type', '4')
                             ->whereIn('chats.id', $subquery)
                             ->orderBy('chats.created_at', 'desc');
 
@@ -69,41 +70,48 @@ class ChatController extends BaseController
         $page = trans('pages_names.chat');
         $main_menu = 'manage-chat';
         $sub_menu = '';
-        $messages = Chat::orderBy('created_at', 'asc')->get();
+        $auth_user = auth()->user()->id;
+        // $messages = Chat::whereIn('from_type', [3,4])->orderBy('created_at', 'asc')->get();
 
-        return view('admin.chat.create', compact('messages', 'page', 'main_menu', 'sub_menu'));
+        $message_info = $this->chat->where(['user_id'=> $user_id])->first();
+
+        $subquery = DB::table('chats')->select(DB::raw('MAX(id) as max_id'))->groupBy('from_type');
+
+        $user_messages = $this->chat->select('chats.*', 'users.name', 'users.profile_picture')
+                            ->join('users', 'chats.user_id', '=', 'users.id')
+                            ->where('from_type', '4')
+                            ->whereIn('chats.id', $subquery)
+                            ->orderBy('chats.created_at', 'desc')
+                            ->get();
+        // dd($user_messages);
+        // $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
+
+        return view('admin.chat.create', compact('user_messages','message_info', 'page', 'main_menu', 'sub_menu'));
+    }
+
+    public function getConversations(Request $request)
+    {
+        $conversations = Chat::whereIn('from_type', [3,4])->orderBy('created_at', 'asc')->get();
+        return $conversations;
     }
 
     public function store(Request $request)
     {
-        if (access()->hasRole(Role::ADMIN)) {
-            $from_type = 3;
-        } else {
-            $from_type = 4;
-        }
-        $request_detail = RequestModel::find($request->request_id);
+        $from_type = 3;
 
-        $request_detail = Chat::create([
+        $chatRequest = Chat::create([
             'message' => $request->message,
             'from_type' => $from_type,
             'user_id' => auth()->user()->id
         ]);
 
-        $driverDetail = User::find($request_detail->user_id);
+        $driverDetail = User::find($chatRequest->user_id);
 
-        $chats = Chat::orderBy('created_at', 'asc')->get();
-        if (access()->hasRole(Role::ADMIN)) {
-            $from_type = 3;
-            $user_type = 'company';
-            $driver = $driverDetail;
-            dd($driver);
-            $notifable_driver = $driver->user;
-        } else {
-            $from_type = 4;
-            $user_type = 'driver';
-            $driver = $request_detail->userDetail;
-            $notifable_driver = $driver;
-        }
+        $chats = Chat::whereIn('from_type', [3,4])->orderBy('created_at', 'asc')->get();
+
+        $driver = $driverDetail;
+        $notifable_driver = $driver->user;
+
         foreach ($chats as $key => $chat) {
             if ($chat->from_type == $from_type) {
                 $chats[$key]['message_status'] = 'receive';
@@ -123,8 +131,18 @@ class ChatController extends BaseController
         $body = $request->message;
 
         dispatch(new SendPushNotification($notifable_driver,$title,$body));
+        return $this->respondSuccess([null => 'message_sent_successfully', 'data' => $chatRequest]);
+    }
 
-        return $this->respondSuccess(null, 'message_sent_successfully');
+    public function updateSeen(Request $request){
+
+        $seen_from_type = 4;
+        $driverDetail = User::find(auth()->user()->id);
+
+        $chats = Chat::whereIn('from_type', [3,4])->orderBy('created_at', 'asc')->get();
+
+        $request_detail = Chat::where('from_type',$seen_from_type)->update(['seen'=>true]);
+        return $this->respondSuccess(null, 'message_seen_successfully');
     }
 
     public function delete(Order $chat)

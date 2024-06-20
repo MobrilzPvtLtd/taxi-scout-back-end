@@ -33,5 +33,9 @@ Route::prefix('driver')->namespace('Driver')->middleware('auth')->group(function
         Route::get('earnings-report/{from_date}/{to_date}', 'EarningsController@earningsReport');
         Route::post('add-my-route-address','OnlineOfflineController@addMyRouteAddress');
         Route::post('enable-my-route-booking','OnlineOfflineController@enableMyRouteBooking');
+
+        Route::get('chat-history/{request}','ChatController@history');
+        Route::post('send','ChatController@send');
+        Route::post('seen','ChatController@updateSeen');
     });
 });

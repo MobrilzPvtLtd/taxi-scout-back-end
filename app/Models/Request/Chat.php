@@ -3,6 +3,7 @@
 namespace App\Models\Request;
 
 use App\Base\Uuid\UuidModel;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
@@ -51,7 +52,7 @@ class Chat extends Model
         if ($this->created_at==null) {
             return null;
         }
-        
+
         $timezone = $this->requestDetail()->pluck('timezone')->first()?:env('SYSTEM_DEFAULT_TIMEZONE');
 
         return (string)Carbon::parse($this->created_at)->setTimezone($timezone)->format('g:i A');
@@ -66,6 +67,10 @@ class Chat extends Model
     public function requestDetail()
     {
         return $this->belongsTo(Request::class, 'request_id', 'id');
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id','id');
     }
 
 }

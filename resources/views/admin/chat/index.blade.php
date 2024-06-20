@@ -2,6 +2,28 @@
 
 @section('title', 'Users')
 
+@section('extra-css')
+<style>
+    p.notifyChat {
+        color: #fff;
+        background-color: #e62525;
+        width: 1.5vw;
+        height: 3vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 41px;
+        font-size: 12px;
+        position: absolute;
+        top: -50%;
+        left: 60%;
+    }
+    tr td:nth-child(2) a {
+        position: relative;
+    }
+</style>
+@endsection
+
 @section('content')
 
 <section class="content">

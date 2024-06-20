@@ -4,6 +4,7 @@
         $main_menu = 'settings';
         $sub_menu = 'translations';
     }
+    $total_chat = App\Models\Request\Chat::where('from_type', 4)->where('seen', 0)->count();
 @endphp
 <aside class="main-sidebar">
     <!-- sidebar-->
@@ -457,12 +458,19 @@
                     </a>
                 </li>
             @endif
-            @if (auth()->user()->can('manage-chat'))
-                <li class="{{ 'manage-chat' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/chat') }}">
-                        <i class="fa fa-comment"></i> <span>Chat</span>
-                    </a>
-                </li>
+            @if (access()->hasRole(App\Base\Constants\Auth\Role::ADMIN))
+                @if (auth()->user()->can('manage-chat'))
+                    <li class="{{ 'manage-chat' == $main_menu ? 'active' : '' }}">
+                        <a href="{{ url('/chat') }}" id="is_view">
+                            @if($total_chat)
+                                <p class="notify001">
+                                    {{$total_chat}}
+                                </p>
+                            @endif
+                            <i class="fa fa-comment"></i> <span>Chat</span>
+                        </a>
+                    </li>
+                @endif
             @endif
 
             @if (auth()->user()->can('view-users'))

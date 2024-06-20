@@ -11,13 +11,19 @@
 <tbody>
     @php
         $i= $results->firstItem();
+        $total_chat = App\Models\Request\Chat::where('from_type', 4)->where('seen', 0)->count();
     @endphp
 
     @forelse($results as $key => $result)
         <tr>
             <td>{{ $i++ }} </td>
             <td>
-                <a href="{{ route('chatGetById', $result->user_id) }}">
+                <a href="{{ route('chatGetById', $result->user_id) }}" id="is_view">
+                    @if($result->seen == 0)
+                        <p class="notifyChat">
+                            {{$total_chat}}
+                        </p>
+                    @endif
                     <img src="{{ asset('storage/uploads/user/profile-picture/') . '/' . $result->profile_picture }}" alt="" width="50px">
                 </a>
             </td>

@@ -3,104 +3,162 @@
 
 
 @section('content')
-
 <section class="content">
-    <div class="page-content page-container" id="page-content">
-        <div class="padding">
-            <div class="col-md-12">
-                <div class="card card-bordered">
-                    <div class="card-header">
-                        <h4 class="card-title"><strong>Chat</strong></h4>
-                        <a class="btn btn-xs btn-secondary" href="#" data-abc="true">Let's Chat
-                            App</a>
-                    </div>
-
-
-                    <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
-                        style="overflow-y: scroll !important; height:400px !important;">
-
-                        @php
-                            $previousDate = null;
-                            $todayDisplayed = false;
-                        @endphp
-
-                        @foreach($messages as $message)
-                            @php
-                                $messageDate = \Carbon\Carbon::parse($message->created_at)->toDateString();
-                                $messageTime = \Carbon\Carbon::parse($message->created_at)->format('h:i A');
-
-                                if (!$todayDisplayed && \Carbon\Carbon::parse($message->created_at)->isToday()) {
-                                    echo '<div class="media media-meta-day">Today</div>';
-                                    $todayDisplayed = true;
-                                } elseif (!$previousDate || $messageDate !== $previousDate) {
-                                    echo '<div class="media media-meta-day">' . \Carbon\Carbon::parse($message->created_at)->format('F j, Y') . '</div>';
-                                }
-
-                                $previousDate = $messageDate;
-                            @endphp
-                            @if($message->from_type == 4)
-                                {{-- Driver message --}}
-                                <div class="media media-chat">
-                                    <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="Driver">
-                                    <div class="media-body">
-                                        <p>{{ $message->message }}</p>
-                                        <p class="meta"><time datetime="{{ $message->created_at }}">{{ $message->created_at->format('h:i') }}</time></p>
-                                    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Chat </div>
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                    <div>
+                        @if (count($user_messages) > 0)
+                            {{-- <div style="max-height:400px;height:400px;overflow-y: scroll;"> --}}
+                                <div chat-content id="ko">
                                 </div>
-                            @elseif($message->from_type == 3)
-                                {{-- Company message --}}
-                                <div class="media media-chat media-chat-reverse">
-                                    <div class="media-body">
-                                        <p>{{ $message->message }}</p>
-                                        <p class="meta"><time datetime="{{ $message->created_at }}">{{ $message->created_at->format('h:i') }}</time></p>
-                                    </div>
-                                </div>
-                            @endif
-                        @endforeach
+                            {{-- </div> --}}
+                        @else
+                            <p>No conversation so far. Start a conversation</p>
+                        @endif
                     </div>
-
-                    <div class="publisher bt-1 border-light">
-                        <img class="avatar avatar-xs"
-                            src="https://img.icons8.com/color/36/000000/administrator-male.png"
-                            alt="...">
-                        <input class="publisher-input" type="text" id="message" name="message" placeholder="Write something">
-                        <span class="publisher-btn file-group">
-                            <i class="fa fa-paperclip file-browser"></i>
-                            <input type="file">
-                        </span>
-                        <a class="publisher-btn" href="#" data-abc="true">
-                            <i class="fa fa-smile"></i>
-                        </a>
-                        <a class="publisher-btn text-info" id="chat" href="#" data-abc="true">
-                            <i class="fa fa-paper-plane"></i>
-                        </a>
-                    </div>
+                    <form id="myForm" class="form-group" style="margin-top: 20px">
+                        <div class="publisher bt-1 border-light">
+                            <img class="avatar avatar-xs" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
+                            <input class="publisher-input" type="text" name="message" autocomplete="off" chat-box class="form-control" placeholder="Write something">
+                            <span class="publisher-btn file-group">
+                                <i class="fa fa-paperclip file-browser"></i>
+                                <input type="file">
+                            </span>
+                            <div class="input-group-prepend">
+                                <button class="publisher-btn text-info" id="submitMessage"><i class="fa fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<script>
-    $("#chat").click(function() {
-        $(document).ready(function() {
-        var messageValue = $("#message").val();
-        console.log(messageValue);
-        $.ajax({
-            url: '/chat/send',
-            type: 'post',
-            data: {
-                _token: '{{ csrf_token() }}',
-                message: messageValue,
-            },
-            success: function(response) {
-                console.log(response);
-                // $('#cartItems').html('');
-            },
-            error: function(xhr, status, error) {
-                console.log('An error occurred: ' + error);
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#submitMessage').click(function(e) {
+            e.preventDefault();
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-        });
-        });
-    });
+            })
+            $.ajax({
+                url: "{{ url('/chat/send') }}",
+                method: 'post',
+                data: {
+                    message: $('[name="message"]').val()
+                },
+                success: function(result) {
+                    $('[name="message"]').val('');
+                }
+            })
+        })
+
+        setInterval(function() {
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        })
+        var user = "{{Auth::user()->id}}";
+        $.ajax({
+            url: "{{ url('/chat/getConversations') }}",
+            method: "get",
+
+            success: function(data){
+                var previousDate = null;
+                var todayDisplayed = false;
+                $('[chat-content]').html('');
+
+                $.each(data, function(i, v) {
+                    var createdAt = new Date(v.created_at);
+                    var formattedDate = createdAt.toLocaleString('en-US', {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true
+                    });
+                    var messageHtml = '';
+
+                    var messageDate = new Date(v.created_at).toLocaleDateString();
+
+                    if (!todayDisplayed && isToday(createdAt)) {
+                        messageHtml += '<div class="media media-meta-day">Today</div>';
+                        todayDisplayed = true;
+                    } else if (!previousDate || messageDate !== previousDate) {
+                        var displayDate = new Date(v.created_at).toLocaleString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric'
+                        });
+                        messageHtml += '<div class="media media-meta-day">' + displayDate + '</div>';
+                    }
+
+                    previousDate = messageDate;
+
+                    if (v.from_type == 4) {
+                        messageHtml += `
+                            <div class="media media-chat">
+                                <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="Driver">
+                                <div class="media-body">
+                                    <p>${v.message}</p>
+                                    <p class="meta"><time datetime="${v.created_at}">${formattedDate}</time></p>
+                                </div>
+                            </div>
+                        `;
+                    } else if (v.from_type == 3) {
+                        messageHtml += `
+                            <div class="media media-chat media-chat-reverse medias" id="">
+                                <div class="media-body" id="messageShow">
+                                    <p>${v.message}</p>
+                                    <p class="meta"><time datetime="${v.created_at}">${formattedDate}</time></p>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    $('[chat-content]').append(messageHtml);
+                });
+
+                function isToday(someDate) {
+                    const today = new Date();
+                    return someDate.getDate() == today.getDate() &&
+                        someDate.getMonth() == today.getMonth() &&
+                        someDate.getFullYear() == today.getFullYear();
+                }
+
+                markMessagesAsSeen();
+            }
+        })
+        }, 1000);
+
+
+        function markMessagesAsSeen() {
+            $.ajax({
+                url: '/chat/seen',
+                type: 'post',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function(response) {
+                    console.log('Messages marked as seen:', response);
+                    // Optionally, update UI or perform other actions upon success
+                },
+                error: function(xhr, status, error) {
+                    console.log('An error occurred while marking messages as seen:', error);
+                }
+            });
+        }
+    })
+
 </script>
 @endsection

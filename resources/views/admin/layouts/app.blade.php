@@ -18,9 +18,25 @@
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ fav_icon() ?? asset('assets/images/favicon.ico')}}">
-     
+    <style>
+        p.notify001 {
+            color: #fff;
+            background-color: #e62525;
+            width: 1.5vw;
+            height: 3vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 41px;
+            font-size: 12px;
+            position: absolute;
+            top: 0px;
+            left: 32px;
+        }
+    </style>
 
     @include('admin.layouts.common_styles')
+
     @yield('extra-css')
 </head>
 
@@ -45,7 +61,28 @@
     </div>
 
     @yield('extra-js')
-   
+
+    <script>
+        $("#is_view").click(function() {
+            $(document).ready(function() {
+            $.ajax({
+                url: 'chat/seen',
+                type: 'post',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function(response) {
+                    console.log(response);
+                    // $('#cartItems').html('');
+                },
+                error: function(xhr, status, error) {
+                    console.log('An error occurred: ' + error);
+                }
+            });
+            });
+        });
+    </script>
+
 </body>
 
 </html>
