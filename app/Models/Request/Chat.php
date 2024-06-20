@@ -23,7 +23,7 @@ class Chat extends Model
      *
      * @var array
      */
-    protected $fillable = ['message','from_type','request_id','user_id','request_id','user_id','delivered','seen','created_at'];
+    protected $fillable = ['message','from_type','receiver_id','request_id','user_id','delivered','seen','created_at'];
 
     /**
      * The relationships that can be loaded with query string filtering includes.

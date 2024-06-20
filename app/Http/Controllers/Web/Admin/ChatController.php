@@ -52,13 +52,12 @@ class ChatController extends BaseController
         //     $query = $query->where('orders.user_id', auth()->user()->id);
         // }
 
-        $subquery = DB::table('chats')->select(DB::raw('MAX(id) as max_id'))->groupBy('from_type');
-
-        $query = $this->chat->select('chats.*', 'users.name', 'users.profile_picture')
-                            ->join('users', 'chats.user_id', '=', 'users.id')
-                            ->where('from_type', '4')
-                            ->whereIn('chats.id', $subquery)
-                            ->orderBy('chats.created_at', 'desc');
+        $query = $this->chat->where('from_type', 4)
+                ->join('users', 'chats.user_id', '=', 'users.id')
+                ->select('chats.*', 'users.name', 'users.profile_picture', DB::raw('MAX(user_id) as max_id'))
+                ->groupBy('user_id')
+                ->orderBy('chats.created_at', 'desc');
+                // ->get();
 
         $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
 
@@ -73,7 +72,7 @@ class ChatController extends BaseController
         $auth_user = auth()->user()->id;
         // $messages = Chat::whereIn('from_type', [3,4])->orderBy('created_at', 'asc')->get();
 
-        $message_info = $this->chat->where(['user_id'=> $user_id])->first();
+        $message_info = $this->chat->where(['user_id'=> $user_id])->get();
 
         $subquery = DB::table('chats')->select(DB::raw('MAX(id) as max_id'))->groupBy('from_type');
 
@@ -91,7 +90,14 @@ class ChatController extends BaseController
 
     public function getConversations(Request $request)
     {
-        $conversations = Chat::whereIn('from_type', [3,4])->orderBy('created_at', 'asc')->get();
+        // $conversations = Chat::whereIn(['user_id'=> $request->user_id, 'receiver_id'=> $request->user_id])->whereIn('from_type', [3,4])->orderBy('created_at', 'asc')->get();
+        $conversations = Chat::where(function($query) use ($request) {
+            $query->where('user_id', $request->user_id)
+                  ->orWhere('receiver_id', $request->user_id);
+        })
+        ->whereIn('from_type', [3, 4])
+        ->orderBy('created_at', 'asc')
+        ->get();
         return $conversations;
     }
 
@@ -102,7 +108,8 @@ class ChatController extends BaseController
         $chatRequest = Chat::create([
             'message' => $request->message,
             'from_type' => $from_type,
-            'user_id' => auth()->user()->id
+            'user_id' => auth()->user()->id,
+            'receiver_id' => $request->user_id
         ]);
 
         $driverDetail = User::find($chatRequest->user_id);

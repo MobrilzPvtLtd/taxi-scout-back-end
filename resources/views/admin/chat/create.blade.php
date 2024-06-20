@@ -25,6 +25,7 @@
                         @endif
                     </div>
                     <form id="myForm" class="form-group" style="margin-top: 20px">
+                        <input type="hidden" name="user_id" value="{{ request()->user_id }}">
                         <div class="publisher bt-1 border-light">
                             <img class="avatar avatar-xs" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
                             <input class="publisher-input" type="text" name="message" autocomplete="off" chat-box class="form-control" placeholder="Write something">
@@ -56,7 +57,8 @@
                 url: "{{ url('/chat/send') }}",
                 method: 'post',
                 data: {
-                    message: $('[name="message"]').val()
+                    message: $('[name="message"]').val(),
+                    user_id: $('[name="user_id"]').val()
                 },
                 success: function(result) {
                     $('[name="message"]').val('');
@@ -71,11 +73,15 @@
             }
         })
         var user = "{{Auth::user()->id}}";
+        var user_id = $('[name="user_id"]').val();
         $.ajax({
             url: "{{ url('/chat/getConversations') }}",
             method: "get",
-
+            data: {
+                user_id: user_id
+            },
             success: function(data){
+                console.log(data);
                 var previousDate = null;
                 var todayDisplayed = false;
                 $('[chat-content]').html('');
@@ -151,7 +157,6 @@
                 },
                 success: function(response) {
                     console.log('Messages marked as seen:', response);
-                    // Optionally, update UI or perform other actions upon success
                 },
                 error: function(xhr, status, error) {
                     console.log('An error occurred while marking messages as seen:', error);

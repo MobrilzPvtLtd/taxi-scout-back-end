@@ -84,12 +84,14 @@ class ChatController extends BaseController
      */
     public function send(Request $request)
     {
+        $company = User::where('company_key', auth()->user()->driver->company_key)->first();
         $from_type = 4;
 
         $chatRequest = Chat::create([
             'message' => $request->message,
             'from_type' => $from_type,
-            'user_id' => auth()->user()->id
+            'user_id' => auth()->user()->id,
+            'receiver_id' => $company->id
         ]);
 
         $driverDetail = User::find($chatRequest->user_id);
