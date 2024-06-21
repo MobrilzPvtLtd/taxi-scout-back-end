@@ -81,7 +81,7 @@
                 user_id: user_id
             },
             success: function(data){
-                console.log(data);
+                // console.log(data);
                 var previousDate = null;
                 var todayDisplayed = false;
                 $('[chat-content]').html('');

@@ -12,6 +12,7 @@ use App\Jobs\NotifyViaMqtt;
 use Illuminate\Http\Request;
 use App\Jobs\Notifications\SendPushNotification;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @group Request-Chat
@@ -33,55 +34,30 @@ class ChatController extends BaseController
      * Chat history for both user & driver
      *
      */
-    public function history(RequestModel $request)
+    public function history(Request $request)
     {
+        $conversations = Chat::where(function($query) {
+            $query->where('user_id', auth()->user()->id)
+                  ->orWhere('receiver_id', auth()->user()->id);
+        })
+        ->whereIn('from_type', [3, 4])
+        ->orderBy('created_at', 'asc')
+        ->get();
 
-        $chats = $request->requestChat()->orderBy('created_at', 'asc')->get();
-
-        if (access()->hasRole(Role::USER)) {
-            $from_type = 1;
-        } else {
-            $from_type = 2;
-        }
-        foreach ($chats as $key => $chat) {
-            if ($chat->from_type == $from_type) {
-
-                $chats[$key]['message_status'] = 'send';
-            } else {
-                $chats[$key]['message_status'] = 'receive';
-            }
-        }
-
-        return $this->respondSuccess($chats, 'chats_listed');
+        return $this->respondSuccess($conversations, 'chats_listed');
     }
 
-    /**
-     * Update Seen
-     *
-     *
-     * */
     public function updateSeen(Request $request){
-
-        if (access()->hasRole(Role::USER)) {
-            $seen_from_type = 2;
-        } else {
-            $seen_from_type = 1;
-        }
-
-        $request_detail = RequestModel::find($request->request_id);
-
-        $request_detail->requestChat()->where('from_type',$seen_from_type)->update(['seen'=>true]);
+        Chat::where(function($query) {
+            $query->where('user_id', auth()->user()->id)
+                  ->orWhere('receiver_id',  auth()->user()->id);
+        })->where('from_type', 3)->update(['seen' => true]);
 
         return $this->respondSuccess(null, 'message_seen_successfully');
 
 
     }
 
-    /**
-     * Send Chat Message
-     * @bodyParam request_id uuid required request id of the trip
-     * @bodyParam message string required message of chat
-     */
     public function send(Request $request)
     {
         $company = User::where('company_key', auth()->user()->driver->company_key)->first();
@@ -96,7 +72,7 @@ class ChatController extends BaseController
 
         $driverDetail = User::find($chatRequest->user_id);
 
-        $chats = Chat::orderBy('created_at', 'asc')->get();
+        $chats = Chat::whereIn('from_type', [3, 4])->orderBy('created_at', 'asc')->get();
 
         $driver = $driverDetail;
         $notifable_driver = $driver->user;

@@ -34,7 +34,6 @@ class ChatController extends BaseController
      */
     public function history(RequestModel $request)
     {
-
         $chats = $request->requestChat()->orderBy('created_at', 'asc')->get();
 
         if (access()->hasRole(Role::USER)) {
@@ -56,8 +55,8 @@ class ChatController extends BaseController
 
     /**
      * Update Seen
-     * 
-     * 
+     *
+     *
      * */
     public function updateSeen(Request $request){
 
@@ -98,8 +97,6 @@ class ChatController extends BaseController
         ]);
 
         $chats = $request_detail->requestChat()->orderBy('created_at', 'asc')->get();
-
-
         if (access()->hasRole(Role::USER)) {
             $from_type = 1;
             $user_type = 'user';
