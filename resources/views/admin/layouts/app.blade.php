@@ -63,13 +63,15 @@
     @yield('extra-js')
 
     <script>
-        $("#is_view").click(function() {
-            $(document).ready(function() {
+        $(".is_view").click(function() {
+            var target = $(this).data('target');
+            console.log(target);
             $.ajax({
                 url: 'chat/seen',
                 type: 'post',
                 data: {
                     _token: '{{ csrf_token() }}',
+                    user_id: target,
                 },
                 success: function(response) {
                     console.log(response);
@@ -78,7 +80,6 @@
                 error: function(xhr, status, error) {
                     console.log('An error occurred: ' + error);
                 }
-            });
             });
         });
     </script>

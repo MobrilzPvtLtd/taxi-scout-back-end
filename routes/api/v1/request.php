@@ -73,6 +73,7 @@ Route::prefix('request')->namespace('Request')->middleware('auth')->group(functi
 
     // History
     Route::get('history', 'RequestHistoryController@index');
+    Route::get('scheduled-rides', 'RequestHistoryController@indexScheduled');
     Route::get('history/{id}', 'RequestHistoryController@getById');
     // Rate the Request
     Route::post('rating', 'RatingsController@rateRequest');

@@ -84,4 +84,18 @@ class RequestHistoryController extends BaseController
         $result  = filter($query, new TripRequestTransformer)->customIncludes($includes)->first();
         return $this->respondSuccess($result);
     }
+
+    public function indexScheduled(){
+        $query = $this->request->orderBy('created_at', 'desc');
+
+        $includes=['driverDetail','requestBill','userDetail'];
+        $query = $this->request->where('user_id', auth()->user()->id)->where('transport_type','taxi')->whereIsCompleted(false)->whereIsCancelled(false)->whereIsLater(true)->orderBy('created_at', 'desc');
+
+        $includes = ['driverDetail','requestBill'];
+
+        $result  = filter($query, new TripRequestTransformer, new RequestFilter)->customIncludes($includes)->paginate();
+
+        return $this->respondSuccess($result,'history_listed');
+    }
+
 }

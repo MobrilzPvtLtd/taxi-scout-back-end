@@ -37,43 +37,8 @@ class DeliveryCreateRequestController extends BaseController
         $this->request = $request;
         $this->database = $database;
     }
-    /**
-    * Create Request
-    * @bodyParam pick_lat double required pikup lat of the user
-    * @bodyParam pick_lng double required pikup lng of the user
-    * @bodyParam drop_lat double required drop lat of the user
-    * @bodyParam drop_lng double required drop lng of the user
-    * @bodyParam drivers json required drivers json can be fetch from firebase db
-    * @bodyParam vehicle_type string required id of zone_type_id
-    * @bodyParam payment_opt tinyInteger required type of ride whther cash or card, wallet('0 => card,1 => cash,2 => wallet)
-    * @bodyParam pick_address string required pickup address of the trip request
-    * @bodyParam pickup_poc_name string optionl pickup poc name of the trip pick address
-    * @bodyParam pickup_poc_mobile string optionl pickup poc mobile of the trip pick address
-    * @bodyParam drop_poc_name string optionl drop poc name of the trip drop address
-    * @bodyParam drop_poc_mobile string optionl drop poc mobile of the trip drop address
-    * @bodyParam goods_type_id integer required goods types of the request
-    * @bodyParam goods_type_quantity string required goods type's quantity of the request
-    * @bodyParam drop_address string required drop address of the trip request
-    * @bodyParam is_later tinyInteger sometimes it represent the schedule rides param must be 1.
-    * @bodyParam trip_start_time timestamp sometimes it represent the schedule rides param must be datetime format:Y-m-d H:i:s.
-    * @bodyParam promocode_id uuid optional id of promo table
-    * @bodyParam rental_pack_id integer optional id of package type
-    * @responseFile responses/requests/create-request.json
-    *
-    */
     public function createRequest(CreateTripRequest $request)
     {
-        /**
-        * Check if the user has registred a trip already
-        * Validate payment option is available.
-        * if card payment choosen, then we need to check if the user has added thier card.
-        * if the paymenr opt is wallet, need to check the if the wallet has enough money to make the trip request
-        * Check if thge user created a trip and waiting for a driver to accept. if it is we need to cancel the exists trip and create new one
-        * Find the zone using the pickup coordinates & get the nearest drivers
-        * create request along with place details
-        * assing driver to the trip depends the assignment method
-        * send emails and sms & push notifications to the user& drivers as well.
-        */
         // Check whether the trip is schedule ride or not
         if ($request->has('is_later') && $request->is_later) {
             return $this->createRideLater($request);
@@ -155,7 +120,7 @@ class DeliveryCreateRequestController extends BaseController
         if($request->has('rental_pack_id') && $request->rental_pack_id){
 
             $request_params['is_rental'] = true;
-            
+
             $request_params['rental_package_id'] = $request->rental_pack_id;
         }
 
@@ -164,7 +129,7 @@ class DeliveryCreateRequestController extends BaseController
             $request_params['book_for_other'] = 1;
 
             if(!$request->has('contact_no_other') || $request->input('contact_no_other')==null){
-                
+
                 $this->throwCustomException('please provide the valid contact');
 
             }
@@ -179,7 +144,7 @@ class DeliveryCreateRequestController extends BaseController
            $request_params['request_eta_amount'] = $request->request_eta_amount;
 
         }
-        
+
         // store request details to db
         // DB::beginTransaction();
         // try {
@@ -218,7 +183,7 @@ class DeliveryCreateRequestController extends BaseController
         // store request place details
         $request_detail->requestPlace()->create($request_place_params);
         $request_result =  fractal($request_detail, new TripRequestTransformer)->parseIncludes('userDetail');
-        
+
         // Send Request to the nearest Drivers
           if ($nearest_drivers[0]=='no-drivers-found') {
                 goto no_drivers_available;
@@ -227,7 +192,7 @@ class DeliveryCreateRequestController extends BaseController
             if ($request->has('is_bid_ride') && $request->input('is_bid_ride')==1) {
                 goto no_drivers_available;
             }
-            
+
         $selected_drivers = [];
         $i = 0;
         foreach ($nearest_drivers[0] as $driver) {
@@ -248,11 +213,11 @@ class DeliveryCreateRequestController extends BaseController
 
         if(get_settings('trip_dispatch_type')==0){
             $selected_drivers[$i]["active"] = 1;
-           
+
         // Add Driver into Firebase Request Meta
         $this->database->getReference('request-meta/'.$request_detail->id)->set(['driver_id'=>$driver->id,'request_id'=>$request_detail->id,'user_id'=>$request_detail->user_id,'active'=>1,'updated_at'=> Database::SERVER_TIMESTAMP]);
 
-        
+
         $driver = Driver::find($driver->id);
 
         $notifable_driver = $driver->user;
@@ -276,14 +241,14 @@ class DeliveryCreateRequestController extends BaseController
 
 
         usort($selected_drivers, function($a, $b) {
-        
+
         return $a['distance_to_pickup'] <=> $b['distance_to_pickup'];
-    
+
         });
         // Send notification to the very first driver
         $first_meta_driver = $selected_drivers[0]['driver_id'];
         $selected_drivers[0]["active"] = 1;
-        
+
         // Add first Driver into Firebase Request Meta
         $this->database->getReference('request-meta/'.$request_detail->id)->set(['driver_id'=>$first_meta_driver,'request_id'=>$request_detail->id,'user_id'=>$request_detail->user_id,'active'=>1,'updated_at'=> Database::SERVER_TIMESTAMP]);
 
@@ -333,7 +298,7 @@ class DeliveryCreateRequestController extends BaseController
         $pick_lat = $request->pick_lat;
         $pick_lng = $request->pick_lng;
 
-        // NEW flow        
+        // NEW flow
         $driver_search_radius = get_settings('driver_search_radius')?:30;
 
         $radius = kilometer_to_miles($driver_search_radius);
@@ -359,13 +324,13 @@ class DeliveryCreateRequestController extends BaseController
         $vehicle_type = $type_id;
 
         $fire_drivers = $this->database->getReference('drivers')->orderByChild('g')->startAt($lower_hash)->endAt($higher_hash)->getValue();
-        
+
         $firebase_drivers = [];
 
         $i=-1;
 
         foreach ($fire_drivers as $key => $fire_driver) {
-            $i +=1; 
+            $i +=1;
             $driver_updated_at = Carbon::createFromTimestamp($fire_driver['updated_at'] / 1000)->timestamp;
 
             if(array_key_exists('vehicle_type',$fire_driver) && $fire_driver['vehicle_type']==$vehicle_type && $fire_driver['is_active']==1 && $fire_driver['is_available']==1 && $conditional_timestamp < $driver_updated_at){
@@ -389,7 +354,7 @@ class DeliveryCreateRequestController extends BaseController
                 }
 
 
-            }      
+            }
 
         }
 
@@ -400,7 +365,7 @@ class DeliveryCreateRequestController extends BaseController
             $nearest_driver_ids = [];
 
                 foreach ($firebase_drivers as $key => $firebase_driver) {
-                    
+
                     $nearest_driver_ids[]=$key;
                 }
 
@@ -428,7 +393,7 @@ class DeliveryCreateRequestController extends BaseController
                 $returned_drivers = [$nearest_drivers,$firebase_drivers];
 
                 return $returned_drivers;
-            
+
         } else {
 
             // return null;
@@ -478,7 +443,7 @@ class DeliveryCreateRequestController extends BaseController
 
         $user_detail->save();
 
-        $trip_start_time = Carbon::parse($request->trip_start_time, $timezone)->setTimezone('UTC')->toDateTimeString();
+        $trip_start_time = Carbon::parse($request->trip_start_time, $timezone)->setTimezone($user_detail->timezone)->toDateTimeString();
 
         $request_params = [
             'request_number'=>$request_number,
@@ -498,11 +463,11 @@ class DeliveryCreateRequestController extends BaseController
         ];
 
         $request_params['company_key'] = auth()->user()->company_key;
-        
+
         if($request->has('rental_pack_id') && $request->rental_pack_id){
 
             $request_params['is_rental'] = true;
-            
+
             $request_params['rental_package_id'] = $request->rental_pack_id;
         }
 
@@ -510,7 +475,7 @@ class DeliveryCreateRequestController extends BaseController
         DB::beginTransaction();
         try {
             $request_detail = $this->request->create($request_params);
-            
+
             // To Store Request stops along with poc details
         if ($request->has('stops')) {
             foreach (json_decode($request->stops) as $key => $stop) {
@@ -541,7 +506,7 @@ class DeliveryCreateRequestController extends BaseController
             'drop_poc_name'=>$request->drop_poc_name,
             'drop_poc_mobile'=>$request->drop_poc_mobile
         ];
-        
+
             // store request place details
             $request_detail->requestPlace()->create($request_place_params);
 
@@ -557,4 +522,5 @@ class DeliveryCreateRequestController extends BaseController
 
         return $this->respondSuccess($request_result,'created_request_successfully');
     }
+
 }

@@ -511,14 +511,13 @@ Route::middleware('auth:web')->group(function () {
         });
 
          // Order Reason CRUD
-         Route::group(['prefix' => 'chat',  'middleware' => 'permission:manage-chat'], function () {
+        Route::group(['prefix' => 'chat',  'middleware' => 'permission:manage-chat'], function () {
             Route::get('/', 'ChatController@index');
             Route::get('/fetch', 'ChatController@fetch');
             Route::get('/getConversations', 'ChatController@getConversations');
             Route::post('send', 'ChatController@store');
             Route::get('/{user_id}', 'ChatController@getById')->name('chatGetById');
             Route::post('seen','ChatController@updateSeen');
-            Route::post('update/{chat}', 'ChatController@update');
             Route::get('delete/{chat}', 'ChatController@delete');
         });
 

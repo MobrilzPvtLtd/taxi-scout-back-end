@@ -1,4 +1,4 @@
-<table class="table table-hover">
+{{-- <table class="table table-hover">
     <thead>
         <tr>
             <th> @lang('view_pages.s_no')</th>
@@ -18,7 +18,7 @@
         <tr>
             <td>{{ $i++ }} </td>
             <td>
-                <a href="{{ route('chatGetById', $result->user_id) }}" id="is_view">
+                <a href="{{ route('chatGetById', $result->user_id) }}">
                     @if($result->seen == 0)
                         <p class="notifyChat">
                             {{$total_chat}}
@@ -43,7 +43,6 @@
                         echo $createdAt->format('d-M-Y');
                     }
                 @endphp
-                {{-- {{ \Carbon\Carbon::parse($result->created_at)->format('d-M-Y') }} --}}
             </td>
         </tr>
     @empty
@@ -63,4 +62,4 @@
         <li>
             <a href="#">{{$results->links()}}</a>
         </li>
-    </ul>
+    </ul> --}}

@@ -456,10 +456,6 @@ class CreateRequestController extends BaseController
     */
     public function createRideLater(CreateTripRequest $request)
     {
-        /**
-        * @TODO validate if the user has any trip with same time period
-        *
-        */
         // get type id
         $zone_type_detail = ZoneType::where('id', $request->vehicle_type)->first();
         $type_id = $zone_type_detail->type_id;
@@ -493,7 +489,7 @@ class CreateRequestController extends BaseController
 
         $user_detail->save();
 
-        $trip_start_time = Carbon::parse($request->trip_start_time, $timezone)->setTimezone('UTC')->toDateTimeString();
+        $trip_start_time = Carbon::parse($request->trip_start_time, $timezone)->setTimezone($user_detail->timezone)->toDateTimeString();
 
         $request_params = [
             'request_number'=>$request_number,
@@ -548,8 +544,6 @@ class CreateRequestController extends BaseController
 
         return $this->respondSuccess($request_result,'created_request_successfully');
     }
-
-
 
     /**
      * Respond For Bid ride

@@ -33,7 +33,7 @@ class ChatController extends BaseController
         $this->chat = $chat;
     }
 
-    public function index()
+    public function index(QueryFilterContract $queryFilter)
     {
 
         $page = trans('pages_names.chat');
@@ -42,16 +42,6 @@ class ChatController extends BaseController
         $sub_menu = '';
 
         $messages = Chat::where('from_type', 4)->orderBy('created_at', 'asc')->get();
-        return view('admin.chat.index', compact('page', 'main_menu', 'sub_menu','messages'));
-
-    }
-
-    public function fetch(QueryFilterContract $queryFilter)
-    {
-        // if(!access()->hasRole(RoleSlug::SUPER_ADMIN)){
-        //     $query = $query->where('orders.user_id', auth()->user()->id);
-        // }
-
         $query = $this->chat->where('from_type', 4)
                 ->join('users', 'chats.user_id', '=', 'users.id')
                 ->select('chats.*', 'users.name', 'users.profile_picture', DB::raw('MAX(user_id) as max_id'))
@@ -60,9 +50,27 @@ class ChatController extends BaseController
                 // ->get();
 
         $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
+        return view('admin.chat.index', compact('page', 'main_menu', 'sub_menu','messages','results'));
 
-        return view('admin.chat._chat', compact('results'));
     }
+
+    // public function fetch(QueryFilterContract $queryFilter)
+    // {
+    //     // if(!access()->hasRole(RoleSlug::SUPER_ADMIN)){
+    //     //     $query = $query->where('orders.user_id', auth()->user()->id);
+    //     // }
+
+    //     $query = $this->chat->where('from_type', 4)
+    //             ->join('users', 'chats.user_id', '=', 'users.id')
+    //             ->select('chats.*', 'users.name', 'users.profile_picture', DB::raw('MAX(user_id) as max_id'))
+    //             ->groupBy('user_id')
+    //             ->orderBy('chats.created_at', 'desc');
+    //             // ->get();
+
+    //     $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
+
+    //     return view('admin.chat._chat', compact('results'));
+    // }
 
     public function getById($user_id)
     {
@@ -142,13 +150,7 @@ class ChatController extends BaseController
     }
 
     public function updateSeen(Request $request){
-
-        $seen_from_type = 4;
-        $driverDetail = User::find(auth()->user()->id);
-
-        $chats = Chat::whereIn('from_type', [3,4])->orderBy('created_at', 'asc')->get();
-
-        $request_detail = Chat::where('from_type',$seen_from_type)->update(['seen'=>true]);
+        Chat::where('user_id',$request->user_id)->where('from_type',4)->where('seen',0)->update(['seen'=>true]);
         return $this->respondSuccess(null, 'message_seen_successfully');
     }
 
