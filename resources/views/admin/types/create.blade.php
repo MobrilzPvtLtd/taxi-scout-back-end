@@ -99,7 +99,7 @@
                                             <span class="text-danger">{{ $errors->first('model_name') }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    {{-- <div class="col-6">
                                         <div class="form-group m-b-25">
                                             <label for="price">Per Km Price<span
                                                     class="text-danger">*</span></label>
@@ -108,7 +108,7 @@
                                                 placeholder="Per Km Price" min="1">
                                             <span class="text-danger">{{ $errors->first('price') }}</span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- <div class="col-6" name="delivery" id="delivery">
                                         <div class="form-group m-b-25">
                                             <label for="maximum_weight_can_carry">@lang('view_pages.maximum_weight_can_carry') <span

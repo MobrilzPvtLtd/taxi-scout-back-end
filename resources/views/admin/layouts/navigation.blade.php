@@ -267,7 +267,7 @@
             @if (auth()->user()->can('view-requests'))
                 <li class="treeview {{ 'trip-request' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
-                        <i class="fa fa-map"></i>
+                        <i class="fa fa-book"></i>
                         <span> Bookings </span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-right pull-right"></i>
@@ -376,7 +376,12 @@
             @endif --}}
 
             @if (auth()->user()->can('map-menu'))
-                <li class="treeview {{ 'map' == $main_menu ? 'active menu-open' : '' }}">
+                @if (auth()->user()->can('view-zone'))
+                    <li class="{{ 'zone' == $sub_menu ? 'active' : '' }}">
+                        <a href="{{ url('/zone') }}"><i class="fa fa-map"></i>@lang('pages_names.zone')</a>
+                    </li>
+                @endif
+                {{-- <li class="treeview {{ 'map' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-map"></i>
                         <span> @lang('pages_names.map') </span>
@@ -396,9 +401,8 @@
                                         class="fa fa-circle-thin"></i>@lang('pages_names.airport')</a>
                             </li>
                         @endif
-
                     </ul>
-                </li>
+                </li> --}}
             @endif
 
             @if (auth()->user()->can('vehicle-fare'))

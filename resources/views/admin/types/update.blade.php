@@ -28,18 +28,20 @@
                                   enctype="multipart/form-data">
                                 {{csrf_field()}}
                                 <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label for="">Taxi Company<span class="text-danger">*</span></label>
-                                            <select name="company_key" id="company_key" class="form-control" required>
-                                                <option value="" selected disabled>Select Taxi Company</option>
-                                                @foreach ($admin as $company)
-                                                    <option value="{{ $company->user->company_key }}" {{ $company->user->company_key == $type->company_key ? 'selected' : null }}>{{ $company->first_name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                    @if(auth()->user()->id == 1)
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="">Taxi Company<span class="text-danger">*</span></label>
+                                                <select name="company_key" id="company_key" class="form-control" required>
+                                                    <option value="" selected disabled>Select Taxi Company</option>
+                                                    @foreach ($admin as $company)
+                                                        <option value="{{ $company->user->company_key }}" {{ $company->user->company_key == $type->company_key ? 'selected' : null }}>{{ $company->first_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="">@lang('view_pages.transport_type') <span
@@ -97,14 +99,14 @@
                                             <span class="text-danger">{{ $errors->first('model_name') }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    {{-- <div class="col-6">
                                         <div class="form-group m-b-25">
                                             <label for="price">Per Km Price<span
                                                     class="text-danger">*</span></label>
                                             <input class="form-control" type="text" id="price" name="price" value="{{ old('price',$type->price)}}"  required="" placeholder="Per Km Price" min="1">
                                             <span class="text-danger">{{ $errors->first('price') }}</span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- <div class="col-6" name="delivery" id="delivery">
                                         <div class="form-group m-b-25">
                                             <label

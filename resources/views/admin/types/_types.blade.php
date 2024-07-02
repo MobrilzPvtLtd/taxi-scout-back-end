@@ -3,8 +3,6 @@
         <table class="table table-hover">
             <thead>
             <tr>
-
-
                 <th> @lang('view_pages.s_no')
                     <span style="float: right;">
                     </span>
@@ -28,7 +26,11 @@
                     <span style="float: right;">
                     </span>
                 </th>
-                <th> Per Km Price
+                {{-- <th> Per Km Price
+                    <span style="float: right;">
+                    </span>
+                </th> --}}
+                <th> Capacity
                     <span style="float: right;">
                     </span>
                 </th>
@@ -96,8 +98,8 @@
                             @endif
                         </td> --}}
                         <td>{{ $result->model_name }}</td>
-                        <td> {{$result->price}}</td>
-
+                        {{-- <td> {{$result->price}}</td> --}}
+                        <td> {{$result->capacity}}</td>
 
                         <td><img class="img-circle" src="{{asset($result->icon)}}" alt=""></td>
                         @if($result->active)
