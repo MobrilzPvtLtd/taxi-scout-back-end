@@ -35,7 +35,7 @@ class VehicleFareController extends Controller
         return view('admin.vehicle_fare._fare_list', compact('results'));
     }
 
-    public function create() 
+    public function create()
     {
         $zones = Zone::active()->get();
 
@@ -49,18 +49,17 @@ class VehicleFareController extends Controller
 
     public function fetchVehiclesByZone(Request $request)
     {
-
-        $zone = Zone::whereId($request->_zone)->first();        
+        $zone = Zone::whereId($request->_zone)->first();
         $ids = $zone->zoneType()->pluck('type_id')->toArray();
         if($request->transport_type!='both'){
             $types = VehicleType::whereNotIn('id', $ids)->active()->where(function($query)use($request){
-            $query->where('is_taxi',$request->transport_type)->orWhere('is_taxi','both');
-        })->get();    
+            $query->where('is_taxi',$request->transport_type);
+            // ->orWhere('is_taxi','both');
+            $query->where('company_key',auth()->user()->company_key);
+        })->get();
         }else{
             $types = VehicleType::whereNotIn('id', $ids)->active()->get();
         }
-        
-
         return response()->json(['success' => true, 'data' => $types]);
     }
 
@@ -69,7 +68,7 @@ class VehicleFareController extends Controller
     {
 
         $types = VehicleType::where('id', $request->selectedType)->first();
-    
+
         return response()->json(['success' => true, 'data' => $types]);
     }
 
@@ -102,7 +101,7 @@ class VehicleFareController extends Controller
         $zoneType->zoneTypePrice()->create([
             'price_type' => zoneRideType::RIDENOW,
             'base_price' => $request->ride_now_base_price,
-            'price_per_distance' => $request->ride_now_price_per_distance,
+            'price_per_distance' => $request->ride_now_price_per_distance ?? 0.00,
             'cancellation_fee' => $request->ride_now_cancellation_fee,
             'base_distance' => $request->ride_now_base_distance ? $request->ride_now_base_distance : 0,
             'price_per_time' => $request->ride_now_price_per_time ? $request->ride_now_price_per_time : 0.00,
@@ -131,13 +130,13 @@ class VehicleFareController extends Controller
         $zone_price->zoneType()->update([
             'type_id' => $request->type,
             'payment_type' => implode(',', $request->payment_type),
-            'transport_type' => $request->transport_type,            
+            'transport_type' => $request->transport_type,
         ]);
         if($zone_price->price_type == 1)
         {
         $zone_price->update([
             'base_price' => $request->ride_now_base_price,
-            'price_per_distance' => $request->ride_now_price_per_distance,
+            'price_per_distance' => $request->ride_now_price_per_distance ?? 0.00,
             'cancellation_fee' => $request->ride_now_cancellation_fee,
             'base_distance' => $request->ride_now_base_distance ? $request->ride_now_base_distance : 0,
             'price_per_time' => $request->ride_now_price_per_time ? $request->ride_now_price_per_time : 0.00,
@@ -171,7 +170,7 @@ class VehicleFareController extends Controller
 
         $zone_type = ZoneType::where('id', $zone_price->zone_type_id)->get();
         // $package = ZoneTypePackagePrice::where('zone_type_id', $zone_price->zone_type_id)->get();
-        
+
         foreach($zone_type as $type)
         {
           $type->delete();
@@ -182,7 +181,7 @@ class VehicleFareController extends Controller
         $message = trans('succes_messages.vehicle_fare_deleted_succesfully');
 
         return $message;
- 
+
 
     }
 
