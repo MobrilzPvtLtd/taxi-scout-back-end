@@ -77,7 +77,7 @@ class CreateRequestController extends BaseController
         //Find the zone using the pickup coordinates & get the nearest drivers
 
         $nearest_drivers = $this->getFirebaseDrivers($request, $type_id);
-
+        // dd($nearest_drivers);
         // fetch unit from zone
         $unit = $zone_type_detail->zone->unit;
         // Fetch user detail
@@ -307,20 +307,20 @@ class CreateRequestController extends BaseController
 
         $vehicle_type = $type_id;
 
-        $fire_drivers = $this->database->getReference('drivers')->orderByChild('g')->startAt($lower_hash)->endAt($higher_hash)->getValue();
-
+        $fire_drivers = $this->database->getReference('drivers')->orderByChild('g')
+        ->startAt($lower_hash)
+        ->endAt($higher_hash)
+        ->getValue();
+        // dd($fire_drivers);
         $firebase_drivers = [];
 
         $i=-1;
-
 
         foreach ($fire_drivers as $key => $fire_driver) {
             $i +=1;
             $driver_updated_at = Carbon::createFromTimestamp($fire_driver['updated_at'] / 1000)->timestamp;
 
-
             if(array_key_exists('vehicle_type',$fire_driver) && $fire_driver['vehicle_type']==$vehicle_type && $fire_driver['is_active']==1 && $fire_driver['is_available']==1 && $conditional_timestamp < $driver_updated_at){
-
 
                 $distance = distance_between_two_coordinates($pick_lat,$pick_lng,$fire_driver['l'][0],$fire_driver['l'][1],'K');
 

@@ -185,13 +185,12 @@ class DriverSignupController extends LoginController
         $driver = $user->driver()->create($created_params);
 
         if($request->has('vehicle_types')){
-
-            foreach (json_decode($request->vehicle_types) as $key => $type) {
-
-                $driver->driverVehicleTypeDetail()->create(['vehicle_type'=>$type]);
-
+            $vehicleTypes = json_decode($request->vehicle_types);
+            if ($vehicleTypes !== null && (is_array($vehicleTypes) || is_object($vehicleTypes))) {
+                foreach ($vehicleTypes as $key => $type) {
+                    $driver->driverVehicleTypeDetail()->create(['vehicle_type'=>$type]);
+                }
             }
-
         }
 
         // // Store records to firebase

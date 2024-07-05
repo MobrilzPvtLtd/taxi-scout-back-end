@@ -92,6 +92,7 @@ class DriverProfileTransformer extends Transformer
         ];
 
         $params['vehicle_types'] = [];
+        // dd($params);
 
         $params['enable_my_route_booking_feature'] =  false;
 
@@ -249,6 +250,7 @@ class DriverProfileTransformer extends Transformer
      */
     public function includeOnTripRequest(Driver $user)
     {
+        // dd(4);
         // dd($user);
         $request = $user->requestDetail()->where('is_cancelled', false)->where('driver_rated', false)->first();
 
@@ -265,6 +267,7 @@ class DriverProfileTransformer extends Transformer
     */
     public function includeSos(Driver $user)
     {
+        // dd(2);
         $request = Sos::select('id', 'name', 'number', 'user_type', 'created_by')
         ->where('created_by', auth()->user()->id)
         ->orWhere('user_type', 'admin')
@@ -284,6 +287,7 @@ class DriverProfileTransformer extends Transformer
      */
     public function includeMetaRequest(Driver $user)
     {
+        // dd(5);
         $request_meta = RequestMeta::where('driver_id', $user->id)->where('active', true)->first();
         if ($request_meta) {
             $request = $request_meta->request;
@@ -301,7 +305,7 @@ class DriverProfileTransformer extends Transformer
     */
     public function includeDriverVehicleType(Driver $user)
     {
-
+        // dd(3);
         $driverVehicleType = $user->driverVehicleTypeDetail;
 
         return $driverVehicleType
