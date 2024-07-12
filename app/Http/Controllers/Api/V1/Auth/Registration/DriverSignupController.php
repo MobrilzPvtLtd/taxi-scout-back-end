@@ -194,7 +194,20 @@ class DriverSignupController extends LoginController
         }
 
         // // Store records to firebase
-        $this->database->getReference('drivers/'.'driver_'.$driver->id)->set(['id'=>$driver->id,'vehicle_type'=>$request->input('vehicle_type'),'active'=>1,'updated_at'=> Database::SERVER_TIMESTAMP]);
+        $this->database->getReference('drivers/'.'driver_'.$driver->id)->set([
+            'id'=>$driver->id,
+            'active'=>1,
+            'bearing'=>-92.71012878417969,
+            'demo_key'=>"",
+            'g'=>"gcqmrsmmj3",
+            'is_active'=>1,
+            'is_available'=>true,
+            'l'=>[ 52.9783159, -2.123904 ],
+            'vehicle_type'=>$request->input('vehicle_type'),
+            'vehicle_number' => 10,
+            'vehicle_type_name' => 'MiniTest',
+            'updated_at'=> Database::SERVER_TIMESTAMP
+        ]);
 
         $driver_detail_data = $request->only(['is_company_driver','company']);
         $driver_detail = $driver->driverDetail()->create($driver_detail_data);
