@@ -4,8 +4,10 @@
         $main_menu = 'settings';
         $sub_menu = 'translations';
     }
-    $total_chat = App\Models\Request\Chat::where('from_type', 4)->where('seen', 0)->count();
-    // dd($total_chat);
+    $company = App\Models\User::where('company_key', auth()->user()->company_key)->first();
+
+    $total_chat = App\Models\Request\Chat::where('from_type', 4)->where('seen', 0)
+    ->where('receiver_id', $company->id)->count();
 @endphp
 <aside class="main-sidebar">
     <!-- sidebar-->
