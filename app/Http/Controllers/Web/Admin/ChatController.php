@@ -75,30 +75,36 @@ class ChatController extends BaseController
     //     return view('admin.chat._chat', compact('results'));
     // }
 
+
     public function getById($user_id)
     {
         $page = trans('pages_names.chat');
         $main_menu = 'manage-chat';
         $sub_menu = '';
         $auth_user = auth()->user()->id;
-        // dd($auth_user);
-        // $messages = Chat::whereIn('from_type', [3,4])->orderBy('created_at', 'asc')->get();
 
-        $message_info = $this->chat->where(['user_id'=> $user_id])->get();
+        $message_info = $this->chat->where('user_id', $user_id)->get();
 
         $subquery = DB::table('chats')->select(DB::raw('MAX(id) as max_id'))->groupBy('from_type');
-
-        $user_messages = $this->chat->select('chats.*', 'users.name', 'users.profile_picture')
+        $user_messages = $this->chat
+                            ->select('chats.*', 'users.name', 'users.profile_picture')
                             ->join('users', 'chats.user_id', '=', 'users.id')
                             ->where('from_type', '4')
                             ->whereIn('chats.id', $subquery)
                             ->where('receiver_id', $auth_user)
                             ->orderBy('chats.created_at', 'desc')
                             ->get();
-        // $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
 
-        return view('admin.chat.create', compact('user_messages','message_info', 'page', 'main_menu', 'sub_menu'));
+        $unique_receiver_ids = $this->chat->where('user_id', $user_id)->distinct()->pluck('receiver_id')->toArray();
+        $userHasMessages = in_array($auth_user, $unique_receiver_ids);
+
+        if (!$userHasMessages) {
+            return abort(404);
+        }
+
+        return view('admin.chat.create', compact('user_messages', 'message_info', 'page', 'main_menu', 'sub_menu'));
     }
+
 
     public function getConversations(Request $request)
     {
