@@ -42,12 +42,17 @@ class ChatController extends BaseController
         $sub_menu = '';
 
         $messages = Chat::where('from_type', 4)->orderBy('created_at', 'asc')->get();
+
+        $company = User::where('company_key', auth()->user()->company_key)->first();
+
         $query = $this->chat->where('from_type', 4)
                 ->join('users', 'chats.user_id', '=', 'users.id')
                 ->select('chats.*', 'users.name', 'users.profile_picture', DB::raw('MAX(user_id) as max_id'))
                 ->groupBy('user_id')
+                ->where('receiver_id', $company->id)
                 ->orderBy('chats.created_at', 'desc');
                 // ->get();
+        // dd($query);
 
         $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
         return view('admin.chat.index', compact('page', 'main_menu', 'sub_menu','messages','results'));
