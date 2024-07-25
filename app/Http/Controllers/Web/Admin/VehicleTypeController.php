@@ -159,16 +159,25 @@ class VehicleTypeController extends BaseController
     */
     public function edit($id)
     {
+        // $page = trans('pages_names.edit_type');
+        // $type = $this->vehicle_type->where('id', $id)->first();
+        // // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
+        // // $services = ServiceLocation::whereActive(true)->get();
+        // $main_menu = 'types';
+        // $sub_menu = '';
+        // $admin = AdminDetail::whereHas('user', function ($query) {
+        //     $query->whereNotNull('company_key');
+        // })->get();
+        // return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type','admin'));
+
         $page = trans('pages_names.edit_type');
         $type = $this->vehicle_type->where('id', $id)->first();
         // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
         // $services = ServiceLocation::whereActive(true)->get();
+        $app_for = config('app.app_for');
         $main_menu = 'types';
         $sub_menu = '';
-        $admin = AdminDetail::whereHas('user', function ($query) {
-            $query->whereNotNull('company_key');
-        })->get();
-        return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type','admin'));
+        return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type', 'app_for'));
     }
 
 
@@ -187,31 +196,40 @@ class VehicleTypeController extends BaseController
     public function update(UpdateVehicleTypeRequest $request, VehicleType $vehicle_type)
     {
 
-        // if (env('APP_FOR')=='demo') {
-        //     $message = trans('succes_messages.you_are_not_authorised');
+        if (env('APP_FOR')=='demo') {
+            $message = trans('succes_messages.you_are_not_authorised');
 
-        //     return redirect('types')->with('warning', $message);
-        // }
+            return redirect('types')->with('warning', $message);
+        }
         // dd($request->all());
         $this->validateAdmin();
 
-        $created_params = $request->only(['name', 'capacity','company_key','model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
+        // $created_params = $request->only(['name', 'capacity','company_key','model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
+
+        $created_params = $request->only(['name', 'capacity','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
 
         $is_taxi = $request->transport_type;
-        if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $created_params['company_key'] = auth()->user()->company_key;
-        }
 
-        if ($is_taxi == 'delivery')
+        // if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+        //     $created_params['company_key'] = auth()->user()->company_key;
+        // }
+
+        if ($request->size)
         {
             $created_params['size'] = $request->size;
             $created_params['capacity'] = $request->maximum_weight_can_carry;
         }
 
-        $created_params['smoking'] = (int)$request->smoking;
-        $created_params['pets'] = (int)$request->pets;
-        $created_params['drinking'] = (int)$request->drinking;
-        $created_params['handicaped'] = (int)$request->handicaped;
+        // if ($is_taxi == 'delivery')
+        // {
+        //     $created_params['size'] = $request->size;
+        //     $created_params['capacity'] = $request->maximum_weight_can_carry;
+        // }
+
+        // $created_params['smoking'] = (int)$request->smoking;
+        // $created_params['pets'] = (int)$request->pets;
+        // $created_params['drinking'] = (int)$request->drinking;
+        // $created_params['handicaped'] = (int)$request->handicaped;
 
         if ($uploadedFile = $this->getValidatedUpload('icon', $request)) {
             $created_params['icon'] = $this->imageUploader->file($uploadedFile)

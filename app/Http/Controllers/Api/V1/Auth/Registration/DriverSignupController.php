@@ -83,27 +83,33 @@ class DriverSignupController extends LoginController
 
     public function register(DriverRegistrationRequest $request)
     {
-        $adminDetail = AdminDetail::whereHas('user', function ($query) use ($request) {
-            $query->where('company_key', $request->input('company_key'));
-        })->first();
+        // $adminDetail = AdminDetail::whereHas('user', function ($query) use ($request) {
+        //     $query->where('company_key', $request->input('company_key'));
+        // })->first();
 
-        if ($adminDetail->package_id) {
-            $sub = Subscription::find($adminDetail->package_id);
+        // if ($adminDetail->package_id) {
+        //     $sub = Subscription::find($adminDetail->package_id);
 
-            if ($sub && $sub->package_name == "Free") {
+        //     if ($sub && $sub->package_name == "Free") {
 
-                $registeredDriverCount = Driver::where('company_key', $request->input('company_key'))->count();
+        //         $registeredDriverCount = Driver::where('company_key', $request->input('company_key'))->count();
 
-                if ($registeredDriverCount > 0) {
-                    $this->throwCustomException('If your company has already registered a driver, you cannot register another one. Each company is allowed to have only one registered driver at a time.');
-                }
-            }
-        }
+        //         if ($registeredDriverCount > 0) {
+        //             $this->throwCustomException('If your company has already registered a driver, you cannot register another one. Each company is allowed to have only one registered driver at a time.');
+        //         }
+        //     }
+        // }
 
         $mobileUuid = $request->input('uuid');
-        $created_params = $request->only(['service_location_id', 'company_key', 'driving_license','name','mobile','email','address','state','city','country','approve','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','smoking','pets','drinking','handica']);
+        // $created_params = $request->only(['service_location_id', 'company_key', 'driving_license','name','mobile','email','address','state','city','country','approve','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','smoking','pets','drinking','handica']);
+
+        Log::info($request->all());
+        $created_params = $request->only(['service_location_id', 'name','mobile','email','address','state','city','country','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','custom_make','custom_model']);
+
+        $mobile = $request->mobile;
 
         $created_params['postal_code'] = $request->postal_code;
+
         if ($request->input('service_location_id')) {
             $timezone = ServiceLocation::where('id', $request->input('service_location_id'))->pluck('timezone')->first();
         } else {
@@ -112,62 +118,86 @@ class DriverSignupController extends LoginController
 
         $country_code = $this->country->where('dial_code', $request->input('country'))->exists();
 
-        $validate_exists_email = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN,Role::USER])->where('email', $request->email)->exists();
-
-        if ($validate_exists_email) {
-            $this->throwCustomException('Provided email has already been taken');
+        if (!$country_code) {
+            $this->throwCustomException('unable to find country');
         }
-
-        $mobile = $request->mobile;
-        $company_key = $request->company_key;
-
-        $validate_exists_mobile = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN,Role::USER])->where('mobile', $mobile)->exists();
-
-        if ($validate_exists_mobile) {
-            $this->throwCustomException('Provided mobile has already been taken');
-        }
-
         $country_id = $this->country->where('dial_code', $request->input('country'))->pluck('id')->first();
 
         $created_params['country'] = $country_id;
-        $created_params['approve'] = 2;
 
         $profile_picture = null;
 
-        // if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
-        //     $profile_picture = $this->imageUploader->file($uploadedFile)
-        //         ->saveProfilePicture();
+        if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
+            $profile_picture = $this->imageUploader->file($uploadedFile)
+                ->saveProfilePicture();
+        }
+
+        // $validate_exists_email = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN,Role::USER])->where('email', $request->email)->exists();
+
+        // if ($validate_exists_email) {
+        //     $this->throwCustomException('Provided email has already been taken');
         // }
 
-        if ($request->hasFile('profile_picture')) {
-            $profile_picture = $request->file('profile_picture')->store('profile_picture', 'public');
-            $data = $request->except('profile_picture');
-            $data['profile_picture'] = $profile_picture;
+        // $company_key = $request->company_key;
+
+        // $validate_exists_mobile = $this->user->belongsTorole([Role::DRIVER,Role::ADMIN,Role::USER])->where('mobile', $mobile)->exists();
+
+        // if ($validate_exists_mobile) {
+        //     $this->throwCustomException('Provided mobile has already been taken');
+        // }
+
+
+        // $created_params['approve'] = 2;
+
+        // if ($request->hasFile('profile_picture')) {
+        //     $profile_picture = $request->file('profile_picture')->store('profile_picture', 'public');
+        //     $data = $request->except('profile_picture');
+        //     $data['profile_picture'] = $profile_picture;
+        // }
+
+        if ($request->has('email_confirmed') == true)
+        {
+            $data['email_confirmed'] = true;
         }
+        // $data = [
+        //     'name' => $request->input('name'),
+        //     'email' => $request->input('email'),
+        //     'password' => bcrypt($request->input('password')),
+        //     'mobile' => $mobile,
+        //     'mobile_confirmed' => true,
+        //     'active' => 0,
+        //     'fcm_token'=>$request->input('device_token'),
+        //     'login_by'=>$request->input('login_by'),
+        //     'timezone'=>$timezone,
+        //     'country'=>$country_id,
+        //     'profile_picture'=>$profile_picture,
+        //     'refferal_code'=>str_random(6),
+        //     'lang'=>$request->input('lang'),
+        //     'smoking'=>$request->input('smoking'),
+        //     'pets'=>$request->input('pets'),
+        //     'drinking'=>$request->input('drinking'),
+        //     'handica'=>$request->input('handica'),
+        // ];
 
         $data = [
             'name' => $request->input('name'),
+            'gender' => $request->input('gender'),
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
             'mobile' => $mobile,
             'mobile_confirmed' => true,
-            'active' => 0,
             'fcm_token'=>$request->input('device_token'),
             'login_by'=>$request->input('login_by'),
             'timezone'=>$timezone,
             'country'=>$country_id,
             'profile_picture'=>$profile_picture,
             'refferal_code'=>str_random(6),
-            'lang'=>$request->input('lang'),
-            'smoking'=>$request->input('smoking'),
-            'pets'=>$request->input('pets'),
-            'drinking'=>$request->input('drinking'),
-            'handica'=>$request->input('handica'),
+            'lang'=>$request->input('lang')
         ];
 
-        // if (env('APP_FOR')=='demo' && $request->has('company_key') && $request->input('company_key')) {
-        //     $data['company_key'] = $request->input('company_key');
-        // }
+        if (env('APP_FOR')=='demo' && $request->has('company_key') && $request->input('company_key')) {
+            $data['company_key'] = $request->input('company_key');
+        }
 
 
         if($request->has('is_bid_app')){
@@ -176,38 +206,48 @@ class DriverSignupController extends LoginController
 
         $user = $this->user->create($data);
 
-        $created_params['company_key'] = $company_key;
+        // $created_params['company_key'] = $company_key;
         $created_params['mobile'] = $mobile;
         $created_params['uuid'] = driver_uuid();
         $created_params['active'] = false;
-        $created_params['transport_type'] = $request->transport_type;
+        if($request->has('transport_type')) {
+            $created_params['transport_type'] = $request->transport_type;
+        }
+        // $created_params['transport_type'] = $request->transport_type;
 
         $driver = $user->driver()->create($created_params);
 
+        // if($request->has('vehicle_types')){
+        //     $vehicleTypes = json_decode($request->vehicle_types);
+        //     if ($vehicleTypes !== null && (is_array($vehicleTypes) || is_object($vehicleTypes))) {
+        //         foreach ($vehicleTypes as $key => $type) {
+        //             $driver->driverVehicleTypeDetail()->create(['vehicle_type'=>$type]);
+        //         }
+        //     }
+        // }
+
         if($request->has('vehicle_types')){
-            $vehicleTypes = json_decode($request->vehicle_types);
-            if ($vehicleTypes !== null && (is_array($vehicleTypes) || is_object($vehicleTypes))) {
-                foreach ($vehicleTypes as $key => $type) {
-                    $driver->driverVehicleTypeDetail()->create(['vehicle_type'=>$type]);
-                }
+            foreach (json_decode($request->vehicle_types) as $key => $type) {
+                $driver->driverVehicleTypeDetail()->create(['vehicle_type'=>$type]);
             }
         }
 
         // // Store records to firebase
-        $this->database->getReference('drivers/'.'driver_'.$driver->id)->set([
-            'id'=>$driver->id,
-            'active'=>1,
-            'bearing'=>-92.71012878417969,
-            'demo_key'=>"",
-            'g'=>"gcqmrsmmj3",
-            'is_active'=>1,
-            'is_available'=>true,
-            'l'=>[ 52.9783159, -2.123904 ],
-            'vehicle_type'=>$request->input('vehicle_type'),
-            'vehicle_number' => 10,
-            'vehicle_type_name' => 'MiniTest',
-            'updated_at'=> Database::SERVER_TIMESTAMP
-        ]);
+        $this->database->getReference('drivers/'.'driver_'.$driver->id)->set(['id'=>$driver->id,'vehicle_type'=>$request->input('vehicle_type'),'active'=>1,'gender'=>$driver->gender,'updated_at'=> Database::SERVER_TIMESTAMP]);
+        // $this->database->getReference('drivers/'.'driver_'.$driver->id)->set([
+        //     'id'=>$driver->id,
+        //     'active'=>1,
+        //     'bearing'=>-92.71012878417969,
+        //     'demo_key'=>"",
+        //     'g'=>"gcqmrsmmj3",
+        //     'is_active'=>1,
+        //     'is_available'=>true,
+        //     'l'=>[ 52.9783159, -2.123904 ],
+        //     'vehicle_type'=>$request->input('vehicle_type'),
+        //     'vehicle_number' => 10,
+        //     'vehicle_type_name' => 'MiniTest',
+        //     'updated_at'=> Database::SERVER_TIMESTAMP
+        // ]);
 
         $driver_detail_data = $request->only(['is_company_driver','company']);
         $driver_detail = $driver->driverDetail()->create($driver_detail_data);
@@ -217,47 +257,47 @@ class DriverSignupController extends LoginController
 
         $user->attachRole(Role::DRIVER);
 
-        // if(($user->email_confirmed) == true){
+        if(($user->email_confirmed) == true){
 
-        //     /*mail Template*/
-        //     $user_name = $user->name;
-        //     $mail_template = MailTemplate::where('mail_type', 'welcome_mail_driver')->first();
+            /*mail Template*/
+            $user_name = $user->name;
+            $mail_template = MailTemplate::where('mail_type', 'welcome_mail_driver')->first();
 
-        //     $description = $mail_template->description;
+            $description = $mail_template->description;
 
-        //     $description = str_replace('$user_name', $user_name, $description);
+            $description = str_replace('$user_name', $user_name, $description);
 
-        //     $mail_template->description = $description;
+            $mail_template->description = $description;
 
-        //     $mail_template = $mail_template->description;
+            $mail_template = $mail_template->description;
 
-        //     $user_mail = $user->email;
+            $user_mail = $user->email;
 
-        //     // dispatch(new SendMailNotification($mail_template, $user_mail));
+            //dispatch(new SendMailNotification($mail_template, $user_mail));
 
-        // /*mail Template*/
-        // }
-        // event(new UserRegistered($user));
-
-        $otpDigit = mt_rand(100000, 999999);
-
-        $mail_otp = MailOtp::create([
-            'email' => $request->email,
-            'otp' => $otpDigit,
-        ]);
-
-        $otp = [
-            'name' => $user->name,
-            'email' => $user->email,
-            'otp' => $mail_otp->otp,
-        ];
-
-        if ($request->has('email')) {
-            Mail::to($user->email)->send(new OtpMail($otp));
+        /*mail Template*/
         }
+        event(new UserRegistered($user));
 
-		// return $this->respondOk("Your account register successfully.");
-        return $this->respondOk("Your account register successfully. Please check your email for 6 digit OTP");
+        // $otpDigit = mt_rand(100000, 999999);
+
+        // $mail_otp = MailOtp::create([
+        //     'email' => $request->email,
+        //     'otp' => $otpDigit,
+        // ]);
+
+        // $otp = [
+        //     'name' => $user->name,
+        //     'email' => $user->email,
+        //     'otp' => $mail_otp->otp,
+        // ];
+
+        // if ($request->has('email')) {
+        //     Mail::to($user->email)->send(new OtpMail($otp));
+        // }
+
+		// // return $this->respondOk("Your account register successfully.");
+        // return $this->respondOk("Your account register successfully. Please check your email for 6 digit OTP");
 
         // $this->throwCustomException('Your account is pending approval. Please wait for our team to review and approve your account.');
 
@@ -267,7 +307,7 @@ class DriverSignupController extends LoginController
         //     return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
         // }
         // DB::commit();
-        // return $this->authenticateAndRespond($user, $request, $needsToken=true);
+        return $this->authenticateAndRespond($user, $request, $needsToken=true);
     }
 
     /**
