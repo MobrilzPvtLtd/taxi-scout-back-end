@@ -48,26 +48,26 @@ class DashboardController extends BaseController
 
         $today = date('Y-m-d');
 
-        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+        // if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
             $total_drivers = Driver::where('approve', 2)->where('owner_id', null)->count();
             $total_waiting_drivers = Driver::where('approve', 0)->where('owner_id', null)->count();
             $total_aproved_drivers = Driver::where('approve', 1)->where('owner_id', null)->count();
             $total_vehicleType = VehicleType::count();
             $total_admin = AdminDetail::count();
             $total_booking = RequestRequest::companyKey()->where('transport_type','taxi')->count();
-        }else{
-            $total_drivers = Driver::where('approve', 2)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+        // }else{
+        //     $total_drivers = Driver::where('approve', 2)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
-            $total_aproved_drivers = Driver::where('approve', 1)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+        //     $total_aproved_drivers = Driver::where('approve', 1)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
-            $total_vehicleType = VehicleType::where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+        //     $total_vehicleType = VehicleType::where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
 
-            $total_waiting_drivers = Driver::where('approve', 0)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->where('owner_id', null)->count();
+        //     $total_waiting_drivers = Driver::where('approve', 0)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->where('owner_id', null)->count();
 
-            $total_booking = RequestRequest::companyKey()->where('transport_type','taxi')->count();
-            // dd($total_booking);
-            $total_admin = '';
-        }
+        //     $total_booking = RequestRequest::companyKey()->where('transport_type','taxi')->count();
+        //     // dd($total_booking);
+        //     $total_admin = '';
+        // }
 
 
         // $total_drivers = Driver::selectRaw('
