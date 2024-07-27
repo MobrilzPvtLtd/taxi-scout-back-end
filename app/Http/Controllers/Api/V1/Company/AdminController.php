@@ -30,6 +30,7 @@ use App\Mail\SuperAdminNotification;
 use App\Models\Admin\ServiceLocation;
 use App\Models\MailOtp;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 /**
@@ -126,12 +127,13 @@ class AdminController extends BaseController
      */
     public function store(CreateAdminRequest $request)
     {
-        $created_params = $request->only(['service_location_id', 'company_name','mobile','email','address','state','city','country']);
+        $created_params = $request->only(['service_location_id', 'password','company_name','name','mobile','email','address','state','city','country']);
 
-        $created_params['pincode'] = $request->postal_code;
-        $created_params['first_name'] = $request->name;
+        $created_params['postal_code'] = $request->postal_code;
+        $created_params['owner_name'] = $request->name;
+        $created_params['password'] = bcrypt($request->input('password'));
 
-        // $created_params['created_by'] = 1;
+        $created_params['active'] = false;
         if ($request->input('service_location_id')) {
             $timezone = ServiceLocation::where('id', $request->input('service_location_id'))->pluck('timezone')->first();
         } else {
@@ -145,32 +147,29 @@ class AdminController extends BaseController
         }
 
         $uuid = substr(Uuid::uuid4()->toString(), 0, 10);
-        try {
+        $created_params['owner_unique_id'] = $uuid;
+        // try {
             $user_params = ['name'=>$request->input('name').' '.$request->input('last_name'),
                 'email'=>$request->input('email'),
                 'mobile'=>$request->input('mobile'),
                 'mobile_confirmed'=>true,
+                'active'=>false,
                 'timezone'=>$timezone,
                 'country'=>$request->input('country'),
                 'password' => bcrypt($request->input('password')),
-                'company_key' => $uuid,
+                // 'company_kye' => $uuid,
                 'profile_picture'=>$profile_picture ?? '',
             ];
 
-            // if (env('APP_FOR')=='demo') {
-            //     $user_params['company_key'] = '';
-            // }
+            if (env('APP_FOR')=='demo') {
+                $user_params['company_key'] = '';
+            }
+
             $user = $this->user->create($user_params);
 
-            // if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
-            //     $user->profile_picture = $this->imageUploader->file($uploadedFile)
-            //         ->saveProfilePicture();
-            //     $user->save();
-            // }
+            $user->attachRole(RoleSlug::OWNER);
 
-            $user->attachRole(RoleSlug::ADMIN);
-
-            $user->admin()->create($created_params);
+            $user->owner()->create($created_params);
 
             // $admin = User::where('id', 1)->first();
             // $userUuid = User::where('id', $user->id)->first();
@@ -181,11 +180,11 @@ class AdminController extends BaseController
                 $end_date = $start_date->clone()->addDays(30);
             }
 
-            $adminDetail = AdminDetail::where('user_id', $user->id)->first();
-            if ($adminDetail) {
-                $adminDetail->is_approval = !$adminDetail->is_approval;
-                $adminDetail->save();
-            }
+            // $adminDetail = AdminDetail::where('user_id', $user->id)->first();
+            // if ($adminDetail) {
+            //     $adminDetail->is_approval = !$adminDetail->is_approval;
+            //     $adminDetail->save();
+            // }
 
             Order::create([
                 'package_id' => $request->package_id,
@@ -235,11 +234,11 @@ class AdminController extends BaseController
             return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
             // $message = trans('succes_messages.company_added_succesfully');
 		    // return $this->respondOk($message);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error($e . 'Error while Create Admin. Input params : ' . json_encode($request->all()));
-            return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
-        }
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     Log::error($e . 'Error while Create Admin. Input params : ' . json_encode($request->all()));
+        //     return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
+        // }
     }
 
     public function getById(AdminDetail $admin)

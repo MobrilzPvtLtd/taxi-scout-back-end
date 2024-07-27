@@ -27,7 +27,7 @@
                                 @csrf
 
                                 <div class="row">
-                        
+
                                 <div class="col-6">
                                         <div class="form-group">
                                             <label for="">@lang('view_pages.mail_type') <span class="text-danger">*</span></label>
@@ -54,7 +54,7 @@
                                         <textarea class="ckeditor form-control" name="description" value="{{ old('description',$item->description) }}">{{ $item->description }}</textarea>
                                     </div>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
 
                                 <div class="form-group">

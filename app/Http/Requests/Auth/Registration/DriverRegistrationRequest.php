@@ -14,8 +14,7 @@ class DriverRegistrationRequest extends BaseRequest
     public function rules()
     {
         return [
-            // 'company_key' => 'required|exists:users,company_key',
-
+            'owner_id' => 'required|exists:owners,owner_unique_id',
             'name' => 'required|max:50',
             'last_name' => 'max:50',
             'email' => 'required|email|max:150',

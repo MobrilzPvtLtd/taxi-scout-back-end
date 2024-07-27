@@ -27,7 +27,7 @@
                                     @lang('view_pages.search')
                                 </button>
                             </div>
-                        @if(auth()->user()->can('add-owner'))         
+                        @if(auth()->user()->can('add-owner'))
                             <div class="col-12 text-right">
                                 <a href="{{ url('owners/create',$area->id)}}" class="btn btn-primary btn-sm">
                                     <i class="mdi mdi-plus-circle mr-2"></i>@lang('view_pages.add')</a>
@@ -42,12 +42,11 @@
     </div>
 
     <div id="js-owners-partial-target">
-        <include-fragment src="fetch/{{$area->id}}">
+        <include-fragment src="owners/fetch">
             <span style="text-align: center;font-weight: bold;"> @lang('view_pages.loading')</span>
         </include-fragment>
     </div>
 
-   
 
 </div>
 </div>

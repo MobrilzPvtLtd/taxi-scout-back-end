@@ -157,30 +157,31 @@ class UserRegistrationController extends LoginController
             $this->throwCustomValidationException(['message' => "The OTP provided has expired"]);
         }
 
-        MailOtp::where('email', $email)->where('otp', $otp)->update(['verified' => true]);
-        $user->update(['active' => true, 'email_confirmed' => true]);
+        $owner = $user->owner()->where('email', $email)->first();
+        // $adminDetail = AdminDetail::whereHas('user', function ($query) use ($email) {
+        //     $query->where('email', $email);
+        // })->first();
 
-        $adminDetail = AdminDetail::whereHas('user', function ($query) use ($email) {
-            $query->where('email', $email);
-        })->first();
-
-        if ($adminDetail) {
+        if ($owner) {
             $data = [
                 'name' => $user->name,
                 'admin_name' => $admin->name,
-                'company_key' => $user->company_key,
+                'owner_id' => $owner->owner_unique_id,
                 'email' => $user->email,
-                'is_approval' => $adminDetail->is_approval,
+                'is_approval' => $owner->approve,
             ];
 
             if ($email) {
-                Mail::to($user->email)->send(new AdminRegister($data));
+                Mail::to($email)->send(new AdminRegister($data));
             }
 
             if ($admin->email) {
                 Mail::to($admin->email)->send(new SuperAdminNotification($data));
             }
         }
+
+        MailOtp::where('email', $email)->where('otp', $otp)->update(['verified' => true]);
+        $user->update(['active' => true, 'email_confirmed' => true]);
 
         $deriver = Driver::whereHas('user', function ($query) use ($email) {
             $query->where('email', $email);
@@ -197,8 +198,8 @@ class UserRegistrationController extends LoginController
                 }
 
                 return $this->loginUserAccountApp($request, Role::DRIVER);
-            } elseif ($adminDetail) {
-                return $this->loginUserAccountApp($request, Role::ADMIN);
+            } elseif ($owner) {
+                return $this->loginUserAccountApp($request, Role::OWNER);
             } else {
                 return $this->loginUserAccountApp($request, Role::USER);
             }

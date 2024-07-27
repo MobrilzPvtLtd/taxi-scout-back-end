@@ -26,7 +26,7 @@ class CreateOwnersTable extends Migration
             $table->string('mobile', 20)->nullable();
             $table->string('phone', 20)->nullable();
             $table->text('address')->nullable();
-          
+
             $table->integer('postal_code')->nullable();
             $table->string('city', 50)->nullable();
             $table->date('expiry_date')->nullable();

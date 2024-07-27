@@ -9,21 +9,21 @@
     </thead>
 
 <tbody>
-    
+
     @php  $i= $results->firstItem();  @endphp
 
     @forelse($results as $key => $result)
         <tr>
             <td>{{ $i++ }} </td>
 
-            @if($result->mail_type == 'welcome_mail') 
+            @if($result->mail_type == 'welcome_mail')
                 <td>{{ "Welcome Mail" }}</td>
             @elseif($result->mail_type == 'trip_start_mail')
                 <td>{{ "Trip Start Mail" }}</td>
             @elseif($result->mail_type == 'invoice_maill')
                 <td>{{ "Invoice Mail" }}</td>
               @elseif($result->mail_type == 'welcome_mail_driver')
-                <td>{{ "Welcome Mail Driver" }}</td>                  
+                <td>{{ "Welcome Mail Driver" }}</td>
             @endif
 
 
@@ -38,17 +38,17 @@
             <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
             </button>
                  <div class="dropdown-menu">
-                @if(auth()->user()->can('edit-mail_template'))         
+                @if(auth()->user()->can('edit-mail_template'))
                     <a class="dropdown-item" href="{{url('mail_templates',$result->id)}}"><i class="fa fa-pencil"></i>@lang('view_pages.edit')</a>
                 @endif
-                @if(auth()->user()->can('toggle-mail_template'))         
+                @if(auth()->user()->can('toggle-mail_template'))
                     @if($result->active)
                     <a class="dropdown-item" href="{{url('mail_templates/toggle_status',$result->id)}}"><i class="fa fa-dot-circle-o"></i>@lang('view_pages.inactive')</a>
                     @else
                     <a class="dropdown-item" href="{{url('mail_templates/toggle_status',$result->id)}}"><i class="fa fa-dot-circle-o"></i>@lang('view_pages.active')</a>
                     @endif
                 @endif
-             <!--    @if(auth()->user()->can('delete-mail_template'))         
+             <!--    @if(auth()->user()->can('delete-mail_template'))
                     <a class="dropdown-item sweet-delete" href="{{url('mail_templates/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a>
                 @endif -->
                 </div>

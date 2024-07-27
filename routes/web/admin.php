@@ -76,8 +76,8 @@ Route::middleware('auth:web')->group(function () {
         Route::get('dispatcher-request','AdminViewController@dispatchRequest');
     // Owner Management (Company Management)
     Route::group(['prefix' => 'owners'], function () {
-        // Route::get('/', 'OwnerController@index')->name('ownerView');
-        // Route::get('/fetch', 'OwnerController@getAllOwner');
+        Route::get('/', 'OwnerController@index')->name('ownerView');
+        Route::get('/fetch', 'OwnerController@getAllOwner');
         Route::get('by_area/{area}', 'OwnerController@index')->name('ownerByArea');
         Route::get('by_area/fetch/{area}', 'OwnerController@getAllOwner');
         Route::get('/create/{area}', 'OwnerController@create');

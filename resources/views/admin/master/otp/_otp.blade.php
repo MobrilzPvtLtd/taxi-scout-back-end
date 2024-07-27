@@ -23,7 +23,7 @@
             <td><span class="label label-danger">@lang('view_pages.un_verified')</span></td>
             @endif
             <td>{{ ucfirst($result->ConvertedCreatedAt) }}</td>
-            
+
         </tr>
     @empty
         <tr>

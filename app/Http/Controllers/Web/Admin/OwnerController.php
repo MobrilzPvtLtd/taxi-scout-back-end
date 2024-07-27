@@ -76,7 +76,8 @@ class OwnerController extends BaseController
     public function getAllOwner(QueryFilterContract $queryFilter,ServiceLocation $area)
     {
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $query = Owner::orderBy('created_at', 'desc')->whereServiceLocationId($area->id);
+            // $query = Owner::orderBy('created_at', 'desc')->whereServiceLocationId($area->id);
+            $query = Owner::orderBy('created_at', 'desc');
         } else {
             // @TODO based who create owner
             $this->validateAdmin();
@@ -99,7 +100,7 @@ class OwnerController extends BaseController
 
         return view('admin.owners._owners', compact('results'))->render();
     }
-    
+
     public function create(ServiceLocation $area)
     {
         $page = trans('pages_names.add_owner');
@@ -120,16 +121,16 @@ class OwnerController extends BaseController
         $created_params['password'] = bcrypt($request->input('password'));
 
         $user = $this->user->create($userParam);
-        
+
         $token = str_random(40);
         $user->forceFill([
             'email_confirmation_token' => bcrypt($token)
         ])->save();
-        
+
         // $this->dispatch(new EmailConfirmationNotification($user, $token));
 
         $user->attachRole(RoleSlug::OWNER);
-        
+
         $user->owner()->create($created_params);
 
         $user->owner->ownerWalletDetail()->create(['amount_added'=>0]);
@@ -145,7 +146,7 @@ class OwnerController extends BaseController
             $docController = new OwnerDocumentController($this->imageUploader);
             $docController->uploadOwnerDoc($name,$expiry_date,$request,$owner,$doc);
         }
-        
+
         $message = trans('succes_messages.owner_added_succesfully');
 
         return redirect("owners/by_area/$request->service_location_id")->with('success', $message);
@@ -156,7 +157,7 @@ class OwnerController extends BaseController
         $page = trans('pages_names.edit_owner');
         $main_menu = 'manage_owners';
         $sub_menu = $owner->area->name;
-      
+
         $count = count($owner->ownerDocument);
         $neeedeDoc = OwnerNeededDocument::whereActive(true)->count();
 
@@ -180,7 +181,7 @@ class OwnerController extends BaseController
 
         $owner->update($updated_params);
 
-        if ($request->needed_document != null) 
+        if ($request->needed_document != null)
         {
 
         foreach($request->needed_document as $key => $document)
@@ -191,9 +192,9 @@ class OwnerController extends BaseController
 
             $docController = new OwnerDocumentController($this->imageUploader);
             $docController->uploadOwnerDoc($name,$expiry_date,$request,$owner,$doc);
-        
-            }   
-        }   
+
+            }
+        }
 
         $message = trans('succes_messages.owner_updated_succesfully');
 
@@ -212,25 +213,25 @@ class OwnerController extends BaseController
     public function toggleApprove(Owner $owner)
     {
         $status = $owner->approve == 1 ? 0 : 1;
-        
+
         if($status){
-            
-    
+
+
             $err = false;
             $neededDoc = OwnerNeededDocument::where('active','1')->count();
             $uploadedDoc = count($owner->ownerDocument);
-    
+
             if ($neededDoc != $uploadedDoc) {
                 $message = trans('succes_messages.owner_document_not_uploaded');
                 return redirect("owners/by_area/$owner->service_location_id")->with('warning', $message);
             }
-    
+
             foreach ($owner->ownerDocument as $ownerDoc) {
                 if ($ownerDoc->document_status != 1) {
                     $err = true;
                 }
             }
-    
+
             if ($err) {
                 $message = trans('succes_messages.owner_document_not_uploaded');
                 return redirect("owners/by_area/$owner->service_location_id")->with('warning', $message);
@@ -261,7 +262,7 @@ class OwnerController extends BaseController
         // dd($item);
 
         $amount = OwnerWallet::where('user_id',$owner->id)->first();
-        
+
         if ($amount == null) {
 
          $card = [];

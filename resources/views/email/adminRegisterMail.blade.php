@@ -17,7 +17,7 @@
 
                             <p style="font-size: 14px; padding-bottom: 10px; margin: 0; color: #000;">Welcome to our company!</p>
 
-                            <p style="font-size: 14px; padding-bottom: 10px; margin: 0; color: #000;">Company Id: <strong>{{ $data['company_key'] }}</strong>
+                            <p style="font-size: 14px; padding-bottom: 10px; margin: 0; color: #000;">Company Id: <strong>{{ $data['owner_id'] }}</strong>
                             </p>
 
                             <p style="font-size: 14px; padding-bottom: 10px; margin: 0; color: #000;">In case you have more questions or just feel like saying hi, reply to this email!</p>

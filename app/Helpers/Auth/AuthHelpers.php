@@ -14,7 +14,7 @@ trait AuthHelpers {
 		return [
 			Role::USER,
 			Role::DRIVER,
-			Role::ADMIN,
+			Role::OWNER,
 		];
 	}
 
