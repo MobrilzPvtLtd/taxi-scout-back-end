@@ -28,6 +28,22 @@
                                 {{ csrf_field() }}
 
                                 <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="admin_id">@lang('view_pages.select_area')
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select name="service_location_id" id="service_location_id" class="form-control"
+                                                onchange="getypesAndCompanys()" required>
+                                                <option value="" selected disabled>@lang('view_pages.select_area')</option>
+                                                @foreach ($services as $key => $service)
+                                                    <option value="{{ $service->id }}"
+                                                        {{ old('service_location_id', $item->service_location_id) == $service->id ? 'selected' : '' }}>
+                                                        {{ $service->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="name">@lang('view_pages.name') <span class="text-danger">*</span></label>
@@ -38,7 +54,7 @@
 
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    {{-- <div class="col-6">
                                         <div class="form-group">
                                             <label for="gender">@lang('view_pages.gender')
                                                 <span class="text-danger">*</span>
@@ -58,7 +74,7 @@
                                             <span class="text-danger">{{ $errors->first('gender') }}</span>
 
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
 
                                 {{-- <div class="row">
@@ -109,7 +125,22 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-6">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="type">Assign Taxi
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select name="type[]" id="type" class="form-control select2" multiple="multiple" required>
+
+                                           @foreach($types as $key=>$type)
+                                                <option value="{{ $type->id }}" {{ old('type[]', $item->driverVehicleTypeDetail()->Where('vehicle_type', $type->id)->pluck('vehicle_type')->first()) ? 'selected' : '' }}>
+                                                {{ $type->name }}</option>
+                                           @endforeach
+                                           </select>
+                                        </div>
+                                     </div>
+
+                                    {{-- <div class="col-6">
                                         <div class="form-group">
                                         <label for="type">Assign Taxi
                                             <span class="text-danger">*</span>
@@ -121,15 +152,18 @@
                                             @endforeach
                                         </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label for="car_make">@lang('view_pages.car_make')<span class="text-danger">*</span></label>
+                                            <label for="car_make">@lang('view_pages.car_make')<span
+                                                    class="text-danger">*</span></label>
                                             <select name="car_make" id="car_make" class="form-control select2" required>
                                                 <option value="" selected disabled>@lang('view_pages.select')</option>
-                                                @foreach($carmake as $key=>$make)
-                                                <option value="{{$make->id}}" {{ $item->car_make == $make->id ? 'selected' : '' }}>{{$make->name}}</option>
+                                                @foreach ($carmake as $key => $make)
+                                                    <option value="{{ $make->id }}"
+                                                        {{ old('car_make', $item->car_make) == $make->id ? 'selected' : '' }}>
+                                                        {{ $make->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -154,7 +188,7 @@
                                 </div>
 
 
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="country">@lang('view_pages.select_country')
@@ -183,9 +217,9 @@
 
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="city">@lang('view_pages.city') <span class="text-danger">*</span></label>
@@ -206,7 +240,7 @@
 
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 {{-- <div class="row">
                                     <div class="col-sm-6">
@@ -268,6 +302,7 @@
     <!-- content -->
     <!-- jQuery 3 -->
     <script src="{{ asset('assets/vendor_components/jquery/dist/jquery.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $('#is_company_driver').change(function() {
             var value = $(this).val();
@@ -335,6 +370,26 @@
             });
         }
 
+        $(document).on('change', '#type', function() {
+            let value = $(this).val();
+
+            $.ajax({
+                url: "{{ route('getCarMake') }}",
+                type: 'GET',
+                data: {
+                    'type': value,
+                },
+                success: function(result) {
+                    $('#car_make').empty();
+                    $("#car_make").append('<option value="" selected disabled>Select</option>');
+                    result.forEach(element => {
+                        $("#car_make").append('<option value=' + element.id + '>' + element
+                            .name + '</option>')
+                    });
+                    $('#car_make').select();
+                }
+            });
+        });
 
         $(document).on('change', '#car_make', function() {
             let value = $(this).val();

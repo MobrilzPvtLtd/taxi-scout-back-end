@@ -98,23 +98,26 @@
                                     </div>
 
                                 </div>
-                                
+
                                 <div class="row">
                                 <div class="col-sm-6">
                                            <div class="form-group">
                                                <label for="">@lang('view_pages.transport_type') <span class="text-danger">*</span></label>
                                                <select name="transport_type" id="transport_type" class="form-control" required>
                                                    <option value="" selected disabled>@lang('view_pages.select')</option>
-                                                   <option value="taxi" {{ old('transport_type', $item->transport_type) == 'taxi' ? 'selected' : '' }}>@lang('view_pages.taxi')</option>
-                                                   <option value="delivery" {{ old('transport_type',$item->transport_type) == 'delivery' ? 'selected' : '' }}>@lang('view_pages.delivery')</option>
-                                                   <option value="both" {{ old('transport_type',$item->transport_type) == 'both' ? 'selected' : '' }}>@lang('view_pages.both')</option>
+                                                   <option value="taxi" {{ old('transport_type', $item->transport_type) == 'taxi' ? 'selected' : '' }}>Taxi
+                                                   </option>
+                                                   {{-- <option value="delivery" {{ old('transport_type',$item->transport_type) == 'delivery' ? 'selected' : '' }}>@lang('view_pages.delivery')
+                                                   </option>
+                                                   <option value="both" {{ old('transport_type',$item->transport_type) == 'both' ? 'selected' : '' }}>@lang('view_pages.both')
+                                                   </option> --}}
                                                </select>
                                                <span class="text-danger">{{ $errors->first('transport_type') }}</span>
                                            </div>
                                        </div>
                                  <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label for="type">@lang('view_pages.vehicle_type')
+                                        <label for="type">Assign Taxi
                                             <span class="text-danger">*</span>
                                         </label>
                                         <select name="type[]" id="type" class="form-control select2" multiple="multiple" required>
@@ -141,7 +144,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>                            
+                                    </div>
                                 <div class="col-6">
                                         <div class="form-group">
                                             <label for="car_model">@lang('view_pages.car_model')<span
@@ -180,7 +183,7 @@
                                     <div class="form-group">
                                     <div class="col-6">
                                         <label for="profile_picture">@lang('view_pages.profile')</label><br>
-                         <img class="user-image" id="blah" src="{{asset( $item->user->profile_picture) }}" alt=" "><br>
+                                        <img class="user-image" id="blah" src="{{asset( $item->user->profile_picture) }}" alt=" "><br>
                                         <input type="file" id="icon" onchange="readURL(this)" name="profile_picture"
                                             style="display:none">
                                         <button class="btn btn-primary btn-sm" type="button" onclick="$('#icon').click()"
@@ -190,11 +193,8 @@
                                         <span class="text-danger">{{ $errors->first('icon') }}</span>
                                     </div>
                                 </div>
-                                
+
                                 </div>
-                                
-
-
                                 <div class="form-group">
                                     <div class="col-12">
                                         <button class="btn btn-primary btn-sm pull-right" type="submit">
@@ -248,7 +248,7 @@ $(document).ready(function() {
             },
             success: function(result) {
                 var selectedTypes = [];
-                
+
                 // Get the selected type values from the type select element
                 $('#type').find('option:selected').each(function() {
                     selectedTypes.push($(this).val());

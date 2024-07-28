@@ -38,6 +38,7 @@ use App\Mail\ApprovedDriver;
 use App\Mail\Driver\DriverCreateByCompanyMail;
 use App\Models\Admin\DriverDetail;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Admin\DriverVehicleType;
 
 /**
  * @resource Driver
@@ -100,18 +101,20 @@ class DriverController extends BaseController
     */
     public function getAllDrivers(QueryFilterContract $queryFilter)
     {
+        // dd(auth()->user()->owner->owner_unique_id);
         $url = request()->fullUrl(); //get full url
         return cache()->tags('drivers_list')->remember($url, Carbon::parse('10 minutes'), function () use ($queryFilter) {
-            if (access()->hasRole(RoleSlug::ADMIN)) {
+            if (access()->hasRole(RoleSlug::OWNER)) {
                 // $query = Driver::whereOwnerId(auth()->user()->owner->id)->orderBy('created_at', 'desc');
-                $query = Driver::where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)
+                $query = Driver::where('owner_id', auth()->user()->owner->owner_unique_id)
+                ->where('owner_id', '!=', null)
                 ->orderBy('created_at', 'desc');
 
-                // if (env('APP_FOR')=='demo') {
-                //     $query = Driver::whereHas('user', function ($query) {
-                //         $query->whereCompanyKey(auth()->user()->company_key);
-                //     })->orderBy('created_at', 'desc');
-                // }
+                if (env('APP_FOR')=='demo') {
+                    $query = Driver::whereHas('user', function ($query) {
+                        $query->whereCompanyKey(auth()->user()->company_key);
+                    })->orderBy('created_at', 'desc');
+                }
             } else {
                 $this->validateAdmin();
                 $query = $this->driver->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
@@ -239,7 +242,7 @@ class DriverController extends BaseController
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
             $types = VehicleType::whereActive(true)->get();
         } else {
-            $types = VehicleType::where('company_key', auth()->user()->company_key)->get();
+            $types = VehicleType::where('owner_id', auth()->user()->owner->owner_unique_id)->get();
         }
         $countries = Country::all();
         $companies = Company::active()->get();
@@ -250,6 +253,7 @@ class DriverController extends BaseController
         $sub_menu = 'driver_details';
 
         return view('admin.company-driver.drivers.update', compact('item', 'services', 'types', 'page', 'countries', 'main_menu', 'sub_menu', 'companies', 'carmake', 'carmodel'));
+        // return view('admin.drivers.update', compact('item', 'services', 'types', 'page', 'countries', 'main_menu', 'sub_menu', 'companies', 'carmake', 'carmodel'));
     }
 
 
@@ -269,18 +273,56 @@ class DriverController extends BaseController
         }
 
 
+
         DB::beginTransaction();
         try {
-            $driver->update($updatedParams);
+            $user_param = $request->only(['profile']);
+
+            $user_param['profile']=null;
+
+            if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
+                $user_param['profile'] = $this->imageUploader->file($uploadedFile)
+                    ->saveProfilePicture();
+            }
+
+            $driver->update(['name'=>$request->input('name'),
+                'email'=>$request->input('email'),
+                'mobile'=>$request->input('mobile'),
+                'transport_type'=>$request->input('transport_type'),
+                'car_make'=>$request->input('car_make'),
+                'car_model'=>$request->input('car_model'),
+                'car_color'=>$request->input('car_color'),
+                'car_number'=>$request->input('car_number'),
+                // 'vehicle_type'=>$request->input('type'),
+                'service_location_id'=>$request->service_location_id
+
+            ]);
+
+            // $driver->update($updatedParams);
 
             $driver->user()->update([
                 'name'=>$request->input('name'),
                 'email'=>$request->input('email'),
-                'mobile'=>$request->input('mobile')
+                'mobile'=>$request->input('mobile'),
+                'profile_picture'=>$user_param['profile']
             ]);
 
-            $message = trans('succes_messages.driver_updated_succesfully');
+            $driverVehicleTypes =  $driver->driverVehicleTypeDetail()->get();
 
+            // dd($driverVehicleTypes);
+
+            foreach ($driverVehicleTypes as $driverVehicleType)
+            {
+                $driverVehicleType->delete();
+            }
+
+            foreach ($request->type as $type)
+            {
+                DriverVehicleType::create(['driver_id' => $driver->id,
+                    'vehicle_type' => $type,]);
+            }
+
+            $message = trans('succes_messages.driver_updated_succesfully');
             cache()->tags('drivers_list')->flush();
         } catch (\Throwable $th) {
             DB::rollBack();

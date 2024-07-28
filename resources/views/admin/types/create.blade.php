@@ -46,10 +46,10 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">Taxi Company<span class="text-danger">*</span></label>
-                                                <select name="company_key" id="company_key" class="form-control" required>
+                                                <select name="owner_id" id="owner_id" class="form-control" required>
                                                     <option value="" selected disabled>Select Taxi Company</option>
                                                     @foreach ($admin as $company)
-                                                        <option value="{{ $company->user->company_key }}">{{ $company->first_name }}</option>
+                                                        <option value="{{ $company->owner_unique_id }}">{{ $company->name }}</option>
                                                     @endforeach
                                                 </select>
                                                 <span class="text-danger">{{ $errors->first('transport_type') }}</span>
@@ -90,7 +90,7 @@
                                             <span class="text-danger">{{ $errors->first('capacity') }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-6" name="taxi" id="taxi">
+                                    {{-- <div class="col-6" name="taxi" id="taxi">
                                         <div class="form-group m-b-25">
                                             <label for="name">Car Model<span
                                                     class="text-danger">*</span></label>
@@ -98,7 +98,7 @@
                                                 placeholder="Enter Model Name" min="1">
                                             <span class="text-danger">{{ $errors->first('model_name') }}</span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- <div class="col-6">
                                         <div class="form-group m-b-25">
                                             <label for="price">Per Km Price<span

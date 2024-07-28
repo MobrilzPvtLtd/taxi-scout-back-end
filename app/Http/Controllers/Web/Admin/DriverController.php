@@ -261,7 +261,11 @@ class DriverController extends BaseController
         $page = trans('pages_names.edit_driver');
 
         $services = ServiceLocation::whereActive(true)->get();
-        $types = VehicleType::whereActive(true)->get();
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $types = VehicleType::whereActive(true)->get();
+        } else {
+            $types = VehicleType::where('owner_id', auth()->user()->owner->owner_unique_id)->get();
+        }
         $countries = Country::all();
         $companies = Company::active()->get();
         $item = $driver;

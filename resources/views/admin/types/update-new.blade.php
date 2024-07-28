@@ -24,24 +24,11 @@
                         </div>
 
                         <div class="col-sm-12">
-                            <form method="post" class="form-horizontal" action="{{url('types/update',$type->id)}}"
+                            <form method="post" id="type-form" class="form-horizontal" action="{{url('types/update',$type->id)}}"
                                   enctype="multipart/form-data">
                                 {{csrf_field()}}
                                 <div class="row">
-                                    @if(auth()->user()->id == 1)
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label for="">Taxi Company<span class="text-danger">*</span></label>
-                                                <select name="company_key" id="company_key" class="form-control" required>
-                                                    <option value="" selected disabled>Select Taxi Company</option>
-                                                    @foreach ($admin as $company)
-                                                        <option value="{{ $company->user->company_key }}" {{ $company->user->company_key == $type->company_key ? 'selected' : null }}>{{ $company->first_name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <span class="text-danger">{{ $errors->first('transport_type') }}</span>
-                                            </div>
-                                        </div>
-                                    @endif
+                                    @if($app_for == 'bidding' || $app_for == 'super')
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="">@lang('view_pages.transport_type') <span
@@ -50,29 +37,20 @@
                                                     required>
                                                 <option value="" selected disabled>@lang('view_pages.select')</option>
                                                 <option
-                                                    value="taxi" {{ old('transport_type',$type->is_taxi) == 'taxi' ? 'selected' : '' }}>Taxi</option>
-                                                {{-- <option
+                                                    value="taxi" {{ old('transport_type',$type->is_taxi) == 'taxi' ? 'selected' : '' }}>@lang('view_pages.taxi')</option>
+                                                <option
                                                     value="delivery" {{ old('transport_type',$type->is_taxi) == 'delivery' ? 'selected' : '' }}>@lang('view_pages.delivery')</option>
                                                 <option
-                                                    value="both" {{ old('transport_type',$type->is_taxi) == 'both' ? 'selected' : '' }}>@lang('view_pages.both')</option> --}}
-                                                {{--                                                @foreach($vehicle_type as $types)--}}
-                                                {{--                                                    <option value="{{$types}}" {{old("vehicle_type")=="$types"?'selected':''}}></option>--}}
-                                                {{--                                                @endforeach--}}
-                                                {{--                                                @if(old('transport_type',$type->is_taxi))--}}
-                                                {{--                                                    <option value="" selected disabled>@lang('view_pages.select')</option>--}}
-                                                {{--                                                    <option--}}
-                                                {{--                                                        value="taxi"{{$type->is_taxi ? 'selected' : '' }} >@lang('view_pages.taxi')</option>--}}
-                                                {{--                                                    <option--}}
-                                                {{--                                                        value="delivery"{{ $type->is_taxi ? 'selected' : '' }} >@lang('view_pages.delivery')</option>--}}
-                                                {{--                                                @endif--}}
+                                                    value="both" {{ old('transport_type',$type->is_taxi) == 'both' ? 'selected' : '' }}>@lang('view_pages.both')</option>
 
                                             </select>
                                             <span class="text-danger">{{ $errors->first('transport_type') }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    @endif
+                                     <div class="col-6">
                                         <div class="form-group m-b-25">
-                                            <label for="name">Car’s Name <span
+                                            <label for="name">@lang('view_pages.name') <span
                                                     class="text-danger">*</span></label>
                                             <input class="form-control" type="text" id="name" name="name"
                                                    value="{{old('name', $type->name)}}" required=""
@@ -81,6 +59,7 @@
 
                                         </div>
                                     </div>
+                                    @if($app_for !== 'delivery')
                                     <div class="col-6" name="taxi" id="taxi">
                                         <div class="form-group m-b-25">
                                             <label for="name">@lang('view_pages.capacity') <span
@@ -91,23 +70,9 @@
                                             <span class="text-danger">{{ $errors->first('capacity') }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-6" name="taxi" id="taxi">
-                                        <div class="form-group m-b-25">
-                                            <label for="name">Car Model<span
-                                                    class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" id="model_name" name="model_name" value="{{ old('model_name',$type->model_name)}}" required="" placeholder="Enter Model Name" min="1">
-                                            <span class="text-danger">{{ $errors->first('model_name') }}</span>
-                                        </div>
-                                    </div>
-                                    {{-- <div class="col-6">
-                                        <div class="form-group m-b-25">
-                                            <label for="price">Per Km Price<span
-                                                    class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" id="price" name="price" value="{{ old('price',$type->price)}}"  required="" placeholder="Per Km Price" min="1">
-                                            <span class="text-danger">{{ $errors->first('price') }}</span>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-6" name="delivery" id="delivery">
+                                    @endif
+                                    @if($app_for !=="taxi")
+                                    <div class="col-6" name="delivery" id="delivery">
                                         <div class="form-group m-b-25">
                                             <label
                                                 for="maximum_weight_can_carry">@lang('view_pages.maximum_weight_can_carry')
@@ -119,8 +84,8 @@
                                                    min="1">
                                             <span class="text-danger">{{ $errors->first('capacity') }}</span>
                                         </div>
-                                    </div> --}}
-                                    {{-- <div class="col-6" name="delivery_size" id="delivery_size">
+                                    </div>
+                                    <div class="col-6" name="delivery_size" id="delivery_size">
                                         <div class="form-group m-b-25">
                                             <label for="name">@lang('view_pages.size') <span
                                                     class="text-danger">*</span></label>
@@ -129,8 +94,9 @@
                                                    placeholder="@lang('view_pages.enter_size')" min="1">
                                             <span class="text-danger">{{ $errors->first('size') }}</span>
                                         </div>
-                                    </div> --}}
-                                    {{-- <div class="col-6">
+                                    </div>
+                                    @endif
+                                    <div class="col-6">
                                         <div class="form-group m-b-25">
                                             <label for="short_description">@lang('view_pages.short_description') <span
                                                     class="text-danger">*</span></label>
@@ -141,8 +107,8 @@
                                             <span class="text-danger">{{ $errors->first('short_description') }}</span>
 
                                         </div>
-                                    </div> --}}
-                                    {{-- <div class="col-6">
+                                    </div>
+                                    <div class="col-6">
                                         <div class="form-group m-b-25">
                                             <label for="description">@lang('view_pages.description') <span
                                                     class="text-danger">*</span></label>
@@ -154,8 +120,8 @@
                                             <span class="text-danger">{{ $errors->first('description') }}</span>
 
                                         </div>
-                                    </div> --}}
-                                    {{-- <div class="col-6">
+                                    </div>
+                                    <div class="col-6">
                                         <div class="form-group m-b-25">
                                             <label for="supported_vehicles">@lang('view_pages.supported_vehicles') <span
                                                     class="text-danger">*</span></label>
@@ -167,8 +133,8 @@
                                             <span class="text-danger">{{ $errors->first('supported_vehicles') }}</span>
 
                                         </div>
-                                    </div> --}}
-                                    {{-- <div class="col-6">
+                                    </div>
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label for="">@lang('view_pages.icon_types_for') <span
                                                     class="text-danger">*</span></label>
@@ -187,9 +153,10 @@
                                             </select>
                                             <span class="text-danger">{{ $errors->first('icon_types_for') }}</span>
                                         </div>
-                                    </div> --}}
+                                    </div>
 
-                                    {{-- <div class="col-6">
+                                    @if($app_for == "bidding")
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label for="">@lang('view_pages.trip_dispatch_type') <span
                                                     class="text-danger">*</span></label>
@@ -203,67 +170,22 @@
                                                  </select>
                                             <span class="text-danger">{{ $errors->first('trip_dispatch_type') }}</span>
                                         </div>
-                                    </div> --}}
-
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label for="">Smoking <span class="text-danger">*</span></label>
-                                            <select name="smoking" id="smoking"  class="form-control" required>
-                                                <option value="" selected disabled>Select</option>
-                                                <option value="1" {{ old('smoking', $type->smoking) == '1' ? 'selected' : '' }}>Yes</option>
-                                                <option value="0" {{ old('smoking', $type->smoking) == '0' ? 'selected' : '' }}>No</option>
-                                            </select>
-                                            <span class="text-danger">{{ $errors->first('smoking') }}</span>
-                                        </div>
                                     </div>
-
-                                     <div class="col-6">
-                                        <div class="form-group">
-                                            <label for="">Pets <span class="text-danger">*</span></label>
-                                            <select name="pets" id="pets" class="form-control" required>
-                                                <option value="" selected disabled>Select</option>
-                                                <option value="1" {{ old('pets', $type->pets) == '1' ? 'selected' : '' }}>Yes</option>
-                                                <option
-                                                    value="0" {{ old('pets', $type->pets) == '0' ? 'selected' : '' }}>No</option>
-                                                 </select>
-                                            <span class="text-danger">{{ $errors->first('pets') }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label for="">Drinking <span class="text-danger">*</span></label>
-                                            <select name="drinking" id="drinking" class="form-control" required>
-                                                <option value="" selected disabled>Select</option>
-                                                <option
-                                                    value="1" {{ old('drinking', $type->drinking) == '1' ? 'selected' : '' }}>Yes</option>
-                                                <option
-                                                    value="0" {{ old('drinking', $type->drinking) == '0' ? 'selected' : '' }}>No</option>
-                                                 </select>
-                                            <span class="text-danger">{{ $errors->first('drinking') }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-6">
-                                        <div class="form-group">
-                                            <label for="">Handicaped <span class="text-danger">*</span></label>
-                                            <select name="handicaped" id="handicaped" class="form-control" required>
-                                                <option value="" selected disabled>Select</option>
-                                                <option value="1" {{ old('handicaped', $type->handicaped) == '1' ? 'selected' : '' }}>Yes</option>
-                                                <option
-                                                    value="0" {{ old('handicaped', $type->handicaped) == '0' ? 'selected' : '' }}>No</option>
-                                                 </select>
-                                            <span class="text-danger">{{ $errors->first('handicaped') }}</span>
-                                        </div>
-                                    </div>
+                                    @endif
                                 </div>
+
+
                                 <div class="form-group">
-                                    <div class="col-6">
+                                    <div class="col-6 btn-file img_remove">
                                         <label for="icon">@lang('view_pages.icon')</label><br>
                                         <img id="blah" src="{{old('icon',asset($type->icon))}}" alt="missing image"><br>
-                                        <input type="file" id="icon" onchange="readURL(this)" name="icon" style="display:none">
-                                        <button class="btn btn-primary btn-sm" type="button" onclick="$('#icon').click()" id="upload">@lang('view_pages.browse')</button>
-                                        <button class="btn btn-danger btn-sm" type="button" id="remove_img" style="display: none;">@lang('view_pages.remove')</button>
+                                        <input type="file" id="icon" class="input-group" onchange="readURL(this)" name="icon"
+                                               style="display:none">
+                                        <button class="btn btn-primary btn-sm" type="button"
+                                                onclick="$('#icon').click()"
+                                                id="upload">@lang('view_pages.browse')</button>
+                                        <button class="btn btn-danger btn-sm" type="button" id="remove_img"
+                                                style="display: none;">@lang('view_pages.remove')</button>
                                         <br>
                                         <span class="text-danger">{{ $errors->first('icon') }}</span>
                                     </div>
@@ -296,57 +218,112 @@
 
     <!-- Bootstrap fileupload js -->
     <script>
-        $(document).ready(function () {
-            // console.log(document.getElementById("transport_type").value);
+$(document).ready(function(){
+    var form = $('#type-form');
 
-            var transport_type =document.getElementById("transport_type").value;
+    @if($app_for == "super" || $app_for == 'bidding')
+    $(form).on('submit', function(e){
+        e.preventDefailt();
+        if($('#transport_type').val() == 'delivery'){
+            if(check_delivery()){
+                form.submit();
+            }
+        }
+        if($('#transport_type').val() == 'taxi'){
+            if(check_taxi()){
+                form.submit();
+            }
+        }
+        if($('#transport_type').val() == 'both'){
+            if(check_delivery() && check_taxi()){
+                form.submit();
+            }
+        }
+    });
+    $('#transport_type').on('change', function(e) {
+        var selected = $(e.target).val();
+    if ( selected == 'taxi')
+    {
+        $("#taxi").show();
+        $("#capacity").attr('name','capacity');
+        $("#delivery").hide();
+        $("#maximum_weight_can_carry").attr('name','');
+        $("#size").attr('name','');
+        $("#delivery_1").hide();
 
-            // alert(transport_type);
+    }
+    else  if ( selected == 'delivery')
+    {
+        $("#taxi").hide();
+        $("#capacity").attr('name','');
+        $("#delivery").show();
+        $("#maximum_weight_can_carry").attr('name','maximum_weight_can_carry');
+        $("#delivery_1").show();
+        $("#size").attr('name','size');
+    }
+    else  if ( selected == 'both')
+    {
+        $("#taxi").show();
+        $("#capacity").attr('name','capacity');
+        $("#delivery").show();
+        $("#maximum_weight_can_carry").attr('name','maximum_weight_can_carry');
+        $("#delivery_1").show();
+        $("#size").attr('name','size');
+    }
+    else
+    {
+        $("#taxi").hide();
+        $("#delivery").show();
+        $("#delivery_1").show();
+        $("#size").attr('name','size');
+        $("#maximum_weight_can_carry").attr('name','maximum_weight_can_carry');
+    }
 
-            if (transport_type == 'taxi') {
-                        $("#taxi").show();
-                        $("#delivery").hide();
-                        $("#delivery_size").hide();
+    });
+    @elseif($app_for == "taxi")
+    $(form).on('submit', function(e){
+        e.preventDefailt();
+        if(check_taxi()){
+            form.submit();
+        }
+    });
+    @elseif($app_for == "delivery")
+    $(form).on('submit', function(e){
+        e.preventDefailt();
+        if(check_delivery()){
+            form.submit();
+        }
+    });
+    @endif
+    })
 
-                    } else if (transport_type == 'delivery') {
-                        $("#taxi").hide();
-                        $("#delivery").show();
-                        $("#delivery_size").show();
-                    } else if (transport_type == 'both') {
-                        $("#taxi").show();
-                        $("#delivery").show();
-                        $("#delivery_size").show();
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('.btn-file input[type="file"]').forEach((input) => {
+        input.addEventListener('change', function(event) {
+            let input = event.target;
+            let key = input.id.split('_').pop(); // Get the key from the input ID
+            let label = input.value.replace(/\\/g, '/').replace(/.*\//, '');
+            let textInput = input.closest('.input-group').querySelector('input[type="text"]');
+            let imgPreview = document.getElementById('img_preview_' + key);
+
+            if (textInput) {
+                textInput.value = label;
+            }
+
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+                    if (imgPreview) {
+                        imgPreview.src = e.target.result;
                     }
-                     else {
-                        $("#taxi").hide();
-                        $("#delivery").hide();
-                        $("#delivery_size").hide();
-                    }
-
-            $('#transport_type').on('change', function () {
-                if (this.value == 'taxi') {
-                    $("#taxi").show();
-                    $("#delivery").hide();
-                    $("#delivery_size").hide();
-
-                } else if (this.value == 'delivery') {
-                    $("#taxi").hide();
-                    $("#delivery").show();
-                    $("#delivery_size").show();
-                } else if (this.value == 'both') {
-                    $("#taxi").show();
-                    $("#delivery").show();
-                    $("#delivery_size").show();
-                }
-                 else {
-                    $("#taxi").hide();
-                    $("#delivery").hide();
-                    $("#delivery_size").hide();
                 }
 
-            });
+                reader.readAsDataURL(input.files[0]);
+            }
         });
-
+    });
+});
     </script>
 
 @endsection

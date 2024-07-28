@@ -46,10 +46,10 @@ class CreateOwnersTable extends Migration
                     ->on('users')
                     ->onDelete('cascade');
 
-            $table->foreign('service_location_id')
-                    ->references('id')
-                    ->on('service_locations')
-                    ->onDelete('cascade');
+            // $table->foreign('service_location_id')
+            //         ->references('id')
+            //         ->on('service_locations')
+            //         ->onDelete('cascade');
         });
     }
 

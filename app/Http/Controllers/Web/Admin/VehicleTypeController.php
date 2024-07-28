@@ -16,6 +16,7 @@ use App\Base\Services\ImageUploader\ImageUploaderContract;
 use App\Http\Requests\Admin\VehicleTypes\CreateVehicleTypeRequest;
 use App\Http\Requests\Admin\VehicleTypes\UpdateVehicleTypeRequest;
 use App\Models\Admin\AdminDetail;
+use App\Models\Admin\Owner;
 
 /**
  * @resource Vechicle-Types
@@ -61,7 +62,7 @@ class VehicleTypeController extends BaseController
             if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
                 $query = VehicleType::query();
             } else {
-                $query = VehicleType::where('company_key', auth()->user()->company_key);
+                $query = VehicleType::where('owner_id', auth()->user()->owner->owner_unique_id);
             }
             $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
             return view('admin.types._types', compact('results'))->render();
@@ -89,8 +90,8 @@ class VehicleTypeController extends BaseController
         // $services = ServiceLocation::whereActive(true)->get();
         $main_menu = 'types';
         $sub_menu = '';
-        $admin = AdminDetail::whereHas('user', function ($query) {
-            $query->whereNotNull('company_key');
+        $admin = Owner::whereHas('user', function ($query) {
+            $query->whereNotNull('owner_unique_id');
         })->get();
         return view('admin.types.create', compact('page', 'main_menu', 'sub_menu','admin'));
     }
@@ -115,11 +116,11 @@ class VehicleTypeController extends BaseController
         //     return redirect('types')->with('warning', $message);
         // }
         // dd($request->transport_type);
-        $created_params = $request->only(['name', 'company_key', 'capacity', 'model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description', 'transport_type', 'is_taxi','icon_types_for','trip_dispatch_type']);
+        $created_params = $request->only(['name', 'owner_id', 'capacity', 'model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description', 'transport_type', 'is_taxi','icon_types_for','trip_dispatch_type']);
 
         $is_taxi = $request->transport_type;
         if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $created_params['company_key'] = auth()->user()->company_key;
+            $created_params['owner_id'] = auth()->user()->owner->owner_unique_id;
         }
 
         if ($is_taxi == 'delivery')
@@ -159,25 +160,25 @@ class VehicleTypeController extends BaseController
     */
     public function edit($id)
     {
-        // $page = trans('pages_names.edit_type');
-        // $type = $this->vehicle_type->where('id', $id)->first();
-        // // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
-        // // $services = ServiceLocation::whereActive(true)->get();
-        // $main_menu = 'types';
-        // $sub_menu = '';
-        // $admin = AdminDetail::whereHas('user', function ($query) {
-        //     $query->whereNotNull('company_key');
-        // })->get();
-        // return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type','admin'));
-
         $page = trans('pages_names.edit_type');
         $type = $this->vehicle_type->where('id', $id)->first();
         // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
         // $services = ServiceLocation::whereActive(true)->get();
-        $app_for = config('app.app_for');
         $main_menu = 'types';
         $sub_menu = '';
-        return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type', 'app_for'));
+        $admin = Owner::whereHas('user', function ($query) {
+            $query->whereNotNull('owner_unique_id');
+        })->get();
+        return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type','admin'));
+
+        // $page = trans('pages_names.edit_type');
+        // $type = $this->vehicle_type->where('id', $id)->first();
+        // // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
+        // // $services = ServiceLocation::whereActive(true)->get();
+        // $app_for = config('app.app_for');
+        // $main_menu = 'types';
+        // $sub_menu = '';
+        // return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type', 'app_for'));
     }
 
 
@@ -204,15 +205,15 @@ class VehicleTypeController extends BaseController
         // dd($request->all());
         $this->validateAdmin();
 
-        // $created_params = $request->only(['name', 'capacity','company_key','model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
+        $created_params = $request->only(['name', 'capacity','owner_id','model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
 
-        $created_params = $request->only(['name', 'capacity','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
+        // $created_params = $request->only(['name', 'capacity','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
 
         $is_taxi = $request->transport_type;
 
-        // if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-        //     $created_params['company_key'] = auth()->user()->company_key;
-        // }
+        if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $created_params['owner_id'] = auth()->user()->owner->owner_unique_id;
+        }
 
         if ($request->size)
         {
@@ -226,10 +227,10 @@ class VehicleTypeController extends BaseController
         //     $created_params['capacity'] = $request->maximum_weight_can_carry;
         // }
 
-        // $created_params['smoking'] = (int)$request->smoking;
-        // $created_params['pets'] = (int)$request->pets;
-        // $created_params['drinking'] = (int)$request->drinking;
-        // $created_params['handicaped'] = (int)$request->handicaped;
+        $created_params['smoking'] = (int)$request->smoking;
+        $created_params['pets'] = (int)$request->pets;
+        $created_params['drinking'] = (int)$request->drinking;
+        $created_params['handicaped'] = (int)$request->handicaped;
 
         if ($uploadedFile = $this->getValidatedUpload('icon', $request)) {
             $created_params['icon'] = $this->imageUploader->file($uploadedFile)
