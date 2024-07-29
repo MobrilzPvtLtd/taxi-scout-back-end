@@ -167,7 +167,7 @@ class Driver extends Model
     }
    public function owner()
     {
-        return $this->belongsTo(Owner::class, 'owner_id', 'id');
+        return $this->belongsTo(Owner::class, 'owner_id', 'owner_unique_id');
     }
 
     public function carMake()

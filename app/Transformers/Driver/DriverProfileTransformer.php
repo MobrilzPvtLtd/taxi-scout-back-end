@@ -79,7 +79,7 @@ class DriverProfileTransformer extends Transformer
             'timezone'=>$user->timezone,
             'refferal_code'=>$user->user->refferal_code,
             //'map_key'=>get_settings('google_map_key'),
-            'company_key'=>$user->company_key,
+            'owner_id'=>$user->owner_id,
             'show_instant_ride'=>false,
             'country_id'=>$user->user->countryDetail->id,
             'currency_symbol' => get_settings(Settings::CURRENCY),
@@ -187,7 +187,6 @@ class DriverProfileTransformer extends Transformer
             if($user->owner_id){
 
             $minimum_balance = get_settings(Settings::OWNER_WALLET_MINIMUM_AMOUNT_TO_GET_ORDER);
-
             $owner_wallet = $user->owner->ownerWalletDetail;
 
             $wallet_balance= $owner_wallet?$owner_wallet->amount_balance:0;
