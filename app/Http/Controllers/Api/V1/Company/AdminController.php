@@ -171,6 +171,8 @@ class AdminController extends BaseController
 
             $user->owner()->create($created_params);
 
+            $user->owner->ownerWalletDetail()->create(['amount_added'=>0]);
+
             // $admin = User::where('id', 1)->first();
             // $userUuid = User::where('id', $user->id)->first();
             $subscription = Subscription::where('id', $request->package_id)->first();
