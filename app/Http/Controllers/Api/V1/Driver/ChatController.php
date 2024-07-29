@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Driver;
 
-use App\Models\Request\Chat;
+use App\Models\Chat;
 use App\Base\Constants\Auth\Role;
 use App\Http\Controllers\Api\V1\BaseController;
 use App\Models\Request\Request as RequestModel;
@@ -11,6 +11,8 @@ use App\Jobs\Notifications\AndroidPushNotification;
 use App\Jobs\NotifyViaMqtt;
 use Illuminate\Http\Request;
 use App\Jobs\Notifications\SendPushNotification;
+use App\Models\Admin\Driver;
+use App\Models\ChatMessage;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -36,11 +38,12 @@ class ChatController extends BaseController
      */
     public function history(Request $request)
     {
-        $conversations = Chat::where(function($query) {
-            $query->where('user_id', auth()->user()->id)
+        $chatAuth = Chat::where('user_id', auth()->user()->id)->first();
+        $conversations = ChatMessage::where(function($query) {
+            $query->where('sender_id', auth()->user()->id)
                   ->orWhere('receiver_id', auth()->user()->id);
         })
-        ->whereIn('from_type', [3, 4])
+        ->where('chat_id', $chatAuth->id)
         ->orderBy('created_at', 'asc')
         ->get();
 
@@ -48,10 +51,12 @@ class ChatController extends BaseController
     }
 
     public function updateSeen(Request $request){
-        Chat::where(function($query) {
-            $query->where('user_id', auth()->user()->id)
-                  ->orWhere('receiver_id',  auth()->user()->id);
-        })->where('from_type', 3)->update(['seen' => true]);
+        $chatAuth = Chat::where('user_id', auth()->user()->id)->first();
+
+        ChatMessage::where(function($query) {
+            $query->where('receiver_id', auth()->user()->id);
+                //   ->orWhere('receiver_id',  auth()->user()->id);
+        })->where('chat_id', $chatAuth->id)->update(['seen_count' => true]);
 
         return $this->respondSuccess(null, 'message_seen_successfully');
 
@@ -60,25 +65,32 @@ class ChatController extends BaseController
 
     public function send(Request $request)
     {
-        $company = User::where('company_key', auth()->user()->driver->company_key)->first();
+        // $company = Driver::where('owner_id', auth()->user()->driver->owner_id)->first();
+        $chatAuth = Chat::where('user_id', auth()->user()->id)->first();
         $from_type = 4;
 
-        $chatRequest = Chat::create([
-            'message' => $request->message,
-            'from_type' => $from_type,
-            'user_id' => auth()->user()->id,
-            'receiver_id' => $company->id
-        ]);
 
-        $driverDetail = User::find($chatRequest->user_id);
+        if(!$chatAuth){
+            $chatRequest = Chat::create(['user_id' => auth()->user()->id]);
+        }
 
-        $chats = Chat::whereIn('from_type', [3, 4])->orderBy('created_at', 'asc')->get();
+        $chatMessage = new ChatMessage();
+        $chatMessage->chat_id = $chatAuth ? $chatAuth->id : $chatRequest->id;
+        $chatMessage->message = $request->message;
+        $chatMessage->sender_id = auth()->user()->id;
+        $chatMessage->receiver_id = auth()->user()->driver->owner->user_id;
+        $chatMessage->save();
+
+        $driverDetail = User::find($chatMessage->sender_id);
+
+        $chats = ChatMessage::where('chat_id', $chatMessage->chat_id)->orderBy('created_at', 'asc')->get();
+        // $chats = Chat::whereIn('from_type', [3, 4])->orderBy('created_at', 'asc')->get();
 
         $driver = $driverDetail;
         $notifable_driver = $driver->user;
 
         foreach ($chats as $key => $chat) {
-            if ($chat->from_type == $from_type) {
+            if ($chat->receiver_id == auth()->user()->driver->owner->user_id) {
                 $chats[$key]['message_status'] = 'receive';
             } else {
                 $chats[$key]['message_status'] = 'send';
