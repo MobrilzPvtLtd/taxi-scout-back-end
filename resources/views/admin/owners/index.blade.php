@@ -36,9 +36,6 @@
                             </div>
                     @endif
             </div>
-
-
-
     </div>
 
     <div id="js-owners-partial-target">
@@ -46,7 +43,6 @@
             <span style="text-align: center;font-weight: bold;"> @lang('view_pages.loading')</span>
         </include-fragment>
     </div>
-
 
 </div>
 </div>
@@ -78,7 +74,7 @@
                     e.preventDefault();
                     search_keyword = $('#search_keyword').val();
 
-                    fetch('fetch/'+"{{$area->id}}"+'?search=' + search_keyword)
+                    fetch('owners/fetch/'+"{{$area->id}}"+'?search=' + search_keyword)
                         .then(response => response.text())
                         .then(html => {
                             document.querySelector('#js-owners-partial-target').innerHTML = html
@@ -109,7 +105,7 @@
                         }
                     });
 
-                    fetch('fetch/'+"{{$area->id}}"+'?' + query)
+                    fetch('owners/fetch/'+"{{$area->id}}"+'?' + query)
                         .then(response => response.text())
                         .then(html => {
                             document.querySelector('#js-owners-partial-target').innerHTML = html
@@ -140,7 +136,7 @@
                             cache: false,
                             success: function(res) {
 
-                                fetch('fetch/'+"{{$area->id}}"+'?search=' + search_keyword + '&' + query)
+                                fetch('owners/fetch/'+"{{$area->id}}"+'?search=' + search_keyword + '&' + query)
                                     .then(response => response.text())
                                     .then(html => {
                                         document.querySelector('#js-owners-partial-target')
@@ -213,6 +209,51 @@
                             }
                         });
                     });
+            });
+            $(document).on('click', '.sweet-approval', function(e) {
+                e.preventDefault();
+
+                let url = $(this).attr('data-url');
+                let isApproval = $(this).hasClass('btn-primary');
+
+                let confirmButtonText = isApproval ? "Disapproval" : "Approval";
+
+                swal({
+                    title: "Are you sure for " + confirmButtonText + " ?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: isApproval ? "#ff6b55" : "#55dd6b",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No! Keep it",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        swal.close();
+                        $.ajax({
+                            url: url,
+                            cache: false,
+                            success: function(res) {
+                                fetch('owners/fetch?search=' + search_keyword)
+                                    .then(response => response.text())
+                                    .then(html => {
+                                        document.querySelector('#js-owners-partial-target')
+                                            .innerHTML = html
+                                    });
+
+                                $.toast({
+                                    heading: '',
+                                    text: res,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'success',
+                                    hideAfter: 5000,
+                                    stack: 1
+                                });
+                            }
+                        });
+                    }
+                });
             });
 
 

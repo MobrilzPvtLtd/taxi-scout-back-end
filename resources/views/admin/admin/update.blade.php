@@ -24,7 +24,6 @@
                         </div>
 
                         <div class="col-sm-12">
-
                             <form method="post" class="form-horizontal" action="{{ url('admins/update', $item->id) }}"
                                 enctype="multipart/form-data">
                                 {{ csrf_field() }}
@@ -102,12 +101,12 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="first_name">@lang('view_pages.name') <span
+                                            <label for="name">@lang('view_pages.name') <span
                                                     class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" id="first_name" name="first_name"
-                                                value="{{ old('first_name', $item->first_name) }}" required=""
-                                                placeholder="@lang('view_pages.enter_first_name')">
-                                            <span class="text-danger">{{ $errors->first('first_name') }}</span>
+                                            <input class="form-control" type="text" id="name" name="name"
+                                                value="{{ old('name', $item->name) }}" required=""
+                                                placeholder="@lang('view_pages.enter_name')">
+                                            <span class="text-danger">{{ $errors->first('name') }}</span>
 
                                         </div>
                                     </div>
@@ -225,7 +224,7 @@
                                             <label for="postal_code">@lang('view_pages.postal_code') <span
                                                     class="text-danger">*</span></label>
                                             <input class="form-control" type="number" min="1" id="city"
-                                                name="postal_code" value="{{ old('postal_code', $item->pincode) }}"
+                                                name="postal_code" value="{{ old('postal_code', $item->postal_code) }}"
                                                 required="" placeholder="@lang('view_pages.enter_postal_code')">
                                             <span class="text-danger">{{ $errors->first('postal_code') }}</span>
 

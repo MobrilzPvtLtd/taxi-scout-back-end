@@ -22,6 +22,7 @@ use App\Models\Admin\Company;
 use App\Models\Country;
 use App\Models\Access\Role;
 use App\Models\Admin\Order;
+use App\Models\Admin\Owner;
 use App\Models\Admin\ServiceLocation;
 use App\Models\Admin\Subscription;
 use App\Models\Admin\UserDetails;
@@ -142,13 +143,14 @@ class AdminController extends BaseController
         if (env('APP_FOR')=='demo') {
             $message = trans('succes_messages.you_are_not_authorised');
 
-            return redirect('admins')->with('warning', $message);
+            return redirect('owners')->with('warning', $message);
         }
 
-        $created_params = $request->only(['service_location_id', 'first_name', 'company_name','mobile','email','address','state','city','country']);
+        $created_params = $request->only(['service_location_id', 'name', 'company_name','mobile','email','address','state','city','country']);
         $created_params['pincode'] = $request->postal_code;
         $created_params['created_by'] = auth()->user()->id;
-        $created_params['first_name'] = $request->name;
+        // $created_params['name'] = $request->first_name;
+        $created_params['owner_name'] = $request->name;
 
         if ($request->input('service_location_id')) {
             $timezone = ServiceLocation::where('id', $request->input('service_location_id'))->pluck('timezone')->first();
@@ -157,6 +159,7 @@ class AdminController extends BaseController
         }
 
         $uuid = substr(Uuid::uuid4()->toString(), 0, 10);
+        $created_params['owner_unique_id'] = $uuid;
 
         $user_params = ['name'=>$request->input('name').' '.$request->input('last_name'),
             'email'=>$request->input('email'),
@@ -165,13 +168,13 @@ class AdminController extends BaseController
             'email_confirmed'=>true,
             'timezone'=>$timezone,
             'country'=>$request->input('country'),
-            'company_key' => $uuid,
+            // 'company_key' => $uuid,
             'password' => bcrypt($request->input('password'))
         ];
 
-        // if (env('APP_FOR')=='demo') {
-        //     $user_params['company_key'] = auth()->user()->company_key;
-        // }
+        if (env('APP_FOR')=='demo') {
+            $user_params['company_key'] = auth()->user()->company_key;
+        }
         $user = $this->user->create($user_params);
 
         if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
@@ -180,90 +183,93 @@ class AdminController extends BaseController
             $user->save();
         }
 
-        $user->attachRole(RoleSlug::ADMIN);
+        $user->attachRole(RoleSlug::OWNER);
 
-        $user->admin()->create($created_params);
+        $user->owner()->create($created_params);
+
+        $user->owner->ownerWalletDetail()->create(['amount_added'=>0]);
 
         // $admin = User::where('id', 1)->first();
-        $userUuid = User::where('id', $user->id)->first();
+        // $userUuid = Owner::where('id', $user->owner->id)->first();
         $subscription = Subscription::where('id', $request->package_id)->first();
 
-            if ($subscription) {
-                $start_date = $subscription->created_at;
-                $end_date = $start_date->clone()->addDays(30);
-            }
+        if ($subscription) {
+            $start_date = $subscription->created_at;
+            $end_date = $start_date->clone()->addDays(30);
+        }
 
-            $adminDetail = AdminDetail::where('user_id', $user->id)->first();
-            if ($adminDetail) {
-                $adminDetail->is_approval = !$adminDetail->is_approval;
-                $adminDetail->save();
-            }
+        $owner = Owner::where('user_id', $user->id)->first();
+        if ($owner) {
+            $owner->approve = !$owner->approve;
+            $owner->save();
+        }
 
-            Order::create([
-                'package_id' => $request->package_id,
-                'user_id' => $user->id,
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-            ]);
+        Order::create([
+            'package_id' => $request->package_id,
+            'user_id' => $user->id,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+        ]);
 
-            $data = [
-                'name' => $user->name,
-                // 'admin_name' => $admin->name,
-                'company_key' => $userUuid->company_key,
-                'email' => $user->email,
-                'is_approval' => $adminDetail->is_approval,
-            ];
+        $data = [
+            'name' => $user->name,
+            // 'admin_name' => $admin->name,
+            'owner_id' => $owner->owner_unique_id,
+            'email' => $user->email,
+            'is_approval' => $owner->approve,
+        ];
 
-            // $this->dispatch(new UserRegistrationNotification($user));
-            if ($request->has('email')) {
-                Mail::to($user->email)->send(new AdminRegister($data));
-            }
+        // $this->dispatch(new UserRegistrationNotification($user));
+        if ($request->has('email')) {
+            Mail::to($user->email)->send(new AdminRegister($data));
+        }
 
-            // if ($admin->email) {
-            //     Mail::to($admin->email)->send(new SuperAdminNotification($data));
-            // }
+        // if ($admin->email) {
+        //     Mail::to($admin->email)->send(new SuperAdminNotification($data));
+        // }
 
 
         $message = trans('succes_messages.admin_added_succesfully');
-        return redirect('admins')->with('success', $message);
+        return redirect('owners')->with('success', $message);
     }
 
 
-    public function getById(AdminDetail $admin)
+    public function getById(Owner $owner)
     {
-        $page = trans('pages_names.edit_admin');
+        $page = trans('pages_names.edit_owner');
 
-        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $roles = Role::whereIn('slug', RoleSlug::adminRoles())->get();
-        } else {
-            $this->validateAdmin();
-            $roles = Role::whereIn('slug', RoleSlug::adminRoles())->get();
-        }
+        // if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+        //     $roles = Role::whereIn('slug', RoleSlug::adminRoles())->get();
+        // } else {
+        //     $this->validateAdmin();
+        //     $roles = Role::whereIn('slug', RoleSlug::adminRoles())->get();
+        // }
         $services = ServiceLocation::active()->get();
         $countries = Country::active()->get();
-        $item = $admin;
-        $main_menu = 'admins';
+        $item = $owner;
+        $main_menu = 'owners';
         $sub_menu = null;
 
         $order = Order::where('user_id', $item->user_id)->first();
 
-        return view('admin.admin.update', compact('item', 'services', 'page', 'countries', 'main_menu', 'sub_menu', 'roles','order'));
+        return view('admin.admin.update', compact('item', 'services', 'page', 'countries', 'main_menu', 'sub_menu', 'order'));
     }
 
 
-    public function update(AdminDetail $admin, UpdateAdminRequest $request)
+    public function update(Owner $admin, UpdateAdminRequest $request)
     {
         if (env('APP_FOR')=='demo') {
             $message = trans('succes_messages.you_are_not_authorised');
 
-            return redirect('admins')->with('warning', $message);
+            return redirect('owners')->with('warning', $message);
         }
 
-        $updatedParams = $request->only(['service_location_id', 'first_name', 'company_name','mobile','email','address','state','city','country']);
-        $updatedParams['pincode'] = $request->postal_code;
+        $updatedParams = $request->only(['service_location_id', 'name', 'company_name','mobile','email','address','state','city','country']);
+        $updatedParams['postal_code'] = $request->postal_code;
+        $updatedParams['owner_name'] = $request->name;
 
 
-        $updated_user_params = ['name'=>$request->input('first_name').' '.$request->input('last_name'),
+        $updated_user_params = ['name'=>$request->input('name'),
             'email'=>$request->input('email'),
             'mobile'=>$request->input('mobile'),
             'password' => bcrypt($request->input('password'))
@@ -283,7 +289,7 @@ class AdminController extends BaseController
         $admin->update($updatedParams);
 
         $message = trans('succes_messages.admin_updated_succesfully');
-        return redirect('admins')->with('success', $message);
+        return redirect('owners')->with('success', $message);
     }
     public function toggleStatus(User $user)
     {
@@ -369,25 +375,25 @@ class AdminController extends BaseController
         }
 
         $admin = User::where('id', 1)->firstOrFail();
-        $userUuid = User::where('id', $user->id)->firstOrFail();
+        // $userUuid = User::where('id', $user->id)->firstOrFail();
 
-        $adminDetail = AdminDetail::where('user_id', $user->id)->first();
-        if ($adminDetail) {
-            $adminDetail->is_approval = !$adminDetail->is_approval;
-            $adminDetail->save();
+        $owner = Owner::where('user_id', $user->id)->first();
+        if ($owner) {
+            $owner->approve = !$owner->approve;
+            $owner->save();
         }
 
         $data = [
             'name' => $user->name,
             'admin_name' => $admin->name,
-            'company_key' => $userUuid->company_key,
+            'owner_id' => $owner->owner_unique_id,
             'email' => $user->email,
-            'is_approval' => $adminDetail->is_approval,
+            'is_approval' => $owner->approve,
         ];
 
         Mail::to($user->email)->send(new ApprovedUser($data));
 
-        if ($adminDetail->is_approval == 1) {
+        if ($owner->approve == 1) {
             $message = trans('succes_messages.admin_approved_succesfully');
         }else{
             $message = trans('succes_messages.admin_disapproved_succesfully');

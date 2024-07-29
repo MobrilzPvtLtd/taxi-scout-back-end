@@ -80,9 +80,11 @@ Route::middleware('auth:web')->group(function () {
         Route::get('/fetch', 'OwnerController@getAllOwner');
         Route::get('by_area/{area}', 'OwnerController@index')->name('ownerByArea');
         Route::get('by_area/fetch/{area}', 'OwnerController@getAllOwner');
-        Route::get('/create/{area}', 'OwnerController@create');
+        // Route::get('/create/{area}', 'OwnerController@create');
+        Route::get('/create', 'AdminController@create');
         Route::post('store', 'OwnerController@store');
-        Route::get('/{owner}', 'OwnerController@getById');
+        // Route::get('/{owner}', 'OwnerController@getById');
+        Route::get('edit/{owner}', 'AdminController@getById');
         Route::post('update/{owner}', 'OwnerController@update');
         Route::get('toggle_status/{owner}', 'OwnerController@toggleStatus');
         Route::get('toggle_approve/{owner}', 'OwnerController@toggleApprove');
@@ -306,14 +308,11 @@ Route::middleware('auth:web')->group(function () {
         });
         Route::group(['prefix' => 'admins',  'middleware' => 'permission:admin'], function () {
             // prefix('admins')->group(function () {
-            Route::get('/', 'AdminController@index');
-            Route::get('/fetch', 'AdminController@getAllAdmin');
-            Route::get('/create', 'AdminController@create');
-            // Route::post('store', 'AdminController@store');
-
+            // Route::get('/', 'AdminController@index');
+            // Route::get('/fetch', 'AdminController@getAllAdmin');
+            // Route::get('/create', 'AdminController@create');
             Route::post('store', 'AdminController@store');
-
-            Route::get('edit/{admin}', 'AdminController@getById');
+            // Route::get('edit/{admin}', 'AdminController@getById');
             Route::post('update/{admin}', 'AdminController@update');
             Route::get('toggle_status/{user}', 'AdminController@toggleStatus');
             Route::get('delete/{user}', 'AdminController@delete');

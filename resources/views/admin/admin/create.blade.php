@@ -15,7 +15,7 @@
                 <div class="col-sm-12">
                     <div class="box">
                         <div class="box-header with-border">
-                            <a href="{{ url('admins') }}">
+                            <a href="{{ url('owners') }}">
                                 <button class="btn btn-danger btn-sm pull-right" type="submit">
                                     <i class="mdi mdi-keyboard-backspace mr-2"></i>
                                     @lang('view_pages.back')
@@ -24,9 +24,7 @@
                         </div>
 
                         <div class="col-sm-12">
-
-                            <form method="post" class="form-horizontal" action="{{ url('admins/store') }}"
-                                enctype="multipart/form-data">
+                            <form method="post" class="form-horizontal" action="{{ url('admins/store') }}" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 {{-- <div class="row">
                                     <div class="col-6">
@@ -119,7 +117,6 @@
                                     </div> -->
 
                                 <!-- <div class="row"> -->
-
                                 </div>
 
                                 <div class="row">
@@ -250,9 +247,7 @@
                                         </button>
                                     </div>
                                 </div>
-
                             </form>
-
                         </div>
                     </div>
 

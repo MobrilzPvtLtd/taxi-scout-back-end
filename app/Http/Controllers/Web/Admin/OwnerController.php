@@ -66,7 +66,8 @@ class OwnerController extends BaseController
     {
         $page = trans('pages_names.owners');
         $main_menu = 'manage_owners';
-        $sub_menu = $area->name;
+        // $sub_menu = $area->name;
+        $sub_menu = null;
         $activeOwners = Owner::whereApprove(true)->whereServiceLocationId($area->id)->count();
         $inactiveOwners = Owner::whereApprove(false)->whereServiceLocationId($area->id)->count();
 
@@ -107,7 +108,8 @@ class OwnerController extends BaseController
 
         $services = ServiceLocation::whereActive(true)->get();
         $main_menu = 'manage_owners';
-        $sub_menu = $area->name;
+        // $sub_menu = $area->name;
+        $sub_menu = null;
         $needed_document = OwnerNeededDocument::active()->get();
 
         return view('admin.owners.create', compact('services', 'page', 'main_menu', 'sub_menu','needed_document','area'));
@@ -156,15 +158,16 @@ class OwnerController extends BaseController
     {
         $page = trans('pages_names.edit_owner');
         $main_menu = 'manage_owners';
-        $sub_menu = $owner->area->name;
+        // $sub_menu = $owner->area->name;
+        $sub_menu = null;
 
         $count = count($owner->ownerDocument);
         $neeedeDoc = OwnerNeededDocument::whereActive(true)->count();
 
-       if($neeedeDoc != $count){
+    //    if($neeedeDoc != $count){
 
-           return redirect('owners/document/view/'.$owner->id);
-       }
+    //        return redirect('owners/document/view/'.$owner->id);
+    //    }
 
         $item = $owner;
         $services = ServiceLocation::whereActive(true)->whereId($item->service_location_id)->get();
@@ -207,7 +210,8 @@ class OwnerController extends BaseController
 
         $message = trans('succes_messages.owner_deleted_succesfully');
         // return $message;
-        return redirect("owners/by_area/$owner->service_location_id")->with('success', $message);
+        return redirect("owners")->with('success', $message);
+        // return redirect("owners/by_area/$owner->service_location_id")->with('success', $message);
     }
 
     public function toggleApprove(Owner $owner)

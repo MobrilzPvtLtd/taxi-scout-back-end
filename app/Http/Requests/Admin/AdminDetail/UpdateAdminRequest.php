@@ -24,7 +24,7 @@ class UpdateAdminRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|max:50',
+            'name' => 'required|max:50',
             // 'last_name' => 'required|max:50',
             'mobile'=>'required|mobile_number|unique:users,mobile,'.$this->admin->user->id,
             'email'=>'required|email|unique:users,email,'.$this->admin->user->id,

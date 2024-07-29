@@ -27,7 +27,7 @@
                                 <p style="font-size:14px;padding-bottom:10px;margin:0;color: #000;">
                                     your account has been approved by {{ ucfirst($data['admin_name']) }}
                                 </p>
-                                <p style="font-size:14px;padding-bottom:10px;margin:0;color: #000;">Company Id: <strong>{{ $data['company_key'] }}</strong>
+                                <p style="font-size:14px;padding-bottom:10px;margin:0;color: #000;">Company Id: <strong>{{ $data['owner_id'] }}</strong>
                                 </p>
                             @else
                                 <p style="font-size:14px;padding-bottom:10px;margin:0;color: #000;">
