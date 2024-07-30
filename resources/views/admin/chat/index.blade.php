@@ -63,13 +63,18 @@
 
                 @forelse($results as $key => $result)
                     @php
-                        $total_chat = $result->where('from_type', 4)->where('user_id', $result->user_id)->where('seen', $result->seen)->count();
+                        $total_chat = App\models\ChatMessage::where('chat_id', $result->id)->where('sender_id', $result->user_id)->where('seen_count', 0)->count();
+                        // $total_chat = $result
+                        // // ->where('from_type', 4)
+                        // ->where('user_id', $result->user_id)
+                        // // ->where('seen_count', $result->seen)
+                        // ->count();
                     @endphp
                     <tr>
                         <td>{{ $i++ }} </td>
                         <td>
-                            <a href="{{ route('chatGetById', $result->user_id) }}" class="is_view" data-target="{{ $result->user_id }}">
-                                @if($result->seen == 0)
+                            <a href="{{ route('chatGetById', $result->id) }}" class="is_view" data-target="{{ $result->id }}">
+                                @if($total_chat)
                                     <p class="notifyChat">
                                         {{$total_chat}}
                                     </p>
@@ -78,7 +83,7 @@
                             </a>
                         </td>
                         <td>
-                            <a href="{{ route('chatGetById', $result->user_id) }}" class="is_view" data-target="{{ $result->user_id }}">
+                            <a href="{{ route('chatGetById', $result->id) }}" class="is_view" data-target="{{ $result->id }}">
                                 {{ $result->name }}
                             </a>
                         </td>

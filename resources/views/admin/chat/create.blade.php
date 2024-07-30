@@ -25,7 +25,7 @@
                         @endif
                     </div>
                     <form id="myForm" class="form-group" style="margin-top: 20px">
-                        <input type="hidden" name="user_id" value="{{ request()->user_id }}">
+                        <input type="hidden" name="chat_id" value="{{ request()->id }}">
                         <div class="publisher bt-1 border-light">
                             <img class="avatar avatar-xs" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
                             <input class="publisher-input" type="text" name="message" autocomplete="off" chat-box class="form-control" placeholder="Write something">
@@ -42,6 +42,9 @@
             </div>
         </div>
     </div>
+    {{-- @php
+        dd(request()->id);
+    @endphp --}}
 </section>
 
 <script type="text/javascript">
@@ -58,7 +61,7 @@
                 method: 'post',
                 data: {
                     message: $('[name="message"]').val(),
-                    user_id: $('[name="user_id"]').val()
+                    chat_id: $('[name="chat_id"]').val()
                 },
                 success: function(result) {
                     $('[name="message"]').val('');
@@ -72,13 +75,13 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         })
-        var user = "{{Auth::user()->id}}";
-        var user_id = $('[name="user_id"]').val();
+        var auth = "{{Auth::user()->id}}";
+        var chat_id = $('[name="chat_id"]').val();
         $.ajax({
             url: "{{ url('/chat/getConversations') }}",
             method: "get",
             data: {
-                user_id: user_id
+                chat_id: chat_id
             },
             success: function(data){
                 // console.log(data);
@@ -111,7 +114,7 @@
 
                     previousDate = messageDate;
 
-                    if (v.from_type == 4) {
+                    if (v.receiver_id == auth) {
                         messageHtml += `
                             <div class="media media-chat">
                                 <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="Driver">
@@ -121,7 +124,7 @@
                                 </div>
                             </div>
                         `;
-                    } else if (v.from_type == 3) {
+                    } else {
                         messageHtml += `
                             <div class="media media-chat media-chat-reverse medias" id="">
                                 <div class="media-body" id="messageShow">
@@ -149,14 +152,16 @@
 
 
         function markMessagesAsSeen() {
+            var chat_id = $('[name="chat_id"]').val();
             $.ajax({
                 url: '/chat/seen',
                 type: 'post',
                 data: {
                     _token: '{{ csrf_token() }}',
+                    chat_id: chat_id,
                 },
                 success: function(response) {
-                    console.log('Messages marked as seen:', response);
+                    console.log(response);
                 },
                 error: function(xhr, status, error) {
                     console.log('An error occurred while marking messages as seen:', error);

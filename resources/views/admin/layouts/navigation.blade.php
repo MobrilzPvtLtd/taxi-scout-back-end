@@ -6,8 +6,11 @@
         $main_menu = 'settings';
         $sub_menu = 'translations';
     }
-    $total_chat = App\Models\Request\Chat::where('from_type', 4)->where('seen', 0)
-    // ->where('receiver_id', $company->id)
+    $owner = auth()->user()->owner->owner_unique_id;
+
+    $drivers = App\Models\Admin\Driver::where('owner_id', $owner)->orderBy('created_at', 'asc')->get();
+    $driverIds = $drivers->pluck('user_id')->toArray();
+    $total_chat = App\Models\ChatMessage::whereIn('sender_id', $driverIds)->where('seen_count', 0)
     ->count();
 @endphp
 <aside class="main-sidebar">
@@ -232,7 +235,7 @@
                     <li class="{{ 'manage-chat' == $main_menu ? 'active' : '' }}">
                         <a href="{{ url('/chat') }}">
                             @if($total_chat)
-                                <p class="notify001">
+                                <p class="notify001 is_view">
                                     {{$total_chat}}
                                 </p>
                             @endif

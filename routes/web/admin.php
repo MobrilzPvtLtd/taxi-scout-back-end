@@ -515,7 +515,7 @@ Route::middleware('auth:web')->group(function () {
             Route::get('/fetch', 'ChatController@fetch');
             Route::get('/getConversations', 'ChatController@getConversations');
             Route::post('send', 'ChatController@store');
-            Route::get('/{user_id}', 'ChatController@getById')->name('chatGetById');
+            Route::get('/{id}', 'ChatController@getById')->name('chatGetById');
             Route::post('seen','ChatController@updateSeen');
             Route::get('delete/{chat}', 'ChatController@delete');
         });
