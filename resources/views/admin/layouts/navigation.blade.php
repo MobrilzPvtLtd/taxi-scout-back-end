@@ -6,12 +6,13 @@
         $main_menu = 'settings';
         $sub_menu = 'translations';
     }
-    $owner = auth()->user()->owner->owner_unique_id;
+    if (access()->hasRole(App\Base\Constants\Auth\Role::OWNER)) {
+        $owner = auth()->user()->owner->owner_unique_id;
+        $drivers = App\Models\Admin\Driver::where('owner_id', $owner)->orderBy('created_at', 'asc')->get();
+        $driverIds = $drivers->pluck('user_id')->toArray();
+        $total_chat = App\Models\ChatMessage::whereIn('sender_id', $driverIds)->where('seen_count', 0)->count();
+    }
 
-    $drivers = App\Models\Admin\Driver::where('owner_id', $owner)->orderBy('created_at', 'asc')->get();
-    $driverIds = $drivers->pluck('user_id')->toArray();
-    $total_chat = App\Models\ChatMessage::whereIn('sender_id', $driverIds)->where('seen_count', 0)
-    ->count();
 @endphp
 <aside class="main-sidebar">
     <!-- sidebar-->
