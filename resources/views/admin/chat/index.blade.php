@@ -63,7 +63,7 @@
 
                 @forelse($results as $key => $result)
                     @php
-                        $total_chat = App\models\ChatMessage::where('chat_id', $result->id)->where('sender_id', $result->user_id)->where('seen_count', 0)->count();
+                        $total_chat = App\Models\ChatMessage::where('chat_id', $result->id)->where('sender_id', $result->user_id)->where('seen_count', 0)->count();
                         // $total_chat = $result
                         // // ->where('from_type', 4)
                         // ->where('user_id', $result->user_id)
