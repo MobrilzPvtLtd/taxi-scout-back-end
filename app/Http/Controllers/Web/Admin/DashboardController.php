@@ -20,26 +20,15 @@ use App\Models\Request\RequestPlace;
 
 class DashboardController extends BaseController
 {
-
-    public function fetchDriverDashboardMap(){
-        $items = RequestRequest::whereHas('zoneType.zone')->get();
-        // dd($items);
-        foreach ($items as $value) {
-            $result = $value;
-        }
-        return $result;
-    }
-
     public function dashboard(Request $request)
     {
-
         if(!Session::get('applocale')){
             Session::put('applocale', 'en');
         }
 
         $ownerId = null;
-        if (auth()->user()->hasRole('admin')) {
-            $ownerId = auth()->user()->admin->id;
+        if (auth()->user()->hasRole('owner')) {
+            $ownerId = auth()->user()->owner->owner_unique_id;
         }
 
         $page = trans('pages_names.dashboard');
@@ -48,26 +37,25 @@ class DashboardController extends BaseController
 
         $today = date('Y-m-d');
 
-        // if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $total_drivers = Driver::where('approve', 2)->where('owner_id', null)->count();
-            $total_waiting_drivers = Driver::where('approve', 0)->where('owner_id', null)->count();
-            $total_aproved_drivers = Driver::where('approve', 1)->where('owner_id', null)->count();
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $total_drivers = Driver::where('approve', 2)->count();
+            $total_waiting_drivers = Driver::where('approve', 0)->count();
+            $total_aproved_drivers = Driver::where('approve', 1)->count();
             $total_vehicleType = VehicleType::count();
             $total_admin = AdminDetail::count();
-            $total_booking = RequestRequest::companyKey()->where('transport_type','taxi')->count();
-        // }else{
-        //     $total_drivers = Driver::where('approve', 2)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+            $total_booking = RequestRequest::where('transport_type','taxi')->count();
+        }else{
+            $total_drivers = Driver::where('approve', 2)->where('owner_id', auth()->user()->owner->owner_unique_id)->count();
 
-        //     $total_aproved_drivers = Driver::where('approve', 1)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+            $total_aproved_drivers = Driver::where('approve', 1)->where('owner_id', auth()->user()->owner->owner_unique_id)->count();
 
-        //     $total_vehicleType = VehicleType::where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->count();
+            $total_vehicleType = VehicleType::where('owner_id', auth()->user()->owner->owner_unique_id)->count();
 
-        //     $total_waiting_drivers = Driver::where('approve', 0)->where('company_key', auth()->user()->company_key)->where('company_key', '!=', null)->where('owner_id', null)->count();
+            $total_waiting_drivers = Driver::where('approve', 0)->where('owner_id', auth()->user()->owner->owner_unique_id)->count();
 
-        //     $total_booking = RequestRequest::companyKey()->where('transport_type','taxi')->count();
-        //     // dd($total_booking);
-        //     $total_admin = '';
-        // }
+            $total_booking = RequestRequest::where('transport_type','taxi')->where('owner_id', auth()->user()->owner->owner_unique_id)->count();
+            $total_admin = '';
+        }
 
 
         // $total_drivers = Driver::selectRaw('
@@ -257,15 +245,29 @@ class DashboardController extends BaseController
     $default_lng = get_settings('default_longitude');
     // $zone = Zone::active()->companyKey()->get();
 
-    $items = RequestRequest::whereHas('zoneType.zone')->get();
-    // dd($results);
+    if (auth()->user()->hasRole('owner')) {
+        $ownerId = auth()->user()->owner->owner_unique_id;
+        $results = RequestRequest::whereHas('zoneType.zone')->whereHas('requestPlace')->whereHas('driverDetail')->where('transport_type','taxi')->where('owner_id', $ownerId)->get();
+    }else{
+        $results = RequestRequest::whereHas('zoneType.zone')->whereHas('requestPlace')->whereHas('driverDetail')->where('transport_type','taxi')->get();
+    }
 
     $item = '';
-    foreach ($items as $value) {
-        $item = $value;
+    foreach ($results as $result) {
+        // dd($result->zoneType->vehicleType);
+
+        if (!empty($result->pick_lat) && !empty($result->pick_lng)) {
+            $markers[] = array($result->pick_address, $result->pick_lat, $result->pick_lng);
+            $infowindow[] = array('<div class="p-2">
+                                    <h6><i class="fa fa-id-badge"></i> : ' . $result->driverDetail->name . ' </h6>
+                                    <h6><i class="fa fa-phone-square"></i> : ' . $result->driverDetail->mobile . ' </h6>
+                                    <h6><i class="fa fa-id-card"></i> : ' . $result->driverDetail->email . ' </h6>
+                                    <h6><img class="img-circle" src="'. asset($result->zoneType->vehicleType->icon) .'" alt="" style="width: 35px;height: 25px;"> : ' . $result->zoneType->vehicleType->name . ' </h6>
+                                </div>');
+        }
     }
 
     // return redirect('/airport');
-    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin','total_booking','total_vehicleType','item'));
+    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin','total_booking','total_vehicleType','markers','infowindow'));
     }
 }

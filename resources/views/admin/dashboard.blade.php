@@ -154,7 +154,7 @@
                                                         data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
                                                         {{ $total_drivers }}
                                                     </div>
-                                                    @if (!auth()->user()->hasRole('admin'))
+                                                    @if (!auth()->user()->hasRole('owner'))
                                                         <a class="font-weight-semi-bold fs--1 text-nowrap"
                                                             href="{{ url('drivers/waiting-for-approval') }}">@lang('view_pages.see_all')<span
                                                                 class="fa fa-angle-right ml-1" data-fa-transform="down-1"></span></a>
@@ -176,7 +176,7 @@
                                                         {{ $total_aproved_drivers }}
                                                         {{-- {{ $total_drivers[0]['approved'] }} --}}
                                                     </div>
-                                                    @if (!auth()->user()->hasRole('admin'))
+                                                    @if (!auth()->user()->hasRole('owner'))
                                                         <a class="font-weight-semi-bold fs--1 text-nowrap"
                                                             href="{{ url('drivers') }}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1"
                                                                 data-fa-transform="down-1"></span></a>
@@ -200,7 +200,7 @@
                                                         {{-- {{ $total_drivers[0]['declined'] }} --}}
                                                         {{ $total_waiting_drivers }}
                                                     </div>
-                                                    @if (!auth()->user()->hasRole('admin'))
+                                                    @if (!auth()->user()->hasRole('owner'))
                                                         <a class="font-weight-semi-bold fs--1 text-nowrap"
                                                             href="{{ url('drivers/waiting-for-approval') }}">@lang('view_pages.see_all')<span
                                                                 class="fa fa-angle-right ml-1" data-fa-transform="down-1"></span></a>
@@ -208,7 +208,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @if (!auth()->user()->hasRole('admin'))
+                                        @if (!auth()->user()->hasRole('owner'))
                                             <div class="col-sm-3">
                                                 <div class="card overflow-hidden" style="min-width: 12rem">
                                                     <div class="bg-holder bg-card"
@@ -228,7 +228,7 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        @if (!auth()->user()->hasRole('admin'))
+                                        @if (!auth()->user()->hasRole('owner'))
                                             <div class="col-sm-3">
                                                 <div class="card overflow-hidden" style="min-width: 12rem">
                                                     <div class="bg-holder bg-card"
@@ -640,386 +640,64 @@
         </div>
     </section>
 
-    <script type="text/javascript"
-        src="https://maps.google.com/maps/api/js?key={{ get_settings('google_map_key') }}&libraries=places"></script>
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-database.js"></script>
-    <!-- TODO: Add SDKs for Firebase products that you want to use https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase-analytics.js"></script>
-
-
-    {{-- var lat = "{{ $item->pick_lat }}"
-    var lng = "{{ $item->pick_lng }}" --}}
-    {{-- var requestId = "{{ $item->id }}" --}}
-    {{-- var driverId = "{{ $item->driver_id }}" --}}
     <script>
-        var lat = '{{ $default_lat }}';
-        var lng = '{{ $default_lng }}';
-        var pickLat = [];
-        var pickLng = [];
-        var default_lat = lat;
-        var default_lng = lng;
-        var driverLat, driverLng, bearing, type;
-        var marker = [];
-        var onTrip, available;
-        onTrip = available = true;
-
-        var directionsService = new google.maps.DirectionsService();
-        var directionsRenderer = new google.maps.DirectionsRenderer({
-            suppressMarkers: true
-        });
-
-        // Your web app's Firebase configuration
-        var firebaseConfig = {
-            apiKey: "{{ get_settings('firebase-api-key') }}",
-            authDomain: "{{ get_settings('firebase-auth-domain') }}",
-            databaseURL: "{{ get_settings('firebase-db-url') }}",
-            projectId: "{{ get_settings('firebase-project-id') }}",
-            storageBucket: "{{ get_settings('firebase-storage-bucket') }}",
-            messagingSenderId: "{{ get_settings('firebase-messaging-sender-id') }}",
-            appId: "{{ get_settings('firebase-app-id') }}",
-            measurementId: "{{ get_settings('firebase-measurement-id') }}"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-
-        var map = new google.maps.Map(document.getElementById('map'), {
-            center: new google.maps.LatLng(default_lat, default_lng),
-            zoom: 10,
-            mapTypeId: 'roadmap',
-            mapTypeControl: true,
-            mapTypeControlOptions: {
-                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                position: google.maps.ControlPosition.TOP_CENTER,
-            },
-            zoomControl: true,
-            zoomControlOptions: {
-                position: google.maps.ControlPosition.RIGHT_BOTTOM,
-            },
-            scaleControl: true,
-            streetViewControl: false,
-            fullscreenControl: true,
-        });
-
-        directionsRenderer.setMap(map);
-
-        var iconBase = "{{ asset('map/icon/') }}";
-        var icons = {
-            available: {
-                name: 'Available',
-                icon: iconBase + '/taxi1.svg'
-            },
-            ontrip: {
-                name: 'OnTrip',
-                icon: iconBase + '/taxi.svg'
-            },
-            pickup: {
-                name: 'PickUp',
-                icon: iconBase + '/driver_available.png'
-            },
-            drop: {
-                name: 'Drop',
-                icon: iconBase + '/driver_on_trip.png'
-            }
-        };
-
-        var requestRef = firebase.database().ref();
-        // console.log(requestRef);
-
-        requestRef.on('value', async function() {
-            // var tripData = snapshot.val();
-
-            // if (typeof tripData.request_id != 'undefined') {
-            // }
-            await loadDriverIcons();
-            await getDriverOnMap();
-        });
-
-        function loadDriverIcons() {
-            // deleteAllMarkers();
-
-            var iconImg = icons['ontrip'].icon;
-
-            var carIcon = new google.maps.Marker({
-                position: new google.maps.LatLng(lat, lng),
-                icon: {
-                    url: iconImg,
-                    scaledSize: new google.maps.Size(40, 40)
-                },
-                map: map
-            });
-
-            marker.push(carIcon);
-            carIcon.setMap(map);
-
-            // setTimeout(() => {
-            //     rotateMarker(iconImg, val.bearing);
-            // }, 3000);
-        }
-
-        function getDriverOnMap() {
-            var basePath = "{{ asset('storage/uploads/request/delivery-proof') }}/"
-            // if (requestId) {
-                let url = "{{ url('driver/dashboard-map') }}/";
-                fetch(url)
-                    .then(response => response.json())
-                    .then(result => {
-                        console.log(result);
-                        if (result) {
-                            var pickLat = result.pick_lat
-                            var pickLng = result.pick_lng
-                            var dropLat = result.drop_lat
-                            var dropLng = result.drop_lng
-
-                            var pickUpLocation = new google.maps.LatLng(pickLat, pickLng);
-                            var dropLocation = new google.maps.LatLng(dropLat, dropLng);
-                            calcRoute(pickUpLocation, dropLocation)
-                        }
-                });
-            // }
-        }
-
-        // Draw path from pickup to drop - map api
-        function calcRoute(pickup, drop) {
-            var request = {
-                origin: pickup,
-                destination: drop,
-                travelMode: google.maps.TravelMode['DRIVING']
+        // Initialize and add the map
+        function initMap() {
+            var map;
+            var bounds = new google.maps.LatLngBounds();
+            var mapOptions = {
+                mapTypeId: 'roadmap'
             };
 
-            directionsService.route(request, function(response, status) {
-                if (status == 'OK') {
-                    directionsRenderer.setDirections(response);
-                    var leg = response.routes[0].legs[0];
-                    makeMarker(leg.start_location, icons['pickup'].icon, icons['pickup'].name, map);
-                    makeMarker(leg.end_location, icons['drop'].icon, icons['drop'].name, map);
-                }
+            // Display a map on the web page
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            map.setTilt(50);
+
+            // Multiple markers location, latitude, and longitude
+            var markers = <?php echo json_encode($markers); ?>;
+
+            // Info window content
+            var infoWindowContent = <?php echo json_encode($infowindow); ?>;
+
+            // Add multiple markers to map
+            var infoWindow = new google.maps.InfoWindow(),
+                marker, i;
+
+            // Place each marker on the map
+            for (i = 0; i < markers.length; i++) {
+                var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+                bounds.extend(position); // Extend bounds to include each marker's position
+                marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: markers[i][0]
+                });
+
+                // Add info window to marker
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        infoWindow.setContent(infoWindowContent[i][0]);
+                        infoWindow.open(map, marker);
+                    }
+                })(marker, i));
+            }
+
+            // Fit the map bounds to include all markers
+            map.fitBounds(bounds);
+
+            // Set zoom level based on bounds
+            var boundsListener = google.maps.event.addListener(map, 'bounds_changed', function(event) {
+                // Set the zoom level after the map bounds are changed
+                this.setZoom(Math.min(this.getZoom(), 14)); // You can adjust the max zoom level here
+                google.maps.event.removeListener(boundsListener);
             });
         }
 
-        function makeMarker(position, icon, title, map) {
-            new google.maps.Marker({
-                position: position,
-                map: map,
-                icon: icon,
-                title: title
-            });
-        }
+        window.initMap = initMap;
     </script>
 
-    {{-- <script type="text/javascript">
-        var heatmapData = [];
-        var pickLat = [];
-        var pickLng = [];
-        var default_lat = '{{ $default_lat }}';
-        var default_lng = '{{ $default_lng }}';
-        var company_key = '{{ auth()->user()->company_key }}';
-        var driverLat, driverLng, bearing, type;
-        var marker = [];
-
-
-        // Your web app's Firebase configuration
-        var firebaseConfig = {
-            apiKey: "{{ get_settings('firebase-api-key') }}",
-            authDomain: "{{ get_settings('firebase-auth-domain') }}",
-            databaseURL: "{{ get_settings('firebase-db-url') }}",
-            projectId: "{{ get_settings('firebase-project-id') }}",
-            storageBucket: "{{ get_settings('firebase-storage-bucket') }}",
-            messagingSenderId: "{{ get_settings('firebase-messaging-sender-id') }}",
-            appId: "{{ get_settings('firebase-app-id') }}",
-            measurementId: "{{ get_settings('firebase-measurement-id') }}"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-
-        var tripRef = firebase.database().ref('drivers');
-
-        tripRef.on('value', async function(snapshot) {
-            var data = snapshot.val();
-
-            await loadDriverIcons(data);
-        });
-
-        var map = new google.maps.Map(document.getElementById('map'), {
-            center: new google.maps.LatLng(default_lat, default_lng),
-            zoom: 5,
-            mapTypeId: 'roadmap'
-        });
-
-        var iconBase = '{{ asset('map/icon/') }}';
-        var icons = {
-            car_available: {
-                name: 'Available',
-                icon: iconBase + '/driver_available.png'
-            },
-            car_ontrip: {
-                name: 'OnTrip',
-                icon: iconBase + '/driver_on_trip.png'
-            },
-            car_offline: {
-                name: 'Offline',
-                icon: iconBase + '/driver_off_trip.png'
-            },
-            bike_available: {
-                name: 'Available',
-                icon: iconBase + '/available-bike.png'
-            },
-            bike_ontrip: {
-                name: 'OnTrip',
-                icon: iconBase + '/ontrip-bike.png'
-            },
-            bike_offline: {
-                name: 'Offline',
-                icon: iconBase + '/offline-bike.png'
-            },
-            truck_available: {
-                name: 'Available',
-                icon: iconBase + '/available-truck.png'
-            },
-            truck_ontrip: {
-                name: 'OnTrip',
-                icon: iconBase + '/ontrip-truck.png'
-            },
-            truck_offline: {
-                name: 'Offline',
-                icon: iconBase + '/offline-truck.png'
-            },
-        };
-
-        var fliter_icons = {
-            available: {
-                name: 'Available',
-                icon: iconBase + '/available.png'
-            },
-            ontrip: {
-                name: 'OnTrip',
-                icon: iconBase + '/ontrip.png'
-            },
-            offline: {
-                name: 'Offline',
-                icon: iconBase + '/offline.png'
-            }
-        };
-
-        var legend = document.getElementById('legend');
-
-        for (var key in fliter_icons) {
-            var type = fliter_icons[key];
-            var name = type.name;
-            var icon = type.icon;
-            var div = document.createElement('div');
-            div.innerHTML = '<img src="' + icon + '"> ' + name;
-            legend.appendChild(div);
-        }
-
-        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
-
-        function loadDriverIcons(data) {
-            deleteAllMarkers();
-
-            Object.entries(data).forEach(([key, val]) => {
-                console.log(val);
-                if (typeof val.l != 'undefined') {
-                    var contentString = `<div class="p-2">
-                                    <h6><i class="fa fa-id-badge"></i> : ${val.name ?? '-' } </h6>
-                                    <h6><i class="fa fa-phone-square"></i> : ${val.mobile ?? '-'} </h6>
-                                    <h6><i class="fa fa-id-card"></i> : ${val.vehicle_number ?? '-'} </h6>
-                                    <h6><i class="fa fa-truck"></i> : ${val.vehicle_type_name ?? '-'} </h6>
-                                </div>`;
-
-                    var infowindow = new google.maps.InfoWindow({
-                        content: contentString
-                    });
-
-                    var iconImg = '';
-
-                    var date = new Date();
-                    var timestamp = date.getTime();
-                    var conditional_timestamp = new Date(timestamp - 5 * 60000);
-                    //    console.log(conditional_timestamp,val.updated_at,conditional_timestamp < val.updated_at);
-                    if (conditional_timestamp > val.updated_at) {
-                        if (val.vehicle_type_icon == 'taxi') {
-                            iconImg = icons['car_offline'].icon;
-                        } else if (val.vehicle_type_icon == 'motor_bike') {
-                            iconImg = icons['bike_offline'].icon;
-                        } else if (val.vehicle_type_icon == 'truck') {
-                            iconImg = icons['truck_offline'].icon;
-                        } else {
-                            iconImg = icons['car_offline'].icon;
-
-                        }
-                    } else {
-                        if (val.is_available == true && val.is_active == true) {
-                            if (val.vehicle_type_icon == 'taxi') {
-                                iconImg = icons['car_available'].icon;
-                            } else if (val.vehicle_type_icon == 'motor_bike') {
-                                iconImg = icons['bike_available'].icon;
-                            } else if (val.vehicle_type_icon == 'truck') {
-                                iconImg = icons['truck_available'].icon;
-                            } else {
-                                iconImg = icons['car_available'].icon;
-
-                            }
-                        } else if (val.is_active == true && val.is_available == false) {
-                            if (val.vehicle_type_icon == 'taxi') {
-                                iconImg = icons['car_ontrip'].icon;
-                            } else if (val.vehicle_type_icon == 'motor_bike') {
-                                iconImg = icons['bike_ontrip'].icon;
-                            } else if (val.vehicle_type_icon == 'truck') {
-                                iconImg = icons['truck_ontrip'].icon;
-                            } else {
-                                iconImg = icons['car_ontrip'].icon;
-                            }
-                        } else {
-
-                            if (val.vehicle_type_icon == 'taxi') {
-                                iconImg = icons['car_offline'].icon;
-                            } else if (val.vehicle_type_icon == 'motor_bike') {
-                                iconImg = icons['bike_offline'].icon;
-                            } else if (val.vehicle_type_icon == 'truck') {
-                                iconImg = icons['truck_offline'].icon;
-                            } else {
-                                iconImg = icons['car_offline'].icon;
-
-                            }
-                        }
-                    }
-                    // if(val.company_key==company_key){
-
-
-                    var carIcon = new google.maps.Marker({
-                        position: new google.maps.LatLng(val.l[0], val.l[1]),
-                        icon: iconImg,
-                        map: map
-                    });
-
-                    carIcon.addListener('click', function() {
-                        infowindow.open(map, carIcon);
-                    });
-
-                    marker.push(carIcon);
-                    carIcon.setMap(map);
-                    // }
-
-                    // marker.addListener('click', function() {
-                    //     infowindow.open(map, marker);
-                    // });
-                }
-            });
-        }
-
-        // Delete truck icons once map reloads
-        function deleteAllMarkers() {
-            for (var i = 0; i < marker.length; i++) {
-                marker[i].setMap(null);
-            }
-        }
-    </script> --}}
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap&key={{ env('GOOGLE_MAP_KEY') }}" defer>
+    </script>
 
     <script src="{{ asset('assets/vendor_components/jquery.peity/jquery.peity.js') }}"></script>
 

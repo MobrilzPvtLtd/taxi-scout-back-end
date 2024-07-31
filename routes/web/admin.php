@@ -207,7 +207,6 @@ Route::middleware('auth:web')->group(function () {
         Route::get('/change/lang/{lang}', 'AdminViewController@changeLocale')->name('changeLocale');
 
         Route::get('dashboard', 'DashboardController@dashboard');
-        Route::get('/driver/dashboard-map', 'DashboardController@fetchDriverDashboardMap');
         // Route::get('dashboard', 'AdminViewController@dashboard');
         Route::get('/admin_dashboard', 'AdminViewController@viewTestDashboard')->name('admin_dashboard');
         Route::get('/driver_profile_dashboard', 'AdminViewController@driverPrfDashboard')->name('driver_profile_dashboard');

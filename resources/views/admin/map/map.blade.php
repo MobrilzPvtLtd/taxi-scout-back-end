@@ -64,7 +64,7 @@
     var driverLat,driverLng,bearing,type;
     var marker = [];
 
- 
+
 // Your web app's Firebase configuration
 var firebaseConfig = {
     apiKey: "{{get_settings('firebase-api-key')}}",
@@ -165,10 +165,10 @@ var firebaseConfig = {
 
     function loadDriverIcons(data){
         deleteAllMarkers();
-        
+
         Object.entries(data).forEach(([key, val]) => {
             if( typeof val.l !=  'undefined'  ) {
-            var contentString = `<div class="p-2">
+                var contentString = `<div class="p-2">
                                     <h6><i class="fa fa-id-badge"></i> : ${val.name ?? '-' } </h6>
                                     <h6><i class="fa fa-phone-square"></i> : ${val.mobile ?? '-'} </h6>
                                     <h6><i class="fa fa-id-card"></i> : ${val.vehicle_number ?? '-'} </h6>
@@ -233,7 +233,7 @@ var firebaseConfig = {
                 }
             }
             // if(val.company_key==company_key){
-            
+
 
             var carIcon = new google.maps.Marker({
                 position: new google.maps.LatLng(val.l[0],val.l[1]),
