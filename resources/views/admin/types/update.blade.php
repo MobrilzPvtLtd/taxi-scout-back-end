@@ -81,7 +81,7 @@
 
                                         </div>
                                     </div>
-                                    <div class="col-6" name="taxi" id="taxi">
+                                    <div class="col-md-6">
                                         <div class="form-group m-b-25">
                                             <label for="name">@lang('view_pages.capacity') <span
                                                     class="text-danger">*</span></label>
@@ -91,14 +91,17 @@
                                             <span class="text-danger">{{ $errors->first('capacity') }}</span>
                                         </div>
                                     </div>
-                                    {{-- <div class="col-6" name="taxi" id="taxi">
-                                        <div class="form-group m-b-25">
-                                            <label for="name">Car Model<span
-                                                    class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" id="model_name" name="model_name" value="{{ old('model_name',$type->model_name)}}" required="" placeholder="Enter Model Name" min="1">
-                                            <span class="text-danger">{{ $errors->first('model_name') }}</span>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="model_name">Car Model<span class="text-danger">*</span></label>
+                                            <select name="model_name" id="model_name" class="form-control select2" required>
+                                                @foreach ($carModels as $carModel)
+                                                    <option value="{{ $carModel->name }}" {{ $carModel->name == $type->car_model ? 'selected' : null }}>{{ $carModel->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger">{{ $errors->first('country') }}</span>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                     {{-- <div class="col-6">
                                         <div class="form-group m-b-25">
                                             <label for="price">Per Km Price<span

@@ -305,7 +305,7 @@
                                         class="fa fa-circle-thin"></i>@lang('pages_names.needed_doc')</a>
                             </li>
                         @endif
-                        @if (auth()->user()->can('manage-owner-needed-document'))
+                        {{-- @if (auth()->user()->can('manage-owner-needed-document'))
                             <li class="{{ 'owner_needed_document' == $sub_menu ? 'active' : '' }}">
                                 <a href="{{ url('/owner_needed_doc') }}"><i
                                         class="fa fa-circle-thin"></i>@lang('pages_names.owner_needed_doc')</a>
@@ -316,7 +316,7 @@
                                 <a href="{{ url('/fleet_needed_doc') }}"><i
                                         class="fa fa-circle-thin"></i>@lang('pages_names.fleet_needed_doc')</a>
                             </li>
-                        @endif
+                        @endif --}}
                         {{-- @if (auth()->user()->can('manage-goods-types') && $app_for !== 'taxi')
                             <li class="{{ 'goods_type' == $sub_menu ? 'active' : '' }}">
                                 <a href="{{ url('/goods-types') }}"><i

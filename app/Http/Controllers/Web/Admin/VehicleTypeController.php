@@ -17,6 +17,7 @@ use App\Http\Requests\Admin\VehicleTypes\CreateVehicleTypeRequest;
 use App\Http\Requests\Admin\VehicleTypes\UpdateVehicleTypeRequest;
 use App\Models\Admin\AdminDetail;
 use App\Models\Admin\Owner;
+use App\Models\Master\CarModel;
 
 /**
  * @resource Vechicle-Types
@@ -89,11 +90,12 @@ class VehicleTypeController extends BaseController
         $page = trans('pages_names.add_type');
         // $services = ServiceLocation::whereActive(true)->get();
         $main_menu = 'types';
+        $carModels = CarModel::whereActive(true)->get();
         $sub_menu = '';
         $admin = Owner::whereHas('user', function ($query) {
             $query->whereNotNull('owner_unique_id');
         })->get();
-        return view('admin.types.create', compact('page', 'main_menu', 'sub_menu','admin'));
+        return view('admin.types.create', compact('page', 'main_menu', 'sub_menu','admin','carModels'));
     }
 
 
@@ -164,12 +166,13 @@ class VehicleTypeController extends BaseController
         $type = $this->vehicle_type->where('id', $id)->first();
         // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
         // $services = ServiceLocation::whereActive(true)->get();
+        $carModels = CarModel::whereActive(true)->get();
         $main_menu = 'types';
         $sub_menu = '';
         $admin = Owner::whereHas('user', function ($query) {
             $query->whereNotNull('owner_unique_id');
         })->get();
-        return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type','admin'));
+        return view('admin.types.update', compact('page', 'main_menu', 'sub_menu','type','admin','carModels'));
 
         // $page = trans('pages_names.edit_type');
         // $type = $this->vehicle_type->where('id', $id)->first();
@@ -203,7 +206,7 @@ class VehicleTypeController extends BaseController
             return redirect('types')->with('warning', $message);
         }
         // dd($request->all());
-        $this->validateAdmin();
+        // $this->validateAdmin();
 
         $created_params = $request->only(['name', 'capacity','owner_id','model_name', 'price','is_accept_share_ride','description','supported_vehicles','short_description','transport_type','icon_types_for','trip_dispatch_type']);
 

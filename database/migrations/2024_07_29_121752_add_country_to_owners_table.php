@@ -17,6 +17,11 @@ class AddCountryToOwnersTable extends Migration
             $table->string('country')->nullable()->after('city');
             $table->string('state')->nullable()->after('country');
         });
+
+        Schema::table('vehicle_types', function (Blueprint $table) {
+            $table->string('model_name')->nullable()->after('capacity');
+        });
+
     }
 
     /**
@@ -29,6 +34,10 @@ class AddCountryToOwnersTable extends Migration
         Schema::table('owners', function (Blueprint $table) {
             $table->dropColumn('country');
             $table->dropColumn('state');
+        });
+
+        Schema::table('vehicle_types', function (Blueprint $table) {
+            $table->dropColumn('model_name');
         });
     }
 }
