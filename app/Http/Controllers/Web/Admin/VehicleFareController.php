@@ -13,6 +13,7 @@ use App\Models\Admin\ZoneType;
 use App\Models\Admin\ZoneTypePackagePrice;
 use App\Models\Admin\ZoneTypePrice;
 use Illuminate\Http\Request;
+use App\Base\Constants\Auth\Role as RoleSlug;
 
 class VehicleFareController extends Controller
 {
@@ -28,7 +29,11 @@ class VehicleFareController extends Controller
     public function fetchFareList(QueryFilterContract $queryFilter)
     {
         // dd($queryFilter);
-        $query = ZoneTypePrice::latest();
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $query = ZoneTypePrice::latest();
+        }else{
+            $query = ZoneTypePrice::where('owner_id', auth()->user()->owner->owner_unique_id)->latest();
+        }
 
         $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
 
@@ -37,7 +42,11 @@ class VehicleFareController extends Controller
 
     public function create()
     {
-        $zones = Zone::active()->get();
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $zones = Zone::active()->get();
+        }else{
+            $zones = Zone::where('owner_id', auth()->user()->owner->owner_unique_id)->active()->get();
+        }
 
         // dd($zones);
         $page = trans('pages_names.add_vehicle_fare');
@@ -55,7 +64,9 @@ class VehicleFareController extends Controller
             $types = VehicleType::whereNotIn('id', $ids)->active()->where(function($query)use($request){
             $query->where('is_taxi',$request->transport_type);
             // ->orWhere('is_taxi','both');
-            $query->where('company_key',auth()->user()->company_key);
+            if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+                $query->where('owner_id',auth()->user()->owner->owner_unique_id);
+            }
         })->get();
         }else{
             $types = VehicleType::whereNotIn('id', $ids)->active()->get();
@@ -63,18 +74,15 @@ class VehicleFareController extends Controller
         return response()->json(['success' => true, 'data' => $types]);
     }
 
-/*fetchTriptype*/
+    /*fetchTriptype*/
     public function fetchTriptype(Request $request)
     {
-
         $types = VehicleType::where('id', $request->selectedType)->first();
-
         return response()->json(['success' => true, 'data' => $types]);
     }
 
     public function store(AssignZoneTypeRequest $request)
     {
-
         $zone  = Zone::whereId($request->zone)->first();
         $payment = implode(',', $request->payment_type);
         // To save default type
@@ -91,6 +99,13 @@ class VehicleFareController extends Controller
                 $zone->save();
             }
         }
+
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $ownerId = $zone->owner_id;
+        }else{
+            $ownerId = auth()->user()->owner->owner_unique_id;
+        }
+
         $zoneType = $zone->zoneType()->create([
             'type_id' => $request->type,
             'payment_type' => $payment,
@@ -99,6 +114,7 @@ class VehicleFareController extends Controller
         ]);
 
         $zoneType->zoneTypePrice()->create([
+            'owner_id' => $ownerId ?? null,
             'price_type' => zoneRideType::RIDENOW,
             'base_price' => $request->ride_now_base_price,
             'price_per_distance' => $request->ride_now_price_per_distance ?? 0.00,
@@ -121,7 +137,7 @@ class VehicleFareController extends Controller
         $page = trans('pages_names.edit_vehicle_fare');
         $main_menu = 'vehicle-fare';
         $sub_menu = '';
-// dd($zone_price->zoneType->transport_type);
+        // dd($zone_price->zoneType->transport_type);
         return view('admin.vehicle_fare.edit', compact('page', 'main_menu', 'sub_menu', 'zone_price'));
     }
 
@@ -189,7 +205,8 @@ class VehicleFareController extends Controller
     public function getTransportTypes(Request $request)
     {
 
-        $type = ['taxi','delivery','both'];
+        // $type = ['taxi','delivery','both'];
+        $type = ['taxi'];
 
         return $type;
     }

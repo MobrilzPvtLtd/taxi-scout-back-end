@@ -482,6 +482,8 @@ return array(
     'App\\Models\\Admin\\ZoneType' => $baseDir . '/app/Models/Admin/ZoneType.php',
     'App\\Models\\Admin\\ZoneTypePackagePrice' => $baseDir . '/app/Models/Admin/ZoneTypePackagePrice.php',
     'App\\Models\\Admin\\ZoneTypePrice' => $baseDir . '/app/Models/Admin/ZoneTypePrice.php',
+    'App\\Models\\Chat' => $baseDir . '/app/Models/Chat.php',
+    'App\\Models\\ChatMessage' => $baseDir . '/app/Models/ChatMessage.php',
     'App\\Models\\City' => $baseDir . '/app/Models/City.php',
     'App\\Models\\Cms\\FrontPage' => $baseDir . '/app/Models/Cms/FrontPage.php',
     'App\\Models\\Common\\AdminUsersCompanyKey' => $baseDir . '/app/Models/Common/AdminUsersCompanyKey.php',

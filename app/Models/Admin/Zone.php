@@ -29,7 +29,7 @@ class Zone extends Model
      * @var array
      */
     protected $fillable = [
-        'service_location_id', 'name','unit','active','coordinates','default_vehicle_type','company_key','lat','lng','default_vehicle_type_for_delivery'
+        'service_location_id','owner_id', 'name','unit','active','coordinates','default_vehicle_type','company_key','lat','lng','default_vehicle_type_for_delivery'
     ];
     protected $spatialFields = [
         'coordinates'
@@ -76,8 +76,8 @@ class Zone extends Model
     public function zoneType()
     {
         return $this->hasMany(ZoneType::class, 'zone_id', 'id');
-    } 
-   
+    }
+
 
     public function zoneSurge()
     {

@@ -8,6 +8,7 @@ use App\Base\Libraries\QueryFilter\QueryFilterContract;
 use App\Http\Controllers\Controller;
 use App\Models\Request\Request as RequestRequest;
 use Illuminate\Http\Request;
+use App\Base\Constants\Auth\Role as RoleSlug;
 
 class RequestController extends Controller
 {
@@ -33,7 +34,11 @@ class RequestController extends Controller
     public function getAllRequest(QueryFilterContract $queryFilter)
     {
         // $query = RequestRequest::companyKey()->where('transport_type','taxi');
-        $query = RequestRequest::where('transport_type','taxi');
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $query = RequestRequest::where('transport_type','taxi');
+        }else{
+            $query = RequestRequest::where('owner_id', auth()->user()->owner->owner_unique_id)->where('transport_type','taxi');
+        }
 
         $results = $queryFilter->builder($query)->customFilter(new RequestFilter)->defaultSort('-created_at')->paginate();
 
@@ -42,7 +47,12 @@ class RequestController extends Controller
 
     public function getAllDeliveryRequest(QueryFilterContract $queryFilter)
     {
-        $query = RequestRequest::companyKey()->where('transport_type','delivery');
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $query = RequestRequest::companyKey()->where('transport_type','delivery');
+        }else{
+            $query = RequestRequest::companyKey()->where('owner_id', auth()->user()->owner->owner_unique_id)->where('transport_type','delivery');
+        }
+
 
         $results = $queryFilter->builder($query)->customFilter(new RequestFilter)->defaultSort('-created_at')->paginate();
 
@@ -100,7 +110,11 @@ class RequestController extends Controller
 
      public function getAllScheduledRequest(QueryFilterContract $queryFilter)
     {
-        $query = RequestRequest::companyKey()->where('transport_type','taxi')->whereIsCompleted(false)->whereIsCancelled(false)->whereIsLater(true);
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $query = RequestRequest::companyKey()->where('transport_type','taxi')->whereIsCompleted(false)->whereIsCancelled(false)->whereIsLater(true);
+        }else{
+            $query = RequestRequest::companyKey()->where('transport_type','taxi')->where('owner_id', auth()->user()->owner->owner_unique_id)->whereIsCompleted(false)->whereIsCancelled(false)->whereIsLater(true);
+        }
         $results = $queryFilter->builder($query)->customFilter(new RequestFilter)->defaultSort('-created_at')->paginate();
 
         return view('admin.scheduled-rides._scheduled', compact('results'));
@@ -108,7 +122,11 @@ class RequestController extends Controller
 
     public function getAllScheduledDeliveryRequest(QueryFilterContract $queryFilter)
     {
-        $query = RequestRequest::companyKey()->where('transport_type','delivery')->whereIsCompleted(false)->whereIsCancelled(false)->whereIsLater(true);
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $query = RequestRequest::companyKey()->where('transport_type','delivery')->whereIsCompleted(false)->whereIsCancelled(false)->whereIsLater(true);
+        }else{
+            $query = RequestRequest::companyKey()->where('owner_id', auth()->user()->owner->owner_unique_id)->where('transport_type','delivery')->whereIsCompleted(false)->whereIsCancelled(false)->whereIsLater(true);
+        }
         $results = $queryFilter->builder($query)->customFilter(new RequestFilter)->defaultSort('-created_at')->paginate();
 
         return view('admin.scheduled-delivery-rides._scheduled', compact('results'));

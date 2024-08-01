@@ -24,6 +24,7 @@ use App\Http\Requests\Admin\Zone\AssignZoneRequest;
 use App\Http\Requests\Admin\Zone\CreateZoneRequest;
 use App\Http\Requests\Admin\Zone\AssignZoneTypeRequest;
 use App\Http\Requests\Admin\Zone\ZoneTypePackagePriceRequest;
+use App\Models\Admin\Owner;
 use App\Models\Request\Request;
 use Carbon\Carbon;
 use Illuminate\Http\Request as HttpRequest;
@@ -75,7 +76,11 @@ class ZoneController extends BaseController
 
     public function getAllZone(QueryFilterContract $queryFilter)
     {
-        $query = Zone::companyKey();
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $query = Zone::companyKey();
+        }else{
+            $query = Zone::where('owner_id', auth()->user()->owner->owner_unique_id)->companyKey();
+        }
         $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
 
         return view('admin.zone._zone', compact('results'));
@@ -99,8 +104,11 @@ class ZoneController extends BaseController
 
         $services = ServiceLocation::companyKey()->whereActive(true)->get();
         $cities = $this->getCityBySearch();
+        $owner = Owner::whereHas('user', function ($query) {
+            $query->whereNotNull('owner_unique_id');
+        })->get();
 
-        return view('admin.zone.create', compact('page', 'services', 'main_menu', 'sub_menu','cities'));
+        return view('admin.zone.create', compact('page', 'services', 'main_menu', 'sub_menu','cities','owner'));
     }
 
     /**
@@ -135,9 +143,11 @@ class ZoneController extends BaseController
         $default_lng = $polygon[0]->lng;
 
         $zone_coordinates = json_encode($multi_polygon);
+        $owner = Owner::whereHas('user', function ($query) {
+            $query->whereNotNull('owner_unique_id');
+        })->get();
 
-
-        return view('admin.zone.edit', compact('page', 'zone', 'zone_coordinates', 'services', 'main_menu', 'sub_menu', 'default_lat', 'default_lng'));
+        return view('admin.zone.edit', compact('page', 'zone', 'zone_coordinates', 'services', 'main_menu', 'sub_menu', 'default_lat', 'default_lng','owner'));
     }
 
     /**
@@ -203,7 +213,12 @@ class ZoneController extends BaseController
 
         $created_params['coordinates'] = $multi_polygon;
 
-        $created_params['company_key'] = auth()->user()->company_key;
+        // $created_params['company_key'] = auth()->user()->company_key;
+        if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $created_params['owner_id'] = auth()->user()->owner->owner_unique_id;
+        }else{
+            $created_params['owner_id'] = $request->owner_id;
+        }
 
         $zone = $this->zone->create($created_params);
 
@@ -262,6 +277,12 @@ class ZoneController extends BaseController
         $updated_params['name'] = $request->input('zone_name');
 
         $updated_params['coordinates'] = $multi_polygon;
+
+        if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $updated_params['owner_id'] = auth()->user()->owner->owner_unique_id;
+        }else{
+            $updated_params['owner_id'] = $request->owner_id;
+        }
 
         $zone = $zone->update($updated_params);
 

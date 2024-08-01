@@ -11,6 +11,7 @@ use App\Models\Request\Request as RequestRequest;
 use App\Models\Request\RequestCancellationFee;
 use App\Models\Admin\CancellationReason;
 use Illuminate\Http\Request;
+use App\Base\Constants\Auth\Role as RoleSlug;
 use App\Base\Constants\Setting\Settings;
 
 class CancellationRideController extends Controller
@@ -37,9 +38,17 @@ class CancellationRideController extends Controller
     {
         // $query = RequestCancellationFee::query();
 
-        $query = RequestCancellationFee::whereNotNull('request_id')->whereHas('requestDetail', function ($query) {
-            $query->where('transport_type' , 'taxi');
-        })->orderBy('created_at', 'desc');
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $query = RequestCancellationFee::whereNotNull('request_id')->whereHas('requestDetail', function ($query) {
+                $query->where('transport_type' , 'taxi');
+            })->orderBy('created_at', 'desc');
+        }else{
+            $query = RequestCancellationFee::whereNotNull('request_id')->whereHas('requestDetail', function ($query) {
+                $query->where('transport_type' , 'taxi');
+                $query->where('owner_id' , auth()->user()->owner->owner_unique_id);
+            })->orderBy('created_at', 'desc');
+        }
+
 
         $results = $queryFilter->builder($query)->customFilter(new RequestCancellationFilter)->defaultSort('-created_at')->paginate();
 
@@ -61,7 +70,7 @@ class CancellationRideController extends Controller
         $query = RequestCancellationFee::whereNotNull('request_id')->whereHas('requestDetail', function ($query) {
             $query->where('transport_type' , 'delivery');
         })->orderBy('created_at', 'desc');
-        
+
         $results = $queryFilter->builder($query)->customFilter(new RequestCancellationFilter)->defaultSort('-created_at')->paginate();
 
 
@@ -74,6 +83,6 @@ class CancellationRideController extends Controller
 
     }
 
-   
-     
+
+
 }

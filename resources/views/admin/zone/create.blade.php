@@ -82,6 +82,7 @@
                                     value="{{ old('city_polygon') }}">
 
                                 <div class="row">
+
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="zone_admin" class="">@lang('view_pages.select_area') <sup>*</sup></label>
@@ -93,8 +94,22 @@
                                             </select>
                                         </div>
                                     </div>
+                                    @if(auth()->user()->id == 1)
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="">Select Taxi Company<span class="text-danger">*</span></label>
+                                                <select name="owner_id" id="owner_id" class="form-control" required>
+                                                    <option value="" selected disabled>Select Taxi Company</option>
+                                                    @foreach ($owner as $company)
+                                                        <option value="{{ $company->owner_unique_id }}">{{ $company->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
 
-                                    <div class="col-sm-6">
+                                    {{-- <div class="col-sm-6">
                                         @if (!auth()->user()->company_key)
                                             <!-- <div class="row">
                                             <div class="col-sm-9">
@@ -113,7 +128,7 @@
                                             </div>
                                             </div> -->
                                         @endif
-                                    </div>
+                                    </div> --}}
 
                                     <div class="col-sm-6">
                                         <div class="form-group">

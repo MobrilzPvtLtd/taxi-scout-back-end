@@ -1635,6 +1635,8 @@ class ComposerStaticInitb7a14c8ad70415fd6ee2c6b891fa9fa6
         'App\\Models\\Admin\\ZoneType' => __DIR__ . '/../..' . '/app/Models/Admin/ZoneType.php',
         'App\\Models\\Admin\\ZoneTypePackagePrice' => __DIR__ . '/../..' . '/app/Models/Admin/ZoneTypePackagePrice.php',
         'App\\Models\\Admin\\ZoneTypePrice' => __DIR__ . '/../..' . '/app/Models/Admin/ZoneTypePrice.php',
+        'App\\Models\\Chat' => __DIR__ . '/../..' . '/app/Models/Chat.php',
+        'App\\Models\\ChatMessage' => __DIR__ . '/../..' . '/app/Models/ChatMessage.php',
         'App\\Models\\City' => __DIR__ . '/../..' . '/app/Models/City.php',
         'App\\Models\\Cms\\FrontPage' => __DIR__ . '/../..' . '/app/Models/Cms/FrontPage.php',
         'App\\Models\\Common\\AdminUsersCompanyKey' => __DIR__ . '/../..' . '/app/Models/Common/AdminUsersCompanyKey.php',

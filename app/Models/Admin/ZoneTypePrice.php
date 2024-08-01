@@ -25,7 +25,7 @@ class ZoneTypePrice extends Model
      * @var array
      */
     protected $fillable = [
-        'zone_type_id','base_price','price_per_distance','waiting_charge','price_per_time','cancellation_fee','base_distance','price_type','active','free_waiting_time_in_mins_before_trip_start','free_waiting_time_in_mins_after_trip_start'
+        'zone_type_id','owner_id','base_price','price_per_distance','waiting_charge','price_per_time','cancellation_fee','base_distance','price_type','active','free_waiting_time_in_mins_before_trip_start','free_waiting_time_in_mins_after_trip_start'
     ];
 
     /**
@@ -65,13 +65,13 @@ class ZoneTypePrice extends Model
     public function zoneType()
     {
         return $this->belongsTo(ZoneType::class, 'zone_type_id', 'id');
-    } 
+    }
     protected $searchable = [
         'columns' => [
             'zones.name' => 20,
             'service_locations.name'=> 20,
             'vehicle_types.name'=> 20,
-            
+
         ],
         'joins' => [
             'zones' =>['zone_type_price.zone_types.zones.id'],
@@ -79,5 +79,5 @@ class ZoneTypePrice extends Model
             'service_locations' => ['zones.service_location_id','service_locations.id'],
         ],
     ];
-    
+
 }
