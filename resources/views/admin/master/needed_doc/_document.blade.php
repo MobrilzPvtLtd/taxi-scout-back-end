@@ -4,7 +4,7 @@
             <th> @lang('view_pages.s_no')</th>
             <th> @lang('view_pages.name')</th>
             <th> @lang('view_pages.doc_type')</th>
-            <th> @lang('view_pages.account_type')</th>
+            <th> Account Type</th>
             <th> @lang('view_pages.has_expiry_date')</th>
             <th> @lang('view_pages.status')</th>
             <th> @lang('view_pages.action')</th>
@@ -38,21 +38,21 @@
             <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
             </button>
                <div class="dropdown-menu">
-                @if(auth()->user()->can('edit-driver-needed-document'))         
+                @if(auth()->user()->can('edit-driver-needed-document'))
 
                     <a class="dropdown-item" href="{{url('needed_doc',$result->id)}}"><i class="fa fa-pencil"></i>@lang('view_pages.edit')</a>
                 @endif
-                @if(auth()->user()->can('toggle-driver-needed-document'))         
+                @if(auth()->user()->can('toggle-driver-needed-document'))
                     @if($result->active)
                     <a class="dropdown-item" href="{{url('needed_doc/toggle_status',$result->id)}}"><i class="fa fa-dot-circle-o"></i>@lang('view_pages.inactive')</a>
-                  
+
                     @else
                     <a class="dropdown-item" href="{{url('needed_doc/toggle_status',$result->id)}}"><i class="fa fa-dot-circle-o"></i>@lang('view_pages.active')</a>
                     @endif
                 @endif
-                @if(auth()->user()->can('delete-driver-needed-document'))        
+                @if(auth()->user()->can('delete-driver-needed-document'))
                     {{-- <a class="dropdown-item sweet-delete" href="{{url('needed_doc/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a> --}}
-                @endif     
+                @endif
                 </div>
             </div>
 

@@ -47,7 +47,7 @@ class ChatController extends BaseController
         ->orderBy('created_at', 'asc')
         ->get();
 
-        return $this->respondSuccess($conversations, 'chats_listed');
+        return $this->respondSuccess(['chat' => $chatAuth,'data' => $conversations]);
     }
 
     public function updateSeen(Request $request){

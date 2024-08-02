@@ -51,7 +51,7 @@
 
                              <div class="col-6">
                                         <div class="form-group">
-                                            <label for="">@lang('view_pages.vehicle_make_for') <span
+                                            <label for="">Vehicle Make For <span
                                                     class="text-danger">*</span></label>
                                             <select name="vehicle_make_for" id="vehicle_make_for" class="form-control"
                                                     required>

@@ -6,13 +6,13 @@
             <th> @lang('view_pages.date')</th>
             <th> @lang('view_pages.user_name')</th>
             <th> @lang('view_pages.driver_name')</th>
-            <th> @lang('view_pages.no_of_attempts')</th>
+            <th> No Of Attempts</th>
             <th> @lang('view_pages.trip_status')</th>
             <th> @lang('view_pages.is_paid')</th>
             <th> @lang('view_pages.payment_option')</th>
             <th> @lang('view_pages.action')</th>
 
-            
+
         </tr>
     </thead>
     <tbody>
@@ -60,7 +60,7 @@
                   <a class="text-white" href="{{url('requests/trip_view',$result->id) }}">@lang('view_pages.view')</a>
                   </button>
                </td>
-           
+
         </tr>
         @empty
         <tr>

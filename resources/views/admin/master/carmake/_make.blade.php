@@ -3,15 +3,15 @@
         <tr>
             <th> @lang('view_pages.s_no')</th>
             <th> @lang('view_pages.transport_type')</th>
-            <th> @lang('view_pages.vehicle_make_name')</th>
-            <th> @lang('view_pages.vehicle_make_for')</th>
+            <th> Vehicle Make Name</th>
+            <th> Vehicle Make For</th>
             <th> @lang('view_pages.status')</th>
             <th> @lang('view_pages.action')</th>
         </tr>
     </thead>
 
 <tbody>
-    
+
     @php  $i= $results->firstItem();  @endphp
 
     @forelse($results as $key => $result)
@@ -39,17 +39,17 @@
             <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
             </button>
                 <div class="dropdown-menu">
-                @if(auth()->user()->can('edit-carmake'))         
+                @if(auth()->user()->can('edit-carmake'))
                     <a class="dropdown-item" href="{{url('carmake',$result->id)}}"><i class="fa fa-pencil"></i>@lang('view_pages.edit')</a>
                 @endif
-                @if(auth()->user()->can('toggle-carmake'))         
+                @if(auth()->user()->can('toggle-carmake'))
                     @if($result->active)
                     <a class="dropdown-item" href="{{url('carmake/toggle_status',$result->id)}}"><i class="fa fa-dot-circle-o"></i>@lang('view_pages.inactive')</a>
                     @else
                     <a class="dropdown-item" href="{{url('carmake/toggle_status',$result->id)}}"><i class="fa fa-dot-circle-o"></i>@lang('view_pages.active')</a>
                     @endif
                 @endif
-                @if(auth()->user()->can('delete-carmake'))         
+                @if(auth()->user()->can('delete-carmake'))
                     {{-- <a class="dropdown-item sweet-delete" href="{{url('carmake/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a> --}}
                 @endif
                 </div>

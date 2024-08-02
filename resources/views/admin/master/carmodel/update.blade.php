@@ -41,7 +41,7 @@
                                     </div>
                                  <div class="col-6">
                                             <div class="form-group">
-                                                <label for="make_id">@lang('view_pages.vehicle_make')<span class="text-danger">*</span></label>
+                                                <label for="make_id">Vehicle Make<span class="text-danger">*</span></label>
                                             <select name="make_id" id="make_id" class="form-control select2" data-placeholder="@lang('view_pages.select_make_id')"
                                                 required>
                                                     <option value="" selected disabled>@lang('view_pages.select')</option>
@@ -115,7 +115,7 @@ function getVehicleMake(transportType, oldVehicleMake) {
   });
 }
 
-   
+
 $(document).on('change','#transport_type',function(){
         getVehicleMake($(this).val());
     });
