@@ -67,7 +67,7 @@ class ChatController extends BaseController
     {
         // $company = Driver::where('owner_id', auth()->user()->driver->owner_id)->first();
         $chatAuth = Chat::where('user_id', auth()->user()->id)->first();
-        $from_type = 4;
+        $from_type = 'is_driver';
 
 
         if(!$chatAuth){
@@ -79,6 +79,7 @@ class ChatController extends BaseController
         $chatMessage->message = $request->message;
         $chatMessage->sender_id = auth()->user()->id;
         $chatMessage->receiver_id = auth()->user()->driver->owner->user_id;
+        $chatMessage->from_type = $from_type;
         $chatMessage->save();
 
         $driverDetail = User::find($chatMessage->sender_id);
@@ -90,7 +91,7 @@ class ChatController extends BaseController
         $notifable_driver = $driver->user;
 
         foreach ($chats as $key => $chat) {
-            if ($chat->receiver_id == auth()->user()->driver->owner->user_id) {
+            if ($chat->from_type == "is_company") {
                 $chats[$key]['message_status'] = 'receive';
             } else {
                 $chats[$key]['message_status'] = 'send';

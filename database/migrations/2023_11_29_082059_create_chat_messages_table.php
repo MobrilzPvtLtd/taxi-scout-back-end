@@ -18,6 +18,7 @@ class CreateChatMessagesTable extends Migration
             $table->uuid('chat_id');
             $table->integer('sender_id');
             $table->integer('receiver_id');
+            $table->string('from_type')->nullable();
             $table->text('message')->nullable();
             $table->integer('image_status')->default(0);
             $table->json('image_url')->nullable();

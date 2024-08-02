@@ -131,7 +131,7 @@ class ChatController extends BaseController
 
     public function store(Request $request)
     {
-        // $from_type = 3;
+        $from_type = 'is_company';
 
         // $chatRequest = Chat::create([
         //     'message' => $request->message,
@@ -163,6 +163,7 @@ class ChatController extends BaseController
         $chatMessage->message = $request->message;
         $chatMessage->sender_id = auth()->user()->id;
         $chatMessage->receiver_id = $drivers->user_id;
+        $chatMessage->from_type = $from_type;
         $chatMessage->save();
 
         $driverDetail = User::find($chatMessage->sender_id);
@@ -174,7 +175,7 @@ class ChatController extends BaseController
         $notifable_driver = $driver->user;
 
         foreach ($chats as $key => $chat) {
-            if ($chat->receiver_id == $drivers->user_id) {
+            if ($chat->from_type == "is_driver") {
                 $chats[$key]['message_status'] = 'receive';
             } else {
                 $chats[$key]['message_status'] = 'send';
