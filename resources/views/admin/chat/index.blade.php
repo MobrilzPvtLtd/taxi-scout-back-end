@@ -79,7 +79,11 @@
                                         {{$total_chat}}
                                     </p>
                                 @endif
-                                <img src="{{ asset('storage/uploads/user/profile-picture/') . '/' . $result->profile_picture }}" alt="" width="50px">
+                                @if($result->profile_picture)
+                                    <img src="{{ asset('storage/uploads/user/profile-picture/') . '/' . $result->profile_picture }}" alt="" width="50px">
+                                @else
+                                    <img src="{{ asset('assets/img/user-dummy.svg') }}" alt="" width="50px">
+                                @endif
                             </a>
                         </td>
                         <td>

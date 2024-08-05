@@ -114,7 +114,7 @@
 
                     previousDate = messageDate;
 
-                    if (v.receiver_id == auth) {
+                    if (v.from_type == 'is_driver') {
                         messageHtml += `
                             <div class="media media-chat">
                                 <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="Driver">
@@ -128,8 +128,12 @@
                         messageHtml += `
                             <div class="media media-chat media-chat-reverse medias" id="">
                                 <div class="media-body" id="messageShow">
-                                    <p>${v.message}</p>
-                                    <p class="meta"><time datetime="${v.created_at}">${formattedDate}</time></p>
+                                    <p>${v.message} ${v.seen_count === 1 ? ` <img src="{{ asset('assets/images/check-icon.png') }}" alt="Seen" style="width: 25px; height: 25px; vertical-align: middle;"> ` : ''}</p>
+                                    <p class="meta">
+                                        <time datetime="${v.created_at}">
+                                            ${formattedDate}
+                                        </time>
+                                    </p>
                                 </div>
                             </div>
                         `;

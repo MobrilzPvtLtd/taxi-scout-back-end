@@ -257,13 +257,23 @@ class DashboardController extends BaseController
         // dd($result->zoneType->vehicleType);
 
         if (!empty($result->pick_lat) && !empty($result->pick_lng)) {
-            $markers[] = array($result->pick_address, $result->pick_lat, $result->pick_lng);
+            $markers[] = array(
+                $result->pick_address,
+                $result->pick_lat,
+                $result->pick_lng,
+                asset('map/icon/driver_available.png')
+            );
             $infowindow[] = array('<div class="p-2">
                                     <h6><i class="fa fa-id-badge"></i> : ' . $result->driverDetail->name . ' </h6>
                                     <h6><i class="fa fa-phone-square"></i> : ' . $result->driverDetail->mobile . ' </h6>
                                     <h6><i class="fa fa-id-card"></i> : ' . $result->driverDetail->email . ' </h6>
                                     <h6><img class="img-circle" src="'. asset($result->zoneType->vehicleType->icon) .'" alt="" style="width: 35px;height: 25px;"> : ' . $result->zoneType->vehicleType->name . ' </h6>
                                 </div>');
+            // $markers = [
+            //     ["Car 1", 37.7749, -122.4194, "/path/to/car1.jpg"],
+            //     ["Car 2", 34.0522, -118.2437, "/path/to/car2.jpg"],
+            //     // ...
+            // ];
         }
     }
 

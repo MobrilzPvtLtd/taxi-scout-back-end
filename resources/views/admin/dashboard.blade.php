@@ -665,12 +665,25 @@
 
             // Place each marker on the map
             for (i = 0; i < markers.length; i++) {
+                console.log(markers[i][3]);
+
                 var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
                 bounds.extend(position); // Extend bounds to include each marker's position
+
+                var iconUrl = markers[i][3];
+
+                // var icon = {
+                //     url: iconUrl, // URL of the image
+                //     scaledSize: new google.maps.Size(35, 35), // Size of the icon (width, height)
+                //     origin: new google.maps.Point(0, 0), // Origin point of the image (default)
+                //     anchor: new google.maps.Point(20, 20) // Anchor point of the icon (default)
+                // };
+
                 marker = new google.maps.Marker({
                     position: position,
                     map: map,
-                    title: markers[i][0]
+                    title: markers[i][0],
+                    icon: iconUrl
                 });
 
                 // Add info window to marker
