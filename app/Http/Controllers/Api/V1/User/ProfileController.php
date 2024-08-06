@@ -34,6 +34,7 @@ class ProfileController extends ApiController
 
     protected $user;
 
+    protected $database;
 
     /**
      * ProfileController constructor.
@@ -86,6 +87,16 @@ class ProfileController extends ApiController
         $user->update($data);
 
         if (auth()->user()->hasRole(Role::DRIVER)) {
+
+            if($request->has('vehicle_types')){
+                foreach (json_decode($request->vehicle_types) as $key => $type) {
+                    $user->driver->driverVehicleTypeDetail()->create(['vehicle_type'=>$type]);
+                }
+            }
+
+            // // Store records to firebase
+            $this->database->getReference('drivers/'.'driver_'.$user->driver->id)->set(['id'=>$user->driver->id,'vehicle_type'=>$request->input('vehicle_type'),'active'=>1,'gender'=>$user->driver->gender,'updated_at'=> Database::SERVER_TIMESTAMP]);
+
             $user->driver->update($data);
         }
         $user = fractal($user->fresh(), new UserTransformer);

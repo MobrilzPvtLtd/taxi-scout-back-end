@@ -294,7 +294,8 @@ class DriverController extends BaseController
                 'car_color'=>$request->input('car_color'),
                 'car_number'=>$request->input('car_number'),
                 // 'vehicle_type'=>$request->input('type'),
-                'service_location_id'=>$request->service_location_id
+                'service_location_id'=>$request->service_location_id,
+                'driving_license'=>$request->driving_license
 
             ]);
 
