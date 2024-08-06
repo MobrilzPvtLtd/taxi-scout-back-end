@@ -641,7 +641,6 @@
     </section>
 
     <script>
-        // Initialize and add the map
         function initMap() {
             var map;
             var bounds = new google.maps.LatLngBounds();
@@ -649,61 +648,56 @@
                 mapTypeId: 'roadmap'
             };
 
-            // Display a map on the web page
             map = new google.maps.Map(document.getElementById("map"), mapOptions);
             map.setTilt(50);
 
-            // Multiple markers location, latitude, and longitude
             var markers = <?php echo json_encode($markers); ?>;
 
-            // Info window content
             var infoWindowContent = <?php echo json_encode($infowindow); ?>;
 
-            // Add multiple markers to map
             var infoWindow = new google.maps.InfoWindow(),
                 marker, i;
 
-            // Place each marker on the map
+            var hasValidMarkers = false;
+
             for (i = 0; i < markers.length; i++) {
-                console.log(markers[i][3]);
-
-                var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
-                bounds.extend(position); // Extend bounds to include each marker's position
-
+                var lat = markers[i][1];
+                var lng = markers[i][2];
                 var iconUrl = markers[i][3];
 
-                // var icon = {
-                //     url: iconUrl, // URL of the image
-                //     scaledSize: new google.maps.Size(35, 35), // Size of the icon (width, height)
-                //     origin: new google.maps.Point(0, 0), // Origin point of the image (default)
-                //     anchor: new google.maps.Point(20, 20) // Anchor point of the icon (default)
-                // };
+                if (lat && lng) {
+                    hasValidMarkers = true;
 
-                marker = new google.maps.Marker({
-                    position: position,
-                    map: map,
-                    title: markers[i][0],
-                    icon: iconUrl
-                });
+                    var position = new google.maps.LatLng(lat, lng);
+                    bounds.extend(position);
 
-                // Add info window to marker
-                google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                    return function() {
-                        infoWindow.setContent(infoWindowContent[i][0]);
-                        infoWindow.open(map, marker);
-                    }
-                })(marker, i));
+                    marker = new google.maps.Marker({
+                        position: position,
+                        map: map,
+                        title: markers[i][0],
+                        icon: iconUrl
+                    });
+
+                    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                        return function() {
+                            infoWindow.setContent(infoWindowContent[i][0]);
+                            infoWindow.open(map, marker);
+                        }
+                    })(marker, i));
+                }
             }
 
-            // Fit the map bounds to include all markers
-            map.fitBounds(bounds);
+            if (hasValidMarkers) {
+                map.fitBounds(bounds);
 
-            // Set zoom level based on bounds
-            var boundsListener = google.maps.event.addListener(map, 'bounds_changed', function(event) {
-                // Set the zoom level after the map bounds are changed
-                this.setZoom(Math.min(this.getZoom(), 14)); // You can adjust the max zoom level here
-                google.maps.event.removeListener(boundsListener);
-            });
+                var boundsListener = google.maps.event.addListener(map, 'bounds_changed', function(event) {
+                    this.setZoom(Math.min(this.getZoom(), 14));
+                    google.maps.event.removeListener(boundsListener);
+                });
+            } else {
+                map.setCenter(new google.maps.LatLng(0, 0));
+                map.setZoom(2);
+            }
         }
 
         window.initMap = initMap;

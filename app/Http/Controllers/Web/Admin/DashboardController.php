@@ -241,8 +241,6 @@ class DashboardController extends BaseController
     // $currency = auth()->user()->countryDetail->currency_code ?: env('SYSTEM_DEFAULT_CURRENCY');
     $currency = get_settings('currency_code');
 
-    $default_lat = get_settings('default_latitude');
-    $default_lng = get_settings('default_longitude');
     // $zone = Zone::active()->companyKey()->get();
 
     if (auth()->user()->hasRole('owner')) {
@@ -252,10 +250,11 @@ class DashboardController extends BaseController
         $results = RequestRequest::whereHas('zoneType.zone')->whereHas('requestPlace')->whereHas('driverDetail')->where('transport_type','taxi')->get();
     }
 
+    $markers = [];
+    $infowindow = [];
     $item = '';
     foreach ($results as $result) {
         // dd($result->zoneType->vehicleType);
-
         if (!empty($result->pick_lat) && !empty($result->pick_lng)) {
             $markers[] = array(
                 $result->pick_address,
@@ -278,6 +277,6 @@ class DashboardController extends BaseController
     }
 
     // return redirect('/airport');
-    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','default_lat', 'default_lng','total_admin','total_booking','total_vehicleType','markers','infowindow'));
+    return view('admin.dashboard', compact('page', 'main_menu','currency', 'sub_menu','total_drivers','total_aproved_drivers','total_waiting_drivers','total_users','trips','todayEarnings','overallEarnings','data','total_admin','total_booking','total_vehicleType','markers','infowindow'));
     }
 }
