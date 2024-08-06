@@ -37,5 +37,7 @@ Route::prefix('driver')->namespace('Driver')->middleware('auth')->group(function
         Route::get('chat-history','ChatController@history');
         Route::post('send','ChatController@send');
         Route::post('seen','ChatController@updateSeen');
+
+        Route::get('types/{company_id}', 'VehicleTypeController@getVehicleTypesByCompanyId');
     });
 });

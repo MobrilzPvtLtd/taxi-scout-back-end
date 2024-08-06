@@ -30,7 +30,7 @@ Route::namespace('Common')->group(function () {
         // Get Car models
         Route::get('car/models/{make_id}', 'CarMakeAndModelController@getCarModels');
         Route::get('goods-types', 'GoodsTypesController@index');
-        
+
 
         Route::middleware('auth')->group(function () {
             // List Cancallation Reasons
@@ -53,11 +53,11 @@ Route::namespace('Common')->group(function () {
     Route::post('validate-company-key', 'CompanyKeyController@validateCompanyKey');
 });
 
-Route::namespace('VehicleType')->prefix('types')->group(function () {
-    // get types depends service location
-    Route::get('/{service_location}', 'VehicleTypeController@getVehicleTypesByServiceLocation');
-    Route::post('/report', 'VehicleTypeController@report');
-});
+// Route::namespace('VehicleType')->prefix('types')->group(function () {
+//     // get types depends service location
+//     Route::get('/{service_location}', 'VehicleTypeController@getVehicleTypesByServiceLocation');
+//     Route::post('/report', 'VehicleTypeController@report');
+// });
 
 Route::namespace('Notification')->prefix('notifications')->middleware('auth')->group(function (){
     //get notifications depends on the role
