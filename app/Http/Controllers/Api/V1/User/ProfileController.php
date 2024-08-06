@@ -15,6 +15,8 @@ use App\Models\User;
 use App\Models\Request\FavouriteLocation;
 use App\Models\Payment\UserBankInfo;
 use Kreait\Firebase\Contract\Database;
+use App\Transformers\Driver\DriverProfileTransformer;
+use App\Transformers\Owner\OwnerProfileTransformer;
 
 /**
  * @group Profile-Management
@@ -61,7 +63,7 @@ class ProfileController extends ApiController
      */
     public function updateProfile(UpdateProfileRequest $request)
     {
-        $data = $request->only(['name', 'email', 'last_name','mobile']);
+        $data = $request->only(['name', 'email', 'last_name','mobile','service_location_id']);
 
         if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
             $data['profile_picture'] = $this->imageUploader->file($uploadedFile)
@@ -70,6 +72,7 @@ class ProfileController extends ApiController
         $user = auth()->user();
 
         $mobile = $request->mobile;
+        $data['vehicle_type'] = $request->vehicle_type_id;
 
         if($mobile){
              $validate_exists_mobile = $this->user->belongsTorole(Role::USER)->where('mobile', $mobile)->where('id','!=',$user->id)->exists();
@@ -79,7 +82,12 @@ class ProfileController extends ApiController
             }
 
         }
+
         $user->update($data);
+
+        if (auth()->user()->hasRole(Role::DRIVER)) {
+            $user->driver->update($data);
+        }
         $user = fractal($user->fresh(), new UserTransformer);
 
         return $this->respondSuccess($user);
