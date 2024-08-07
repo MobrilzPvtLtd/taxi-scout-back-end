@@ -251,25 +251,25 @@ class DriverSignupController extends LoginController
         // }
         event(new UserRegistered($user));
 
-        // $otpDigit = mt_rand(100000, 999999);
+        $otpDigit = mt_rand(100000, 999999);
 
-        // $mail_otp = MailOtp::create([
-        //     'email' => $request->email,
-        //     'otp' => $otpDigit,
-        // ]);
+        $mail_otp = MailOtp::create([
+            'email' => $request->email,
+            'otp' => $otpDigit,
+        ]);
 
-        // $otp = [
-        //     'name' => $user->name,
-        //     'email' => $user->email,
-        //     'otp' => $mail_otp->otp,
-        // ];
+        $otp = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'otp' => $mail_otp->otp,
+        ];
 
-        // if ($request->has('email')) {
-        //     Mail::to($user->email)->send(new OtpMail($otp));
-        // }
+        if ($request->has('email')) {
+            Mail::to($user->email)->send(new OtpMail($otp));
+        }
 
-		// // return $this->respondOk("Your account register successfully.");
-        // return $this->respondOk("Your account register successfully. Please check your email for 6 digit OTP");
+		// return $this->respondOk("Your account register successfully.");
+        return $this->respondOk("Your account register successfully. Please check your email for 6 digit OTP");
 
         // $this->throwCustomException('Your account is pending approval. Please wait for our team to review and approve your account.');
 
@@ -279,7 +279,7 @@ class DriverSignupController extends LoginController
         //     return $this->respondBadRequest('Unknown error occurred. Please try again later or contact us if it continues.');
         // }
         // DB::commit();
-        return $this->authenticateAndRespond($user, $request, $needsToken=true);
+        // return $this->authenticateAndRespond($user, $request, $needsToken=true);
     }
 
     /**
