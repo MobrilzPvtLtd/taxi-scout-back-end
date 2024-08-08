@@ -42,6 +42,7 @@ use App\Base\Constants\Setting\Settings;
 use Kreait\Firebase\Contract\Database;
 use App\Jobs\Notifications\SendPushNotification;
 use App\Models\Admin\DriverVehicleType;
+use App\Models\Admin\Owner;
 
 /**
  * @resource Driver
@@ -275,7 +276,11 @@ class DriverController extends BaseController
         $main_menu = 'fleet-drivers';
         $sub_menu = 'driver_details';
 
-        return view('admin.drivers.update', compact('item', 'services', 'types', 'page', 'countries', 'main_menu', 'sub_menu', 'companies', 'carmake', 'carmodel'));
+        $admin = Owner::whereHas('user', function ($query) {
+            $query->whereNotNull('owner_unique_id');
+        })->get();
+
+        return view('admin.drivers.update', compact('item', 'services', 'types', 'page', 'countries', 'main_menu', 'sub_menu', 'companies', 'carmake', 'carmodel','admin'));
     }
 
 
@@ -460,10 +465,12 @@ class DriverController extends BaseController
     }
     public function getType()
     {
-        $type = request()->transport_type;
+        // $type = request()->transport_type;
+        $owner_id = request()->owner_id;
 
         // return CarModel::where('make_id',$carModel)->where('active','1')->get();
-        return VehicleType::active()->whereIsTaxi($type)->get();
+        return VehicleType::active()->whereIsTaxi("taxi")->where('owner_id', $owner_id)->get();
+        // return VehicleType::active()->whereIsTaxi($type)->get();
     }
     public function getCarModel()
     {

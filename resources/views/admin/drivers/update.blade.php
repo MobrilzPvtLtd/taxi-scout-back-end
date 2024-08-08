@@ -100,38 +100,51 @@
                                 </div>
 
                                 <div class="row">
-                                <div class="col-sm-6">
-                                           <div class="form-group">
-                                               <label for="">@lang('view_pages.transport_type') <span class="text-danger">*</span></label>
-                                               <select name="transport_type" id="transport_type" class="form-control" required>
-                                                   <option value="" selected disabled>@lang('view_pages.select')</option>
-                                                   <option value="taxi" {{ old('transport_type', $item->transport_type) == 'taxi' ? 'selected' : '' }}>Taxi
-                                                   </option>
-                                                   {{-- <option value="delivery" {{ old('transport_type',$item->transport_type) == 'delivery' ? 'selected' : '' }}>@lang('view_pages.delivery')
-                                                   </option>
-                                                   <option value="both" {{ old('transport_type',$item->transport_type) == 'both' ? 'selected' : '' }}>@lang('view_pages.both')
-                                                   </option> --}}
-                                               </select>
-                                               <span class="text-danger">{{ $errors->first('transport_type') }}</span>
-                                           </div>
-                                       </div>
-                                 <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="type">Assign Taxi
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <select name="type[]" id="type" class="form-control select2" multiple="multiple" required>
-
-                                       @foreach($types as $key=>$type)
-                                            <option value="{{ $type->id }}" {{ old('type[]', $item->driverVehicleTypeDetail()->Where('vehicle_type', $type->id)->pluck('vehicle_type')->first()) ? 'selected' : '' }}>
-                                            {{ $type->name }}</option>
-                                       @endforeach
-                                       </select>
+                                    {{-- <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="">@lang('view_pages.transport_type') <span class="text-danger">*</span></label>
+                                            <select name="transport_type" id="transport_type" class="form-control" required>
+                                                <option value="" selected disabled>@lang('view_pages.select')</option>
+                                                <option value="taxi" {{ old('transport_type', $item->transport_type) == 'taxi' ? 'selected' : '' }}>Taxi
+                                                </option>
+                                                <option value="delivery" {{ old('transport_type',$item->transport_type) == 'delivery' ? 'selected' : '' }}>@lang('view_pages.delivery')
+                                                </option>
+                                                <option value="both" {{ old('transport_type',$item->transport_type) == 'both' ? 'selected' : '' }}>@lang('view_pages.both')
+                                                </option>
+                                            </select>
+                                            <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                        </div>
+                                    </div> --}}
+                                    @if(auth()->user()->id == 1)
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="">Taxi Company<span class="text-danger">*</span></label>
+                                                <select name="owner_id" id="owner_id" class="form-control" required>
+                                                    <option value="" selected disabled>Select Taxi Company</option>
+                                                    @foreach ($admin as $company)
+                                                        <option value="{{ $company->owner_unique_id }}">{{ $company->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="type">Assign Taxi
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <select name="type[]" id="type" class="form-control select2" multiple="multiple" required>
+                                                @foreach($types as $key=>$type)
+                                                        <option value="{{ $type->id }}" {{ old('type[]', $item->driverVehicleTypeDetail()->Where('vehicle_type', $type->id)->pluck('vehicle_type')->first()) ? 'selected' : '' }}>
+                                                        {{ $type->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                 </div>
                                </div>
                                 <div class="row">
-                                 <div class="col-6">
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label for="car_make">@lang('view_pages.car_make')<span
                                                     class="text-danger">*</span></label>
@@ -145,7 +158,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                <div class="col-6">
+                                    <div class="col-6">
                                         <div class="form-group">
                                             <label for="car_model">@lang('view_pages.car_model')<span
                                                     class="text-danger">*</span></label>
@@ -159,8 +172,15 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="driving_license">License Number<span class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" id="driving_license" name="driving_license" value="{{old('driving_license',$item->driving_license)}}" required="" placeholder="@lang('view_pages.enter') License Number">
+                                            <span class="text-danger">{{ $errors->first('driving_license') }}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="car_color">@lang('view_pages.car_color') <span class="text-danger">*</span></label>
@@ -179,7 +199,7 @@
                                             <span class="text-danger">{{ $errors->first('car_number') }}</span>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                     <div class="form-group">
                                     <div class="col-6">
                                         <label for="profile_picture">@lang('view_pages.profile')</label><br>
@@ -342,14 +362,14 @@ $(document).ready(function() {
                 }
             });
         }
-        $(document).on('change', '#transport_type', function() {
+        $(document).on('change', '#owner_id', function() {
             let value = $(this).val();
 
             $.ajax({
                 url: "{{ route('getType') }}",
                 type: 'GET',
                 data: {
-                    'transport_type': value,
+                    'owner_id': value,
                 },
                 success: function(result) {
                     $('#type').empty();
