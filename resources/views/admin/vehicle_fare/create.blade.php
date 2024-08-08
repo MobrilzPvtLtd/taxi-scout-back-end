@@ -17,7 +17,7 @@
                     <div class="col-sm-12">
                         <form method="post" class="form-horizontal" action="{{ url('vehicle_fare/store') }}">
                             {{ csrf_field() }}
-
+                            <input type="hidden" name="transport_type" value="taxi">
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
@@ -34,14 +34,28 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
+                                {{-- <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="">@lang('view_pages.transport_type') <span class="text-danger">*</span></label>
                                         <select name="transport_type" id="transport_type" class="form-control" required>
                                         </select>
                                         <span class="text-danger">{{ $errors->first('transport_type') }}</span>
                                     </div>
-                                </div>
+                                </div> --}}
+                                @if(auth()->user()->id == 1)
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="">Taxi Company<span class="text-danger">*</span></label>
+                                            <select name="owner_id" id="owner_id" class="form-control" required>
+                                                <option value="" selected disabled>Select Taxi Company</option>
+                                                @foreach ($admin as $company)
+                                                    <option value="{{ $company->owner_unique_id }}">{{ $company->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
@@ -246,16 +260,16 @@
             placeholder: "Select ...",
         });
 
-        $(document).on('change', '#transport_type', function() {
+        $(document).on('change', '#owner_id', function() {
             let zone = document.getElementById("zone").value;
-            let transport_type = $(this).val();
+            let owner_id = $(this).val();
 
             $.ajax({
                 url: "{{ url('vehicle_fare/fetch/vehicles') }}",
                 type: 'GET',
                 data: {
                     '_zone': zone,
-                    'transport_type': transport_type,
+                    'owner_id': owner_id,
                 },
                 success: function(result) {
 
@@ -275,17 +289,32 @@
             var selected = $(this).val();
             $("#transport_type").empty();
             $.ajax({
-                url: "{{ route('getTransportTypes') }}",
+                // url: "{{ route('getTransportTypes') }}",
+                url: "{{ url('vehicle_fare/fetch/vehicles') }}",
                 type: 'GET',
                 dataType: 'json',
+                data: {
+                    '_zone': zone,
+                    'owner_id': owner_id,
+                },
                 success: function(response) {
-                    $("#transport_type").append(
-                        '<option value="" disabled selected>Select a transport type</option>');
+                    // $("#transport_type").append(
+                    //     '<option value="" disabled selected>Select a transport type</option>');
 
-                    $.each(response, function(key, value) {
-                        $("#transport_type").append('<option value=' + value + '>' + value +
-                            '</option>');
+                    // $.each(response, function(key, value) {
+                    //     $("#transport_type").append('<option value=' + value + '>' + value +
+                    //         '</option>');
+                    // });
+
+                    var vehicles = result.data;
+
+                    var option = ''
+                    option += '<option value="" disabled selected>Select a vehicle</option>';
+                    vehicles.forEach(vehicle => {
+                        option += `<option value="${vehicle.id}">${vehicle.name}</option>`;
                     });
+
+                    $('#type').html(option)
                 }
             });
         });

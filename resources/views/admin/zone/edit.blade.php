@@ -93,7 +93,7 @@
                                         </div>
                                     </div>
 
-                                    @if(auth()->user()->id == 1)
+                                    {{-- @if(auth()->user()->id == 1)
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="">Select Taxi Company<span class="text-danger">*</span></label>
@@ -106,7 +106,7 @@
                                                 <span class="text-danger">{{ $errors->first('transport_type') }}</span>
                                             </div>
                                         </div>
-                                    @endif
+                                    @endif --}}
 
                                     <div class="col-sm-6">
                                         <div class="form-group">

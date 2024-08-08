@@ -1738,14 +1738,6 @@ class RolesAndPermissionsSeeder extends Seeder
                 PermissionSlug::EDIT_RENTAL_PACKAGE,
                 PermissionSlug::DELETE_RENTAL_PACKAGE,
                 PermissionSlug::TOGGLE_RENTAL_PACKAGE,
-                PermissionSlug::MAP_MENU,
-                PermissionSlug::VIEW_ZONE_MAP,
-                PermissionSlug::VIEW_ZONE,
-                PermissionSlug::ADD_ZONE,
-                PermissionSlug::EDIT_ZONE,
-                PermissionSlug::DELETE_ZONE,
-                PermissionSlug::TOGGLE_ZONE,
-                PermissionSlug::SURGE_ZONE
             ],
         ],
 

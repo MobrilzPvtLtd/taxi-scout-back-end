@@ -214,11 +214,11 @@ class ZoneController extends BaseController
         $created_params['coordinates'] = $multi_polygon;
 
         // $created_params['company_key'] = auth()->user()->company_key;
-        if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $created_params['owner_id'] = auth()->user()->owner->owner_unique_id;
-        }else{
-            $created_params['owner_id'] = $request->owner_id;
-        }
+        // if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+        //     $created_params['owner_id'] = auth()->user()->owner->owner_unique_id;
+        // }else{
+        //     $created_params['owner_id'] = $request->owner_id;
+        // }
 
         $zone = $this->zone->create($created_params);
 
@@ -278,11 +278,11 @@ class ZoneController extends BaseController
 
         $updated_params['coordinates'] = $multi_polygon;
 
-        if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $updated_params['owner_id'] = auth()->user()->owner->owner_unique_id;
-        }else{
-            $updated_params['owner_id'] = $request->owner_id;
-        }
+        // if (!access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+        //     $updated_params['owner_id'] = auth()->user()->owner->owner_unique_id;
+        // }else{
+        //     $updated_params['owner_id'] = $request->owner_id;
+        // }
 
         $zone = $zone->update($updated_params);
 
