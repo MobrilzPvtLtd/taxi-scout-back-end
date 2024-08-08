@@ -104,7 +104,7 @@ class DriverController extends BaseController
         $main_menu = 'drivers';
         $sub_menu = 'driver_details';
         $services = ServiceLocation::whereActive(true)->companyKey()->get();
-        $approved = Driver::where('approve', true)->where('owner_id', null)->get();
+        $approved = Driver::where('approve', true)->get();
         return view('admin.drivers.index', compact('page', 'main_menu', 'sub_menu','services', 'approved'));
     }
 
@@ -114,9 +114,9 @@ class DriverController extends BaseController
     public function getApprovedDrivers(QueryFilterContract $queryFilter)
     {
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $query = Driver::where('approve', true)->where('owner_id', null)->orderBy('created_at', 'desc');
+            $query = Driver::where('approve', true)->orderBy('created_at', 'desc');
             if (env('APP_FOR')=='demo') {
-                $query = Driver::where('approve', true)->where('owner_id', null)->whereHas('user', function ($query) {
+                $query = Driver::where('approve', true)->whereHas('user', function ($query) {
                     $query->whereCompanyKey(auth()->user()->company_key);
                 })->orderBy('created_at', 'desc');
             }
@@ -127,7 +127,7 @@ class DriverController extends BaseController
         } else {
             return view('admin.404');
             // $this->validateAdmin();
-            // $query = $this->driver->where('owner_id', null)->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
+            // $query = $this->driver->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
             // $query = Driver::orderBy('created_at', 'desc');
         }
 
@@ -144,16 +144,16 @@ class DriverController extends BaseController
     public function getApprovalPendingDrivers(QueryFilterContract $queryFilter)
     {
          if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-                $query = Driver::where('approve', false)->where('owner_id', null)->orderBy('created_at', 'desc');
+                $query = Driver::where('approve', false)->orderBy('created_at', 'desc');
 
                 if (env('APP_FOR')=='demo') {
-                    $query = Driver::where('approve', false)->where('owner_id', null)->whereHas('user', function ($query) {
+                    $query = Driver::where('approve', false)->whereHas('user', function ($query) {
                         $query->whereCompanyKey(auth()->user()->company_key);
                     })->orderBy('created_at', 'desc');
                 }
             } else {
                 $this->validateAdmin();
-                $query = $this->driver->where('approve', false)->where('owner_id', null)->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
+                $query = $this->driver->where('approve', false)->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
                 // $query = Driver::orderBy('created_at', 'desc');
             }
             $results = $queryFilter->builder($query)->customFilter(new DriverFilter)->paginate();
@@ -727,7 +727,7 @@ class DriverController extends BaseController
         $sub_menu = 'negative_balance_drivers';
 
         $services = ServiceLocation::whereActive(true)->companyKey()->get();
-        $approved = Driver::where('approve', true)->where('owner_id', null)->get();
+        $approved = Driver::where('approve', true)->get();
         // dd($approved);
         return view('admin.drivers.negative-balance-drivers', compact('page', 'main_menu', 'sub_menu','services', 'approved'));
     }
@@ -739,7 +739,7 @@ class DriverController extends BaseController
          // dd($threshould_value);
         return cache()->tags('drivers_list')->remember($url, Carbon::parse('10 minutes'), function () use ($queryFilter,$threshould_value) {
             if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-                $query = Driver::orderBy('created_at', 'desc')->where('owner_id', null)->whereHas('driverWallet',function($query)use($threshould_value){
+                $query = Driver::orderBy('created_at', 'desc')->whereHas('driverWallet',function($query)use($threshould_value){
                     $query->where('amount_balance','<=',$threshould_value);
                 });
 
