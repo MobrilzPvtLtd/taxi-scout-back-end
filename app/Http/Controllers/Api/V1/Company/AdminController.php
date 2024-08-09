@@ -134,7 +134,7 @@ class AdminController extends BaseController
         $created_params['password'] = bcrypt($request->input('password'));
 
         $created_params['active'] = true;
-        $created_params['aprove'] = true;
+        $created_params['approve'] = true;
         if ($request->input('service_location_id')) {
             $timezone = ServiceLocation::where('id', $request->input('service_location_id'))->pluck('timezone')->first();
         } else {
@@ -165,7 +165,6 @@ class AdminController extends BaseController
             if (env('APP_FOR')=='demo') {
                 $user_params['company_key'] = '';
             }
-
             $user = $this->user->create($user_params);
 
             $user->attachRole(RoleSlug::OWNER);
