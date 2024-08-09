@@ -119,9 +119,10 @@ class LoginController extends ApiController
         if (auth()->user()->hasRole(Role::dispatchRoles())) {
             $redirect = 'dispatch-login';
         }
-        else if (auth()->user()->hasRole('owner')) {
-            $redirect = 'company-login';
-        }else{
+        // else if (auth()->user()->hasRole('owner')) {
+        //     $redirect = 'company-login';
+        // }
+        else{
             $redirect = 'login';
         }
 
