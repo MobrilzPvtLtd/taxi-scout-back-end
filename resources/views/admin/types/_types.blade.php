@@ -68,15 +68,15 @@
 
                 @foreach($results as $key => $result)
                     @php
-                        $admin = App\Models\Admin\AdminDetail::whereHas('user', function ($query) use   ($result) {
-                            $query->where('company_key', $result->company_key);
+                        $owner = App\Models\Admin\Owner::whereHas('user', function ($query) use   ($result) {
+                            $query->where('owner_unique_id', $result->owner_id);
                         })->first();
                     @endphp
                     <tr>
                         <td>{{ $i++ }} </td>
                         <td> {{$result->name}}</td>
                         @if(auth()->user()->id == 1)
-                            <td> {{$admin->first_name}}</td>
+                            <td> {{$owner->name}}</td>
                         @endif
 
                         <td>

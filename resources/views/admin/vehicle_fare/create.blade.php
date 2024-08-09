@@ -287,15 +287,15 @@
         });
         $(document).on('change', '#zone', function() {
             var selected = $(this).val();
-            $("#transport_type").empty();
+
+            $("#type").empty();
             $.ajax({
                 // url: "{{ route('getTransportTypes') }}",
                 url: "{{ url('vehicle_fare/fetch/vehicles') }}",
                 type: 'GET',
                 dataType: 'json',
                 data: {
-                    '_zone': zone,
-                    'owner_id': owner_id,
+                    '_zone': selected,
                 },
                 success: function(response) {
                     // $("#transport_type").append(
@@ -306,7 +306,7 @@
                     //         '</option>');
                     // });
 
-                    var vehicles = result.data;
+                    var vehicles = response.data;
 
                     var option = ''
                     option += '<option value="" disabled selected>Select a vehicle</option>';

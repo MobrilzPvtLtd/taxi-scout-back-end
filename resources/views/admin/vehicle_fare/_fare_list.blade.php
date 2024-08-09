@@ -69,7 +69,9 @@
                         <th>@lang('view_pages.s_no')</th>
                         <th>@lang('view_pages.transport_type')</th>
                         <th>@lang('view_pages.vehicle_type')</th>
-                        <th>Company Id</th>
+                        @if(auth()->user()->id == 1)
+                            <th>Company Name</th>
+                        @endif
                         <!-- <th>@lang('view_pages.price_type')</th> -->
                         <th>@lang('view_pages.status')</th>
                         <th>@lang('view_pages.action')</th>
@@ -83,6 +85,11 @@
                     @endphp
 
                     @foreach ($results as $key => $result)
+                        @php
+                            $owner = App\Models\Admin\Owner::whereHas('user', function ($query) use   ($result) {
+                                $query->where('owner_unique_id', $result->owner_id);
+                            })->first();
+                        @endphp
                         @if ($result->zoneType->zone->name === $zoneName)
                             <!-- Data Rows -->
                             <tr>
@@ -96,7 +103,9 @@
                                         <button class="btn btn-warning btn-sm">Default</button>
                                     @endif
                                 </td>
-                                <td>{{ $result->owner_id }}</td>
+                                @if(auth()->user()->id == 1)
+                                    <td>{{ $owner->name }}</td>
+                                @endif
 
                                 <!--       <td>
                                 @if ($result->price_type == 1)
