@@ -133,7 +133,8 @@ class AdminController extends BaseController
         $created_params['owner_name'] = $request->name;
         $created_params['password'] = bcrypt($request->input('password'));
 
-        $created_params['active'] = false;
+        $created_params['active'] = true;
+        $created_params['aprove'] = true;
         if ($request->input('service_location_id')) {
             $timezone = ServiceLocation::where('id', $request->input('service_location_id'))->pluck('timezone')->first();
         } else {
