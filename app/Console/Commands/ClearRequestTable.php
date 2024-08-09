@@ -46,24 +46,24 @@ class ClearRequestTable extends Command
     {
         $date = Carbon::now()->subDays(30);
 
-        $request = Request::where( 'created_at', '<', $date)->delete();
+        // $request = Request::where( 'created_at', '<', $date)->delete();
 
        // Delete inactive users with expired OTPs
-        $usersToDelete = User::where('active', 0)
-            ->where('email_confirmed', 0)
-            ->get();
+        // $usersToDelete = User::where('active', 0)
+        //     ->where('email_confirmed', 0)
+        //     ->get();
 
-        foreach ($usersToDelete as $user) {
-            $otpGenerationTime = User::where('email', $user->email)->first()->created_at;
-            $currentTime = Carbon::now();
-            $timeDifference = $currentTime->diffInMinutes($otpGenerationTime);
+        // foreach ($usersToDelete as $user) {
+        //     $otpGenerationTime = User::where('email', $user->email)->first()->created_at;
+        //     $currentTime = Carbon::now();
+        //     $timeDifference = $currentTime->diffInMinutes($otpGenerationTime);
 
-            if ($timeDifference > 1) {
-                $user->delete();
-                MailOtp::where('email', $user->email)->delete();
-                $this->info('User deleted: ' . $user->email);
-            }
-        }
+        //     if ($timeDifference > 1) {
+        //         $user->delete();
+        //         MailOtp::where('email', $user->email)->delete();
+        //         $this->info('User deleted: ' . $user->email);
+        //     }
+        // }
 
         $this->info('Records cleard ');
     }

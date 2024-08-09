@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Mail\OrderExpiryMail;
 use App\Models\Admin\AdminDetail;
 use App\Models\Admin\Order;
+use App\Models\Admin\Owner;
 use App\Models\Admin\Subscription;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -44,9 +45,9 @@ class OrderExpired extends Command
     public function handle()
     {
         $expiredOrder = Order::where('active', 1)->get();
-
         foreach ($expiredOrder as $order) {
-            $admin = AdminDetail::whereHas('user')->where('user_id',$order->user_id)->first();
+            $owner = Owner::whereHas('user')->where('user_id', $order->user_id)->first();
+            dd($owner);
             $package = Subscription::where('id',$order->package_id)->first();
             $expiryDate = $order->getOriginal('end_date');
             $startDate = $order->getOriginal('start_date');
@@ -55,13 +56,13 @@ class OrderExpired extends Command
                 $order->update(['active' => 2]);
 
                 $data = [
-                    'name' => $admin->user->name,
+                    'name' => $owner->user->name,
                     'package_name' => $package->package_name,
                     'orderDate' => $startDate,
                     'expiryDate' => $expiryDate,
                 ];
 
-                Mail::to($admin->email)->send(new OrderExpiryMail($data));
+                Mail::to($owner->email)->send(new OrderExpiryMail($data));
             }
         }
     }
