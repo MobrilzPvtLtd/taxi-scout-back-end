@@ -27,7 +27,7 @@ use App\Base\Constants\Auth\Role;
 Route::middleware('guest')->namespace('Admin')->group(function () {
 
     // Get admin-login form
-    Route::get('login', 'AdminViewController@viewLogin');
+    Route::get('/', 'AdminViewController@viewLogin');
 
     Route::get('company-login', 'FleetOwnerController@viewLogin');
 

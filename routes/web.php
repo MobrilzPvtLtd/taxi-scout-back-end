@@ -19,9 +19,9 @@ Route::namespace('Web')->group(function () {
 
     // All the folder based web routes
     include_route_files('web');
-    
 
-    Route::get('/', 'FrontPageController@index')->name('index');
+
+    // Route::get('/', 'FrontPageController@index')->name('index');
     Route::get('/driverpage', 'FrontPageController@driverp')->name('driverpage');
     Route::get('/howdriving', 'FrontPageController@howdrive')->name('howdriving');
     Route::get('/driverrequirements', 'FrontPageController@driverrequirement')->name('driverrequirements');
@@ -38,7 +38,7 @@ Route::namespace('Web')->group(function () {
     Route::get('mercadopago-checkout',function(){
         return view('mercadopago.checkout');
     });
-    
+
     Route::get('mercadopago-success','MercadopagoController@success');
 
     Route::view("success",'success');
