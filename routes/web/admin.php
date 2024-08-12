@@ -179,7 +179,7 @@ Route::middleware('auth:web')->group(function () {
     Route::post('logout', function () {
         auth('web')->logout();
         request()->session()->invalidate();
-        return redirect('login');
+        return redirect('/');
     });
     // Masters Crud
     // Route::middleware(role_middleware(Role::webPanelLoginRoles()))->group(function () {
