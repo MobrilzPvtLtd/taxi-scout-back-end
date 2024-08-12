@@ -19,7 +19,7 @@ Route::namespace('Web')->group(function () {
 
     // All the folder based web routes
     include_route_files('web');
-    
+
 
     Route::get('/', 'FrontPageController@index')->name('index');
     Route::get('/driverpage', 'FrontPageController@driverp')->name('driverpage');
@@ -38,12 +38,28 @@ Route::namespace('Web')->group(function () {
     Route::get('mercadopago-checkout',function(){
         return view('mercadopago.checkout');
     });
-    
+
     Route::get('mercadopago-success','MercadopagoController@success');
 
     Route::view("success",'success');
     Route::view("failure",'failure');
     Route::view("pending",'pending');
+
+
+    Route::get('/symlink', function(){
+        $publicStoragePath = public_path('storage');
+        $storagePath = storage_path('app/public');
+
+        if (!file_exists($publicStoragePath)) {
+            if (symlink($storagePath, $publicStoragePath)) {
+                $this->info('Symbolic link created successfully.');
+            } else {
+                $this->error('Failed to create symbolic link.');
+            }
+        } else {
+            $this->info('Symbolic link already exists.');
+        }
+    });
 
     // Website home route
     //Route::get('/', 'HomeController@index')->name('home');
