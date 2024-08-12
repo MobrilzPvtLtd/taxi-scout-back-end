@@ -123,7 +123,7 @@ class LoginController extends ApiController
         //     $redirect = 'company-login';
         // }
         else{
-            $redirect = '/';
+            $redirect = 'login';
         }
 
         auth('web')->logout();

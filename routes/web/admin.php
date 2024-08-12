@@ -27,7 +27,7 @@ use App\Base\Constants\Auth\Role;
 Route::middleware('guest')->namespace('Admin')->group(function () {
 
     // Get admin-login form
-    Route::get('/', 'AdminViewController@viewLogin');
+    Route::get('login', 'AdminViewController@viewLogin');
 
     Route::get('company-login', 'FleetOwnerController@viewLogin');
 
@@ -179,7 +179,7 @@ Route::middleware('auth:web')->group(function () {
     Route::post('logout', function () {
         auth('web')->logout();
         request()->session()->invalidate();
-        return redirect('/');
+        return redirect('login');
     });
     // Masters Crud
     // Route::middleware(role_middleware(Role::webPanelLoginRoles()))->group(function () {
