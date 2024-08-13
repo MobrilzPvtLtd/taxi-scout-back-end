@@ -22,14 +22,14 @@ class FrontPageController extends Controller
         $conditional_host = explode('.',$host_name);
 
         if($conditional_host[0] =='tagxi-super-docs'){
-            
+
             return redirect('user-manual');
 
         }
-        
+
         if($conditional_host[0] =='tagxi-super-server'){
-            
-            return redirect('login');
+
+            return redirect('/');
 
         }
         if($conditional_host[0] =='super-bidding'){
@@ -37,7 +37,7 @@ class FrontPageController extends Controller
             $user = User::belongsToRole('super-admin')->first();
 
             auth('web')->login($user, true);
-            
+
             return redirect('dashboard');
 
         }
@@ -50,7 +50,7 @@ class FrontPageController extends Controller
         $data=FrontPage::first();
         $p=Storage::disk(env('FILESYSTEM_DRIVER'))->url(file_path($this->uploadPath(),''));
         //return view('admin.layouts.web_header',compact('data','p'));
-        return view ('webfront.index',compact('data','p'));   
+        return view ('webfront.index',compact('data','p'));
     }
     public function driverp()
     {
@@ -64,7 +64,7 @@ class FrontPageController extends Controller
         $p=Storage::disk(env('FILESYSTEM_DRIVER'))->url(file_path($this->uploadPath(),''));
         return view ('webfront.howdriving',compact('data','p'));
     }
-    public function driverrequirement() 
+    public function driverrequirement()
     {
         $data=FrontPage::first();
         $p=Storage::disk(env('FILESYSTEM_DRIVER'))->url(file_path($this->uploadPath(),''));
@@ -119,9 +119,9 @@ class FrontPageController extends Controller
             ];
             // dd($data);
             //$user = $this->user->create($emailbody);
-            $this->dispatch(new ContactusNotification($data)); 
+            $this->dispatch(new ContactusNotification($data));
          return redirect()->back()->with("success",$message);
-  
+
     }
     public function privacypage()
     {
@@ -130,7 +130,7 @@ class FrontPageController extends Controller
         return view ('webfront.privacy',compact('data','p'));
     }
     public function termspage()
-    {  
+    {
         $data=FrontPage::first();
         $p=Storage::disk(env('FILESYSTEM_DRIVER'))->url(file_path($this->uploadPath(),''));
         return view ('webfront.terms',compact('data','p'));
@@ -306,9 +306,9 @@ class FrontPageController extends Controller
 
          $userId = 1;
          $back=FrontPage::first();
-         $frimage=$back->frimage;    
-         $srimage=$back->srimage;    
-         $trimage=$back->trimage;    
+         $frimage=$back->frimage;
+         $srimage=$back->srimage;
+         $trimage=$back->trimage;
          if($request->hasFile('frimage'))
           {
           $frimage = $request->file('frimage');
@@ -372,9 +372,9 @@ class FrontPageController extends Controller
 
          $userId = 1;
          $back=FrontPage::first();
-         $contactbanner=$back->contactbanner;    
+         $contactbanner=$back->contactbanner;
          if($request->hasFile('contactbanner'))
-          { 
+          {
           $contactbanner = $request->file('contactbanner');
           $path1 = Storage::put($this->uploadPath(), $contactbanner);
           $p1=explode('//',$path1);
@@ -418,14 +418,14 @@ class FrontPageController extends Controller
 
          $userId = 1;
          $back=FrontPage::first();
-            $howbannerimage=$back->howbannerimage;    
-            $hfrcimage1=$back->hfrcimage1;    
-             $hsrcimage1=$back->hsrcimage1;    
-             $htrcimage1=$back->htrcimage1;    
-             $hforcimage1=$back->hforcimage1;    
-             $hfircimage1=$back->hfircimage1;    
-             $hsircimage1=$back->hsircimage1;    
-             $hsercimage1=$back->hsercimage1;    
+            $howbannerimage=$back->howbannerimage;
+            $hfrcimage1=$back->hfrcimage1;
+             $hsrcimage1=$back->hsrcimage1;
+             $htrcimage1=$back->htrcimage1;
+             $hforcimage1=$back->hforcimage1;
+             $hfircimage1=$back->hfircimage1;
+             $hsircimage1=$back->hsircimage1;
+             $hsercimage1=$back->hsercimage1;
          if($request->hasFile('howbannerimage'))
           {
           $howbannerimage = $request->file('howbannerimage');
@@ -442,8 +442,8 @@ class FrontPageController extends Controller
           $p1=explode('//',$path1);
           $hfrcimage1=$p1;
           }
-          $hfrht2=$request->input('hfrht2');          
-          
+          $hfrht2=$request->input('hfrht2');
+
 
           $hsrht1=$request->input('hsrht1');
           if($request->hasFile('hsrcimage1'))
@@ -453,7 +453,7 @@ class FrontPageController extends Controller
           $p1=explode('//',$path1);
           $hsrcimage1=$p1[1];
           }
-          $hsrht2=$request->input('hsrht2');          
+          $hsrht2=$request->input('hsrht2');
 
           $htrht1=$request->input('htrht1');
           if($request->hasFile('htrcimage1'))
@@ -463,7 +463,7 @@ class FrontPageController extends Controller
           $p1=explode('//',$path1);
           $htrcimage1=$p1[1];
           }
-          $htrht2=$request->input('htrht2');          
+          $htrht2=$request->input('htrht2');
 
           $hforht1=$request->input('hforht1');
           if($request->hasFile('hforcimage1'))
@@ -473,7 +473,7 @@ class FrontPageController extends Controller
           $p1=explode('//',$path1);
           $hforcimage1=$p1[1];
           }
-          $hforht2=$request->input('hforht2');          
+          $hforht2=$request->input('hforht2');
 
           $hfirht1=$request->input('hfirht1');
           if($request->hasFile('hfrcimage1'))
@@ -483,7 +483,7 @@ class FrontPageController extends Controller
           $p1=explode('//',$path1);
           $hfircimage1=$p1[1];
           }
-          $hfirht2=$request->input('hfirht2');          
+          $hfirht2=$request->input('hfirht2');
 
           $hsirht1=$request->input('hsirht1');
           if($request->hasFile('hsircimage1'))
@@ -493,7 +493,7 @@ class FrontPageController extends Controller
           $p1=explode('//',$path1);
           $hsircimage1=$p1[1];
           }
-          $hsirht2=$request->input('hsirht2');          
+          $hsirht2=$request->input('hsirht2');
 
           $hserht1=$request->input('hserht1');
           if($request->hasFile('hsercimage1'))
@@ -503,8 +503,8 @@ class FrontPageController extends Controller
           $p1=explode('//',$path1);
           $hsercimage1=$p1[1];
           }
-          $hserht2=$request->input('hserht2');          
- 
+          $hserht2=$request->input('hserht2');
+
           $data=[
            'howbannerimage'=>$howbannerimage,
            'hfrht1'=>$hfrht1,
@@ -559,15 +559,15 @@ class FrontPageController extends Controller
 
          $userId = 1;
          $back=FrontPage::first();
-            $afrimage=$back->afrimage;    
-            $asrimage1=$back->asrimage1;    
-            $asrimage2=$back->asrimage2;    
-            $asrimage3=$back->asrimage3;    
-            $atrtimage1=$back->atrtimage1;    
-            $atrtimage2=$back->atrtimage2;    
-            $atrtimage3=$back->atrtimage3;    
-            $afrbimage=$back->afrbimage;    
-            $afrlimage=$back->afrlimage;    
+            $afrimage=$back->afrimage;
+            $asrimage1=$back->asrimage1;
+            $asrimage2=$back->asrimage2;
+            $asrimage3=$back->asrimage3;
+            $atrtimage1=$back->atrtimage1;
+            $atrtimage2=$back->atrtimage2;
+            $atrtimage3=$back->atrtimage3;
+            $afrbimage=$back->afrbimage;
+            $afrlimage=$back->afrlimage;
          if($request->hasFile('afrimage'))
           {
           $afrimage = $request->file('afrimage');
@@ -664,8 +664,8 @@ class FrontPageController extends Controller
           $afrheadtext=$request->input('afrheadtext');
           $afrstext1=$request->input('afrstext1');
           $afrstext2=$request->input('afrstext2');
-          $afrstext3=$request->input('afrstext3');          
-          $afrstext4=$request->input('afrstext4');          
+          $afrstext3=$request->input('afrstext3');
+          $afrstext4=$request->input('afrstext4');
 
 
 
@@ -744,13 +744,13 @@ class FrontPageController extends Controller
           $data=[
            'privacy'=>$privacytext
           ];
-        
+
          FrontPage::where('userid', $userId)->update($data);
          $main_menu = 'cms';
          $sub_menu = 'cms_frontpage';
          $message="Datas Stored Successfully";
          return redirect()->back()->with("success",$message);
-         
+
          //return redirect()->back()->with(compact('main_menu','sub_menu'));
 
     }
@@ -784,7 +784,7 @@ class FrontPageController extends Controller
           $data=[
            'dmv'=>$dmvtext
           ];
-        
+
          FrontPage::where('userid', $userId)->update($data);
          $main_menu = 'cms';
          $sub_menu = 'cms_dmvpage';
@@ -824,7 +824,7 @@ class FrontPageController extends Controller
           $data=[
            'terms'=>$termstext
           ];
-        
+
          FrontPage::where('userid', $userId)->update($data);
          $main_menu = 'cms';
          $sub_menu = 'cms_frontpage';
@@ -864,14 +864,14 @@ class FrontPageController extends Controller
           $data=[
            'complaince'=>$complaincetext
           ];
-        
+
          FrontPage::where('userid', $userId)->update($data);
          $main_menu = 'cms';
          $sub_menu = 'cms_frontpage';
          $message="Datas Stored Successfully";
          return redirect()->back()->with("success",$message);
 
-    }    
+    }
 
     public function colorthemepagecms()
    {
@@ -908,14 +908,14 @@ class FrontPageController extends Controller
            'hownumberbgcolor'=>$hownumberbgcolor,
            'footerbgcolor'=>$footerbgcolor
           ];
-        
+
          FrontPage::where('userid', $userId)->update($data);
          $main_menu = 'cms';
          $sub_menu = 'cms_frontpage';
          $message="Datas Stored Successfully";
          return redirect()->back()->with("success",$message);
 
-    }    
+    }
 
     public function servicepagecms()
     {
@@ -937,7 +937,7 @@ class FrontPageController extends Controller
 
             return redirect()->back()->with('warning', $message);
            }
-    
+
          $data=FrontPage::first();
 
          $userId = 1;
@@ -988,7 +988,7 @@ class FrontPageController extends Controller
 
             }
 
-          $simagename=substr_replace($simagename, "", -1);  
+          $simagename=substr_replace($simagename, "", -1);
 
           }
           $serviceheadtext=$request->input('serviceheadtext');
@@ -1000,7 +1000,7 @@ class FrontPageController extends Controller
           ];
 
         }
-          //dd($data);       
+          //dd($data);
          FrontPage::where('userid', $userId)->update($data);
          $main_menu = 'cms';
          $sub_menu = 'cms_frontpage';
@@ -1015,7 +1015,7 @@ class FrontPageController extends Controller
     {
 
         $data=FrontPage::first();
-        //foreach($data as $var){ echo $var->faviconfile; } 
+        //foreach($data as $var){ echo $var->faviconfile; }
         //dd("hi");
         $p=Storage::disk(env('FILESYSTEM_DRIVER'))->url(file_path($this->uploadPath(),''));
         $main_menu = 'cms';
@@ -1072,7 +1072,7 @@ class FrontPageController extends Controller
           $p1=explode('//',$path1);
 
           $bannerimagefile = $request->file('bannerimage');
-          //$filename2 = time().'_'.$bannerimagefile->getClientOriginalName();          
+          //$filename2 = time().'_'.$bannerimagefile->getClientOriginalName();
           $path2 = Storage::put($this->uploadPath(), $request->file('bannerimage'));
           $p2=explode('//',$path2);
 
@@ -1080,13 +1080,13 @@ class FrontPageController extends Controller
 
           $path2a = Storage::put($this->uploadPath(), $request->file('playstoreicon1'));
           $p2a=explode('//',$path2a);
-          $playstoreiconlink1=$request->input('playstoreiconlink1');          
+          $playstoreiconlink1=$request->input('playstoreiconlink1');
 
           $path2b = Storage::put($this->uploadPath(), $request->file('playstoreicon2'));
           $p2b=explode('//',$path2b);
           $playstoreiconlink2=$request->input('playstoreiconlink2');
 
-   
+
           $tabviewimage1=$request->file('tabviewimage1');
           $path3 = Storage::put($this->uploadPath(), $tabviewimage1);
           $p3=explode('//',$path3);
@@ -1147,7 +1147,7 @@ class FrontPageController extends Controller
           //dd($data);
          FrontPage::insert($data);
          }
-         else 
+         else
          {
             $tabfaviconfile=$check->tabfaviconfile;
             $faviconfile=$check->faviconfile;
@@ -1168,7 +1168,7 @@ class FrontPageController extends Controller
           $path1 = Storage::put($this->uploadPath(), $tabfaviconfile);
           $p1=explode('//',$path1);
           $tabfaviconfile=$p1[1];
-          } 
+          }
 
           if($request->hasFile('favicon'))
           {
@@ -1176,28 +1176,28 @@ class FrontPageController extends Controller
           $path1 = Storage::put($this->uploadPath(), $faviconfile);
           $p1=explode('//',$path1);
           $faviconfile=$p1[1];
-          } 
+          }
           if($request->hasFile('bannerimage'))
           {
           $bannerimage = $request->file('bannerimage');
           $path2 = Storage::put($this->uploadPath(), $bannerimage);
           $p2=explode('//',$path2);
           $bannerimage=$p2[1];
-          } 
+          }
           if($request->hasFile('playstoreicon1'))
           {
           $playstoreicon1 = $request->file('playstoreicon1');
           $path1 = Storage::put($this->uploadPath(), $playstoreicon1);
           $p1=explode('//',$path1);
           $playstoreicon1=$p1[1];
-          } 
+          }
           if($request->hasFile('playstoreicon2'))
           {
           $playstoreicon2 = $request->file('playstoreicon2');
           $path1 = Storage::put($this->uploadPath(), $playstoreicon2);
           $p1=explode('//',$path1);
           $playstoreicon2=$p1[1];
-          } 
+          }
 
           if($request->hasFile('tabviewimage1'))
           {
@@ -1205,46 +1205,46 @@ class FrontPageController extends Controller
           $path1 = Storage::put($this->uploadPath(), $tabviewimage1);
           $p1=explode('//',$path1);
           $tabviewimage1=$p1[1];
-          } 
+          }
           if($request->hasFile('tabviewimage2'))
           {
           $tabviewimage2 = $request->file('tabviewimage2');
           $path1 = Storage::put($this->uploadPath(), $tabviewimage2);
           $p1=explode('//',$path1);
           $tabviewimage2=$p1[1];
-          } 
+          }
           if($request->hasFile('tabviewimage3'))
           {
           $tabviewimage3 = $request->file('tabviewimage3');
           $path1 = Storage::put($this->uploadPath(), $tabviewimage3);
           $p1=explode('//',$path1);
           $tabviewimage3=$p1[1];
-          } 
+          }
           if($request->hasFile('tabviewimage4'))
           {
           $tabviewimage4 = $request->file('tabviewimage4');
           $path1 = Storage::put($this->uploadPath(), $tabviewimage4);
           $p1=explode('//',$path1);
           $tabviewimage4=$p1[1];
-          } 
+          }
           if($request->hasFile('tabviewimage5'))
           {
           $tabviewimage5 = $request->file('tabviewimage5');
           $path1 = Storage::put($this->uploadPath(), $tabviewimage5);
           $p1=explode('//',$path1);
           $tabviewimage5=$p1[1];
-          } 
+          }
           if($request->hasFile('tabviewimage6'))
           {
           $tabviewimage6 = $request->file('tabviewimage6');
           $path1 = Storage::put($this->uploadPath(), $tabviewimage6);
           $p1=explode('//',$path1);
           $tabviewimage6=$p1[1];
-          } 
-          
+          }
+
            $description=$request->input('description');
-           $playstorelink1=$request->input('playstoreiconlink1');     
-           $playstorelink2=$request->input('playstoreiconlink2');               
+           $playstorelink1=$request->input('playstoreiconlink1');
+           $playstorelink2=$request->input('playstoreiconlink2');
            $descriptiontabhead1=$request->input('descriptiontabhead1');
            $descriptiontabsub1=$request->input('descriptiontabsub1');
            $descriptiontabhead2=$request->input('descriptiontabhead2');
@@ -1274,11 +1274,11 @@ class FrontPageController extends Controller
             'firstrowheadtext3'=>$descriptiontabhead3,
             'firstrowsubtext3'=>$descriptiontabsub3,
             'secondrowimage1'=>$tabviewimage4,
-            'secondrowheadtext1'=>$descriptionsecondtab1, 
+            'secondrowheadtext1'=>$descriptionsecondtab1,
             'secondrowimage2'=>$tabviewimage5,
-            'secondrowheadtext2'=>$descriptionsecondtab2, 
+            'secondrowheadtext2'=>$descriptionsecondtab2,
             'secondrowimage3'=>$tabviewimage6,
-            'secondrowheadtext3'=>$descriptionsecondtab3, 
+            'secondrowheadtext3'=>$descriptionsecondtab3,
            ];
            //FrontPage::insert($data);
            FrontPage::where('userid', $userId)->update($data);
@@ -1289,10 +1289,10 @@ class FrontPageController extends Controller
          return redirect()->back()->with('success', $message);
     }
 
-    
+
     public function uploadPath()
     {
         return config('base.cms.upload.web-picture.path');
     }
-     
+
 }

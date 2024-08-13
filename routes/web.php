@@ -21,7 +21,7 @@ Route::namespace('Web')->group(function () {
     include_route_files('web');
 
 
-    Route::get('/', 'FrontPageController@index')->name('index');
+    // Route::get('/', 'FrontPageController@index')->name('index');
     Route::get('/driverpage', 'FrontPageController@driverp')->name('driverpage');
     Route::get('/howdriving', 'FrontPageController@howdrive')->name('howdriving');
     Route::get('/driverrequirements', 'FrontPageController@driverrequirement')->name('driverrequirements');
@@ -46,6 +46,7 @@ Route::namespace('Web')->group(function () {
     Route::view("pending",'pending');
 
 
+    // storage link command code
     Route::get('/symlink', function(){
         $publicStoragePath = public_path('storage');
         $storagePath = storage_path('app/public');

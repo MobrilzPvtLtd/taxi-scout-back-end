@@ -62,7 +62,7 @@ class WebPasswordController extends BaseController
 
         $message = trans('succes_messages.department_added_succesfully');
 
-        return redirect('login')->with('success', $message);
+        return redirect('/')->with('success', $message);
     }
 
     /**

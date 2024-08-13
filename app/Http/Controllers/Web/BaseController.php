@@ -14,7 +14,7 @@ abstract class BaseController extends ApiController
         $user = auth()->user();
 
         if (!$user) {
-            return Redirect::to('login')->send();
+            return Redirect::to('/')->send();
         } else {
             //  check his role if admin roles
             if ($user->hasRole(Role::adminRoles())) {
