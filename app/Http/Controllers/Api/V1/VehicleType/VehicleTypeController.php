@@ -107,8 +107,9 @@ class VehicleTypeController extends BaseController
     * @urlParam service_location_id required string service location's id
     * @response {"success":true,"message":"success","data":[{"id":"9ea6f9a0-6fd2-4962-9d81-645e6301096f","name":"Mini","icon":null,"capacity":4,"is_accept_share_ride":0,"active":1,"created_at":"2020-02-13 09:06:39","updated_at":"2020-02-13 09:06:39","deleted_at":null}]}
     */
-    public function getVehicleTypesByServiceLocation(ServiceLocation $service_location, $company_id)
+    public function getVehicleTypesByServiceLocation(ServiceLocation $service_location)
     {
+        $company_id = request()->company_id;
         // DB::enableQueryLog();
         $response = $this->vehicle_type->whereActive(true)->whereHas('zoneType.zone', function ($query) use ($service_location, $company_id) {
             $query->where('service_location_id', $service_location->id)

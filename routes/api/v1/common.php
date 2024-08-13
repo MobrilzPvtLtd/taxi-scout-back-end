@@ -55,7 +55,7 @@ Route::namespace('Common')->group(function () {
 
 Route::namespace('VehicleType')->prefix('types')->group(function () {
     // get types depends service location
-    Route::get('/{service_location}/{company_id}', 'VehicleTypeController@getVehicleTypesByServiceLocation');
+    Route::get('/{service_location}', 'VehicleTypeController@getVehicleTypesByServiceLocation');
     Route::post('/report', 'VehicleTypeController@report');
 });
 
