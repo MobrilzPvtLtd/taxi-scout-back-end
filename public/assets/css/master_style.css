@@ -709,7 +709,7 @@ a:active, a:focus, a:hover {
     padding: 8px 5px 8px 30px;
 }
 
-/* 
+/*
 .sidebar-menu>li:hover>a,
 .sidebar-menu>li.active>a,
 .sidebar-menu>li.menu-open>a {
@@ -1480,6 +1480,7 @@ body .main-header .navbar .nav>li.search-box>a:hover, body .main-header .navbar 
 .navbar-nav>.user-menu>.dropdown-menu>li.user-header>img {
     z-index: 5;
     height: 50px;
+    width: 50px;
     border: 3px solid transparent;
     border-color: rgba(255, 255, 255, 0.2);
 }
