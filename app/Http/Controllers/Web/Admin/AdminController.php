@@ -336,35 +336,39 @@ class AdminController extends BaseController
     public function updateProfile(UpdateProfileRequest $request, User $user)
     {
         if(env('APP_FOR')=='demo'){
-
-        $message = 'you cannot update the profile due to demo version';
-
-        return redirect('admins')->with('success', $message);
-
+            $message = 'you cannot update the profile due to demo version';
+            return redirect()->back()->with('success', $message);
         }
 
         if ($request->action == 'password') {
             $updated_user_params['password'] = bcrypt($request->input('password'));
         } else {
-            $updatedParams = $request->only(['first_name','mobile','email','address']);
+            $updatedParams = $request->only(['name','mobile','email','address']);
 
-            $updated_user_params = ['name'=>$request->input('first_name'),
+            $updated_user_params = ['name'=>$request->input('name'),
                 'email'=>$request->input('email'),
                 'mobile'=>$request->input('mobile')
             ];
 
             if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
                 $updated_user_params['profile_picture'] = $this->imageUploader->file($uploadedFile)
-                    ->saveProfilePicture();
+                ->saveProfilePicture();
             }
 
-            $user->admin->update($updatedParams);
+            if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+                $updatedParams['first_name'] = $request->input('name');
+                $user->admin->update($updatedParams);
+            } else {
+                $updatedParams['owner_name'] = $request->input('name');
+                $user->owner->update($updatedParams);
+            }
         }
 
         $user->update($updated_user_params);
 
         $message = trans('succes_messages.admin_profile_updated_succesfully');
-        return redirect('admins')->with('success', $message);
+        // return redirect('admins')->with('success', $message);
+        return redirect()->back()->with('success', $message);
     }
 
     public function approveUser(User $user)

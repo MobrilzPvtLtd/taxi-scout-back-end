@@ -1738,6 +1738,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 PermissionSlug::EDIT_RENTAL_PACKAGE,
                 PermissionSlug::DELETE_RENTAL_PACKAGE,
                 PermissionSlug::TOGGLE_RENTAL_PACKAGE,
+                PermissionSlug::ADMIN,
+                PermissionSlug::EDIT_ADMIN,
             ],
         ],
 

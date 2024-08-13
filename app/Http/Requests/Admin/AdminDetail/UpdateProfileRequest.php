@@ -29,7 +29,7 @@ class UpdateProfileRequest extends FormRequest
             ];
         } else {
             return [
-                'first_name' => 'required|max:50',
+                'name' => 'required|max:50',
                 // 'last_name' => 'required|max:50',
                 'mobile'=>'required|mobile_number|unique:users,mobile,'.$this->user->id,
                 'email'=>'required|email|unique:users,email,'.$this->user->id,
