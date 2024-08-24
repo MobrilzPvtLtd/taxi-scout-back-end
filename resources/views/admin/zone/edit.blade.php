@@ -81,9 +81,9 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="zone_admin" class="">@lang('view_pages.select_area') <sup>*</sup></label>
+                                            <label for="zone_admin" class="">Select Country <sup>*</sup></label>
                                             <select name="admin_id" id="zone_admin" class="form-control" required>
-                                                <option value="">@lang('view_pages.select_area')</option>
+                                                <option value="">Select Country</option>
                                                 @foreach ($services as $key => $service)
                                                     <option value="{{ $service->id }}"
                                                         {{ $service->id == $zone->service_location_id ? 'selected' : '' }}>
