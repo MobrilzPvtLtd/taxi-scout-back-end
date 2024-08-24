@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use App\Base\Constants\Setting\Settings;
 use App\Models\Admin\AdminDetail;
+use App\Models\Admin\Owner;
 use App\Models\Admin\VehicleType;
 use App\Models\Request\RequestPlace;
 
@@ -42,7 +43,7 @@ class DashboardController extends BaseController
             $total_waiting_drivers = Driver::where('approve', 0)->count();
             $total_aproved_drivers = Driver::where('approve', 1)->count();
             $total_vehicleType = VehicleType::count();
-            $total_admin = AdminDetail::count();
+            $total_admin = Owner::count();
             $total_booking = RequestRequest::where('transport_type','taxi')->count();
         }else{
             $total_drivers = Driver::where('approve', 2)->where('owner_id', auth()->user()->owner->owner_unique_id)->count();
@@ -245,9 +246,11 @@ class DashboardController extends BaseController
 
     if (auth()->user()->hasRole('owner')) {
         $ownerId = auth()->user()->owner->owner_unique_id;
-        $results = RequestRequest::whereHas('zoneType.zone')->whereHas('requestPlace')->whereHas('driverDetail')->where('transport_type','taxi')->where('owner_id', $ownerId)->get();
+        // $request = $user->requestDetail()->where('is_cancelled', false)->where('driver_rated', false)->first();
+
+        $results = RequestRequest::whereHas('zoneType.zone')->whereHas('requestPlace')->whereHas('driverDetail')->where('transport_type','taxi')->where('owner_id', $ownerId)->where('is_completed', false)->where('is_cancelled', false)->get();
     }else{
-        $results = RequestRequest::whereHas('zoneType.zone')->whereHas('requestPlace')->whereHas('driverDetail')->where('transport_type','taxi')->get();
+        $results = RequestRequest::whereHas('zoneType.zone')->whereHas('requestPlace')->whereHas('driverDetail')->where('transport_type','taxi')->where('is_completed', false)->where('is_cancelled', false)->get();
     }
 
     $markers = [];

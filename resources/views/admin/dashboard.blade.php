@@ -241,7 +241,7 @@
                                                             data-countup="{&quot;endValue&quot;:58.386,&quot;decimalPlaces&quot;:2,&quot;suffix&quot;:&quot;k&quot;}">
                                                             {{ $total_admin }}</div>
                                                         <a class="font-weight-semi-bold fs--1 text-nowrap"
-                                                            href="{{ url('admins') }}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1"
+                                                            href="{{ url('owners') }}">@lang('view_pages.see_all')<span class="fa fa-angle-right ml-1"
                                                                 data-fa-transform="down-1"></span></a>
                                                     </div>
                                                 </div>
