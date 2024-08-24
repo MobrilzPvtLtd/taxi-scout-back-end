@@ -30,10 +30,43 @@
             @if (auth()->user()->can('service_location'))
                 <li class="{{ 'service_location' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/service_location') }}">
-                        <i class="fa fa-map-marker"></i> <span>@lang('pages_names.service_location')</span>
+                        <i class="fa fa-map-marker"></i> <span>Service Countries</span>
                     </a>
                 </li>
             @endif
+
+            @php
+                $areas = App\Models\Admin\ServiceLocation::companyKey()->active(true)->get();
+            @endphp
+
+            @if (auth()->user()->can('map-menu'))
+                @if (auth()->user()->can('view-zone'))
+                    <li class="{{ 'zone' == $sub_menu ? 'active' : '' }}">
+                        <a href="{{ url('/zone') }}"><i class="fa fa-map"></i>Service Locations</a>
+                    </li>
+                @endif
+                {{-- <li class="treeview {{ 'map' == $main_menu ? 'active menu-open' : '' }}">
+                    <a href="javascript: void(0);">
+                        <i class="fa fa-map"></i>
+                        <span> @lang('pages_names.map') </span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if (auth()->user()->can('list-airports'))
+                            <li class="{{ 'airport' == $sub_menu ? 'active' : '' }}">
+                                <a href="{{ url('/airport') }}"><i
+                                        class="fa fa-circle-thin"></i>@lang('pages_names.airport')</a>
+                            </li>
+                        @endif
+
+                    </ul>
+                </li> --}}
+            @endif
+            @php
+                $zones = App\Models\Admin\Zone::companyKey()->active(true)->get();
+            @endphp
 
             @if (auth()->user()->can('manage-owner'))
                 <li class="{{ 'manage_owners' == $main_menu ? 'active' : '' }}">
@@ -169,38 +202,6 @@
                 </li>
             @endif
 
-            @php
-                $areas = App\Models\Admin\ServiceLocation::companyKey()->active(true)->get();
-            @endphp
-
-            @if (auth()->user()->can('map-menu'))
-                @if (auth()->user()->can('view-zone'))
-                    <li class="{{ 'zone' == $sub_menu ? 'active' : '' }}">
-                        <a href="{{ url('/zone') }}"><i class="fa fa-map"></i>@lang('pages_names.zone')</a>
-                    </li>
-                @endif
-                {{-- <li class="treeview {{ 'map' == $main_menu ? 'active menu-open' : '' }}">
-                    <a href="javascript: void(0);">
-                        <i class="fa fa-map"></i>
-                        <span> @lang('pages_names.map') </span>
-                        <span class="pull-right-container">
-                            <i class="fa fa-angle-right pull-right"></i>
-                        </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        @if (auth()->user()->can('list-airports'))
-                            <li class="{{ 'airport' == $sub_menu ? 'active' : '' }}">
-                                <a href="{{ url('/airport') }}"><i
-                                        class="fa fa-circle-thin"></i>@lang('pages_names.airport')</a>
-                            </li>
-                        @endif
-
-                    </ul>
-                </li> --}}
-            @endif
-            @php
-                $zones = App\Models\Admin\Zone::companyKey()->active(true)->get();
-            @endphp
 
             @if (auth()->user()->can('vehicle-fare'))
                 <li class="{{ 'vehicle-fare' == $main_menu ? 'active' : '' }}">
