@@ -30,7 +30,7 @@
             @if (auth()->user()->can('service_location'))
                 <li class="{{ 'service_location' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/service_location') }}">
-                        <i class="fa fa-map-marker"></i> <span>Service Countries</span>
+                        <i class="fa fa-map-marker"></i> <span>Service Country</span>
                     </a>
                 </li>
             @endif
@@ -42,7 +42,7 @@
             @if (auth()->user()->can('map-menu'))
                 @if (auth()->user()->can('view-zone'))
                     <li class="{{ 'zone' == $sub_menu ? 'active' : '' }}">
-                        <a href="{{ url('/zone') }}"><i class="fa fa-map"></i>Service Locations</a>
+                        <a href="{{ url('/zone') }}"><i class="fa fa-map"></i>Service City</a>
                     </li>
                 @endif
                 {{-- <li class="treeview {{ 'map' == $main_menu ? 'active menu-open' : '' }}">
