@@ -340,7 +340,7 @@ if (!function_exists('get_settings')) {
         // }
 
         return Setting::whereName($key)->pluck('value')->first();
-        
+
     }
 }
 
@@ -381,6 +381,7 @@ if (!function_exists('get_distance_matrix')) {
           'origins' => "$pick_lat,$pick_lng",
           'destinations' => "$drop_lat,$drop_lng",
           'key' => get_settings('google_map_key_for_distance_matrix')
+        //   'key' => "AIzaSyAL0hd3a2l1k1uLSAxQNN511PWkguNxzE4"
         ];
         //AIzaSyDsgTHjo-lusijguNf8XO8aLNyYHe9mRE4
 
@@ -1295,7 +1296,7 @@ if (! function_exists('get_line_string')) {
         curl_close($ch);
 
         // Log::info($result);
-        
+
 
         $encoded_result = json_decode($result);
 

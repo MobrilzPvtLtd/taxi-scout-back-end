@@ -145,16 +145,16 @@ class DriverController extends BaseController
     public function getApprovalPendingDrivers(QueryFilterContract $queryFilter)
     {
          if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-                $query = Driver::where('approve', false)->orderBy('created_at', 'desc');
+                $query = Driver::whereIn('approve', [2, 0])->orderBy('created_at', 'desc');
 
                 if (env('APP_FOR')=='demo') {
-                    $query = Driver::where('approve', false)->whereHas('user', function ($query) {
+                    $query = Driver::whereIn('approve', [2, 0])->whereHas('user', function ($query) {
                         $query->whereCompanyKey(auth()->user()->company_key);
                     })->orderBy('created_at', 'desc');
                 }
             } else {
                 $this->validateAdmin();
-                $query = $this->driver->where('approve', false)->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
+                $query = $this->driver->whereIn('approve', [2, 0])->where('service_location_id', auth()->user()->admin->service_location_id)->orderBy('created_at', 'desc');
                 // $query = Driver::orderBy('created_at', 'desc');
             }
             $results = $queryFilter->builder($query)->customFilter(new DriverFilter)->paginate();

@@ -47,7 +47,6 @@ class OrderExpired extends Command
         $expiredOrder = Order::where('active', 1)->get();
         foreach ($expiredOrder as $order) {
             $owner = Owner::whereHas('user')->where('user_id', $order->user_id)->first();
-            dd($owner);
             $package = Subscription::where('id',$order->package_id)->first();
             $expiryDate = $order->getOriginal('end_date');
             $startDate = $order->getOriginal('start_date');

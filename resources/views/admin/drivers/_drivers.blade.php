@@ -101,12 +101,14 @@
                             <td><button class="btn btn-danger btn-sm">{{ trans('view_pages.iniive') }}</button></td>
                             @endif -->
 
-                            @if ($result->approve)
+                            @if ($result->approve == 1)
                                 <td><button class="btn btn-success btn-sm">{{ trans('view_pages.approved') }}</button>
                                 </td>
+                            @elseif ($result->approve == 2)
+                                <td><button class="btn btn-warning btn-sm">Pending</button>
+                                </td>
                             @else
-                                <td><button
-                                        class="btn btn-danger btn-sm">{{ trans('view_pages.disapproved') }}</button>
+                                <td><button class="btn btn-danger btn-sm">{{ trans('view_pages.disapproved') }}</button>
                                 </td>
                             @endif
                             {{-- @if ($result->reason)

@@ -42,6 +42,7 @@ use App\Http\Requests\Auth\Registration\ValidateEmailOTPRequest;
 use App\Http\Requests\Auth\Registration\SendRegistrationMailOTPRequest;
 use App\Models\Admin\AdminDetail;
 use App\Models\Admin\Driver;
+use Carbon\Carbon;
 
 /**
  * @group SignUp-And-Otp-Validation
@@ -88,6 +89,7 @@ class UserRegistrationController extends LoginController
     }
     public function sendMailOTP(SendRegistrationMailOTPRequest $request)
     {
+
         $email = $request->input('email');
 
         $user = User::where('email', $email)->first();
@@ -95,44 +97,31 @@ class UserRegistrationController extends LoginController
         if (!$user) {
             $this->throwCustomValidationException(['message' => "The Email provided is invalid"]);
         }
+
+        $mailOtpOneTime = MailOtp::where('email', $request->email)->where('verified', 0)->first();
         $mail_otp_exists =  MailOtp::where('email', $email)->exists();
 
+        $mail_otp = mt_rand(100000, 999999);
 
-        if($mail_otp_exists == false)
-        {
-            $mail_otp = mt_rand(100000, 999999);
-
-            $newOTP = MailOtp::create([
-                'email' => $email,
-                'otp' => $mail_otp,
-            ]);
-
-            $otp = [
-                'name' => $user->name,
-                'email' => $user->email,
-                'otp' => $mail_otp,
-            ];
-
-            Mail::to($email)->send(new OtpMail($otp));
-
-        }else{
-           $mailOtp = MailOtp::where('email', $email)->first();
-
-           $mail_otp = mt_rand(100000, 999999);
-
-           $mailOtp->update(['otp' => $mail_otp,'verified' => 0]);
-
-            $otp = [
-                'name' => $user->name,
-                'email' => $user->email,
-                'otp' => $mail_otp,
-            ];
-
-            if ($request->has('email')) {
-                Mail::to($email)->send(new OtpMail($otp));
+        if($mailOtpOneTime != true){
+            if($mail_otp_exists == false) {
+                $mailOtp = MailOtp::create(['email' => $email,'otp' => $mail_otp]);
+            }else{
+                $mailOtp = MailOtp::where('email', $email)->first();
+                $mailOtp->update(['otp' => $mail_otp,'verified' => 0]);
             }
-
         }
+
+        $otp = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'otp' => $mailOtpOneTime ? $mailOtpOneTime->otp : $mailOtp->otp,
+        ];
+
+        if ($request->has('email')) {
+            Mail::to($email)->send(new OtpMail($otp));
+        }
+
         return $this->respondOk("An OTP has been resent to your email. Please check for the 6-digit code.");
 
     }

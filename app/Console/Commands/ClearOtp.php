@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Models\MailOtp;
+use AWS\CRT\Log;
 use Illuminate\Console\Command;
+use Symfony\Polyfill\Intl\Idn\Info;
 
 class ClearOtp extends Command
 {
@@ -19,7 +21,7 @@ class ClearOtp extends Command
      *
      * @var string
      */
-    protected $description = '3 hours completed OTP Deleted';
+    protected $description = '1 hours completed OTP Deleted';
 
     /**
      * Create a new command instance.
@@ -38,31 +40,14 @@ class ClearOtp extends Command
      */
     public function handle()
     {
+        $currentTime = Carbon::now();
+        $timeLimit = $currentTime->copy()->subMinutes(60);
+        $otps = MailOtp::where('updated_at', '<', $timeLimit)->get();
 
-        $currentTime = Carbon::now('Asia/Kathmandu');
-
-
-        // $difference = abs($currentTime - $departureTime)/3600;
-
-
-
-        $otps = MailOtp::where( 'created_at', '<', $currentTime)->get();
-
-
-      
-        foreach ($otps as $otp) 
-        {
-            $created_time = strtotime($otp->created_at);
-
-            $time =strtotime($currentTime);
-
-            $difference = abs($time - $created_time)/3600;
-
-                if ($difference >= 3)
-                 {
-                $otp->delete();
-                }         
+        foreach ($otps as $otp) {
+            $otp->delete();
         }
 
-       $this->info(' OTP Records cleard ');    }
+       $this->info(' OTP Records cleard ');
+    }
 }

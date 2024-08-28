@@ -49,24 +49,27 @@ class LoginController extends BaseLoginController
             $this->throwCustomException('Your account email has not been verified. Please verify your email to proceed.');
         }
 
+        $mailOtpOneTime = MailOtp::where('email', $request->email)->where('verified', 0)->first();
         $mail_otp_exists =  MailOtp::where('email', $request->email)->exists();
 
         $mail_otp = mt_rand(100000, 999999);
 
-        if($mail_otp_exists == false) {
-            $mailOtp = MailOtp::create([
-                'email' => $request->email,
-                'otp' => $mail_otp,
-            ]);
-        }else{
-           $mailOtp = MailOtp::where('email', $request->email)->first();
-           $mailOtp->update(['otp' => $mail_otp, 'verified' => 0]);
+        if($mailOtpOneTime != true){
+            if($mail_otp_exists == false) {
+                $mailOtp = MailOtp::create([
+                    'email' => $request->email,
+                    'otp' => $mail_otp,
+                ]);
+            }else{
+                $mailOtp = MailOtp::where('email', $request->email)->first();
+                $mailOtp->update(['otp' => $mail_otp, 'verified' => 0]);
+            }
         }
 
         $otp = [
             'name' => $user->name,
             'email' => $user->email,
-            'otp' => $mailOtp->otp,
+            'otp' => $mailOtpOneTime ? $mailOtpOneTime->otp : $mailOtp->otp,
         ];
 
         if ($request->has('email')) {
@@ -128,24 +131,27 @@ class LoginController extends BaseLoginController
 
         $user = User::where("email", $request->email)->first();
 
+        $mailOtpOneTime = MailOtp::where('email', $request->email)->where('verified', 0)->first();
         $mail_otp_exists =  MailOtp::where('email', $request->email)->exists();
 
         $mail_otp = mt_rand(100000, 999999);
 
-        if($mail_otp_exists == false) {
-            $mailOtp = MailOtp::create([
-                'email' => $request->email,
-                'otp' => $mail_otp,
-            ]);
-        }else{
-           $mailOtp = MailOtp::where('email', $request->email)->first();
-           $mailOtp->update(['otp' => $mail_otp, 'verified' => 0]);
+        if($mailOtpOneTime != true){
+            if($mail_otp_exists == false) {
+                $mailOtp = MailOtp::create([
+                    'email' => $request->email,
+                    'otp' => $mail_otp,
+                ]);
+            }else{
+                $mailOtp = MailOtp::where('email', $request->email)->first();
+                $mailOtp->update(['otp' => $mail_otp, 'verified' => 0]);
+            }
         }
 
         $otp = [
             'name' => $user->name,
             'email' => $user->email,
-            'otp' => $mailOtp->otp,
+            'otp' => $mailOtpOneTime ? $mailOtpOneTime->otp : $mailOtp->otp,
         ];
 
         if ($request->has('email')) {
@@ -199,24 +205,27 @@ class LoginController extends BaseLoginController
             $this->throwCustomException('Your account email has not been verified. Please verify your email to proceed.');
         }
 
+        $mailOtpOneTime = MailOtp::where('email', $request->email)->where('verified', 0)->first();
         $mail_otp_exists =  MailOtp::where('email', $request->email)->exists();
 
         $mail_otp = mt_rand(100000, 999999);
 
-        if($mail_otp_exists == false) {
-            $mailOtp = MailOtp::create([
-                'email' => $request->email,
-                'otp' => $mail_otp,
-            ]);
-        }else{
-           $mailOtp = MailOtp::where('email', $request->email)->first();
-           $mailOtp->update(['otp' => $mail_otp, 'verified' => 0]);
+        if($mailOtpOneTime != true){
+            if($mail_otp_exists == false) {
+                $mailOtp = MailOtp::create([
+                    'email' => $request->email,
+                    'otp' => $mail_otp,
+                ]);
+            }else{
+                $mailOtp = MailOtp::where('email', $request->email)->first();
+                $mailOtp->update(['otp' => $mail_otp, 'verified' => 0]);
+            }
         }
 
         $otp = [
             'name' => $user->name,
             'email' => $user->email,
-            'otp' => $mailOtp->otp,
+            'otp' => $mailOtpOneTime ? $mailOtpOneTime->otp : $mailOtp->otp,
         ];
 
         if ($request->has('email')) {
