@@ -139,6 +139,12 @@
                                             class="fa fa-circle-thin"></i>@lang('pages_names.driver_ratings')</a>
                                 </li>
                             @endif
+                            {{-- @if (auth()->user()->can('manage-driver-needed-document'))
+                                <li class="{{ 'needed_document' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url('/needed_doc') }}"><i
+                                            class="fa fa-circle-thin"></i>@lang('pages_names.needed_doc')</a>
+                                </li>
+                            @endif --}}
                             {{-- @if (auth()->user()->can('view-driver-withdrawal-requests'))
                                 <li class="{{ 'withdrawal_requests' == $sub_menu ? 'active' : '' }}">
                                     <a href="{{ url('/withdrawal-requests-lists') }}"><i
@@ -188,7 +194,6 @@
                                 </a>
                             </li>
                         @endif --}}
-
 
                         @if (auth()->user()->can('cancellation-rides'))
                             <li class="{{ 'cancellation-rides' == $sub_menu ? 'active' : '' }}">
@@ -279,7 +284,7 @@
                 </li> --}}
             @endif
 
-            @if (auth()->user()->can('master-data'))
+            {{-- @if (auth()->user()->can('master-data'))
                 <li class="treeview {{ 'master' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-code-fork"></i>
@@ -300,13 +305,13 @@
                                 <a href="{{ url('/carmodel') }}"><i
                                         class="fa fa-circle-thin"></i>@lang('pages_names.vehicle_model')</a>
                             </li>
-                        @endif
-                        @if (auth()->user()->can('manage-driver-needed-document'))
+                        @endif --}}
+                        {{-- @if (auth()->user()->can('manage-driver-needed-document'))
                             <li class="{{ 'needed_document' == $sub_menu ? 'active' : '' }}">
                                 <a href="{{ url('/needed_doc') }}"><i
                                         class="fa fa-circle-thin"></i>@lang('pages_names.needed_doc')</a>
                             </li>
-                        @endif
+                        @endif --}}
                         {{-- @if (auth()->user()->can('manage-owner-needed-document'))
                             <li class="{{ 'owner_needed_document' == $sub_menu ? 'active' : '' }}">
                                 <a href="{{ url('/owner_needed_doc') }}"><i
@@ -338,9 +343,9 @@
                             </li>
                         @endif --}}
 
-                    </ul>
+                    {{-- </ul>
                 </li>
-            @endif
+            @endif --}}
 
             @if (auth()->user()->can('view-system-settings'))
                 <li class="{{ 'system_settings' == $sub_menu ? 'active' : '' }}">

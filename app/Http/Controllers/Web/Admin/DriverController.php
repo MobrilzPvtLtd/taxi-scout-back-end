@@ -43,6 +43,8 @@ use Kreait\Firebase\Contract\Database;
 use App\Jobs\Notifications\SendPushNotification;
 use App\Models\Admin\DriverVehicleType;
 use App\Models\Admin\Owner;
+use App\Mail\Driver\DriverCreateByCompanyMail;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * @resource Driver
@@ -178,11 +180,13 @@ class DriverController extends BaseController
         $carmake = CarMake::active()->get();
 
         $companies = Company::active()->get();
-
+        $admin = Owner::whereHas('user', function ($query) {
+            $query->whereNotNull('owner_unique_id');
+        })->get();
         $main_menu = 'drivers';
         $sub_menu = 'driver_details';
 
-        return view('admin.drivers.create', compact('services', 'types', 'page', 'countries', 'main_menu', 'sub_menu', 'companies', 'carmake'));
+        return view('admin.drivers.create', compact('services', 'types', 'page', 'countries', 'main_menu', 'sub_menu', 'companies', 'carmake','admin'));
     }
 
     /**
@@ -194,7 +198,7 @@ class DriverController extends BaseController
   public function store(CreateDriverRequest $request)
     {
         // dd($request);
-        $created_params = $request->only(['service_location_id','company_key', 'name','mobile','email','address','gender','car_make','car_model','car_color','car_number','transport_type']);
+        $created_params = $request->only(['service_location_id','owner_id','driving_license','name','mobile','email','address','gender','car_make','car_model','car_color','car_number','transport_type','vehicle_type']);
 
         $validate_exists_email = $this->user->belongsTorole(Role::DRIVER)->where('email', $request->email)->exists();
 
@@ -208,8 +212,9 @@ class DriverController extends BaseController
         }
 
         $created_params['uuid'] = driver_uuid();
-        $created_params['owner_id'] = null;
-
+        $created_params['owner_id'] = $request->owner_id;
+        $created_params['transport_type'] = "taxi";
+        $created_params['approve'] = true;
 
         $service_location = ServiceLocation::find($request->service_location_id);
 
@@ -223,6 +228,7 @@ class DriverController extends BaseController
             'company_key'=>auth()->user()->company_key,
             'refferal_code'=> str_random(6),
             'country'=>$country_id,
+            'email_confirmed'=>true
         ]);
 
 
@@ -234,7 +240,7 @@ class DriverController extends BaseController
         $user->attachRole(RoleSlug::DRIVER);
 
 
-        $created_params['active'] = false;
+        $created_params['active'] = true;
 
         $driver = $user->driver()->create($created_params);
 
@@ -242,13 +248,24 @@ class DriverController extends BaseController
 
         $driver_detail = $driver->driverDetail()->create($driver_detail_data);
 
-        foreach ($request->input('type') as $type)
-        {
-                DriverVehicleType::create(['driver_id' => $driver->id,
-                'vehicle_type' => $type,]);
-        }
+        // foreach ($request->input('type') as $type) {
+            DriverVehicleType::create(['driver_id' => $driver->id, 'vehicle_type' => $request->input('vehicle_type')]);
+        // }
         // Create Empty Wallet to the driver
         $driver_wallet = $driver->driverWallet()->create(['amount_added'=>0]);
+
+        $data = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'mobile' => $user->mobile,
+            'password' => $request->input('password'),
+            'approve' => $created_params['approve'],
+            'comapny_name' => auth()->user()->name
+        ];
+
+        if ($user->email) {
+            Mail::to($user->email)->send(new DriverCreateByCompanyMail($data));
+        }
 
         $message = trans('succes_messages.driver_added_succesfully');
 
@@ -287,7 +304,7 @@ class DriverController extends BaseController
       public function update(Driver $driver, UpdateDriverRequest $request)
     {
         // dd($request);
-        $updatedParams = $request->only(['service_location_id', 'name','mobile','email','gender','car_make','car_model','car_color','car_number']);
+        $updatedParams = $request->only(['service_location_id','owner_id', 'name','driving_license','mobile','email','gender','car_make','car_model','car_color','car_number','transport_type','vehicle_type']);
 
         $user = $driver->user;
         $validate_exists_email = $this->user->belongsTorole(Role::DRIVER)->where('email', $request->email)->where('id', '!=', $user->id)->exists();
@@ -314,12 +331,12 @@ class DriverController extends BaseController
         $driver->update(['name'=>$request->input('name'),
             'email'=>$request->input('email'),
             'mobile'=>$request->input('mobile'),
-            'transport_type'=>$request->input('transport_type'),
+            // 'transport_type'=>$request->input('transport_type'),
             'car_make'=>$request->input('car_make'),
             'car_model'=>$request->input('car_model'),
             'car_color'=>$request->input('car_color'),
             'car_number'=>$request->input('car_number'),
-            // 'vehicle_type'=>$request->input('type'),
+            'vehicle_type'=>$request->input('vehicle_type'),
             'service_location_id'=>$request->service_location_id
 
         ]);
@@ -339,11 +356,9 @@ class DriverController extends BaseController
             $driverVehicleType->delete();
         }
 
-        foreach ($request->type as $type)
-        {
-             DriverVehicleType::create(['driver_id' => $driver->id,
-                'vehicle_type' => $type,]);
-        }
+        // foreach ($request->type as $type){
+             DriverVehicleType::create(['driver_id' => $driver->id, 'vehicle_type' => $request->input('vehicle_type')]);
+        // }
 
         $message = trans('succes_messages.driver_added_succesfully');
         cache()->tags('drivers_list')->flush();
@@ -467,7 +482,6 @@ class DriverController extends BaseController
     {
         // $type = request()->transport_type;
         $owner_id = request()->owner_id;
-
         // return CarModel::where('make_id',$carModel)->where('active','1')->get();
         return VehicleType::active()->whereIsTaxi("taxi")->where('owner_id', $owner_id)->get();
         // return VehicleType::active()->whereIsTaxi($type)->get();

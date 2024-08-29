@@ -130,10 +130,12 @@
                                             <label for="type">Assign Taxi
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <select name="type[]" id="type" class="form-control select2" multiple="multiple" required>
+                                            <select name="vehicle_type" id="type" class="form-control select2" required>
 
                                            @foreach($types as $key=>$type)
-                                                <option value="{{ $type->id }}" {{ old('type[]', $item->driverVehicleTypeDetail()->Where('vehicle_type', $type->id)->pluck('vehicle_type')->first()) ? 'selected' : '' }}>
+                                                <option value="{{ $type->id }}"
+                                                    {{ old('vehicle_type', $item->driverVehicleTypeDetail()->Where('vehicle_type', $type->id)->pluck('vehicle_type')->first()) ? 'selected' : '' }}
+                                                    >
                                                 {{ $type->name }}</option>
                                            @endforeach
                                            </select>
@@ -156,7 +158,7 @@
 
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label for="car_make">@lang('view_pages.car_make')<span
+                                            <label for="car_make">@lang('view_pages.car_model')<span
                                                     class="text-danger">*</span></label>
                                             <select name="car_make" id="car_make" class="form-control select2" required>
                                                 <option value="" selected disabled>@lang('view_pages.select')</option>
@@ -169,15 +171,14 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-6">
+                                    {{-- <div class="col-6">
                                         <div class="form-group">
                                             <label for="car_model">@lang('view_pages.car_model')<span class="text-danger">*</span></label>
-                                            {{-- <input type="text" name="car_model" id="car_model" class="form-control" placeholder="Enter Car Model"> --}}
                                             <select name="car_model" id="car_model" class="form-control select2">
                                                 <option value="" selected disabled>@lang('view_pages.select')</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="driving_license">License Number<span class="text-danger">*</span></label>

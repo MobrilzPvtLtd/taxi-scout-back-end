@@ -122,21 +122,27 @@
                                                 <select name="owner_id" id="owner_id" class="form-control" required>
                                                     <option value="" selected disabled>Select Taxi Company</option>
                                                     @foreach ($admin as $company)
-                                                        <option value="{{ $company->owner_unique_id }}">{{ $company->name }}</option>
+                                                        <option value="{{ $company->owner_unique_id }}" {{ $company->owner_unique_id == $item->owner_id ? 'selected' : '' }}>{{ $company->name }}</option>
                                                     @endforeach
                                                 </select>
-                                                <span class="text-danger">{{ $errors->first('transport_type') }}</span>
+                                                <span class="text-danger">{{ $errors->first('owner_id') }}</span>
                                             </div>
                                         </div>
                                     @endif
+                                    {{-- @php
+                                        dd($item->vehicle_type);
+                                    @endphp --}}
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="type">Assign Taxi
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <select name="type[]" id="type" class="form-control select2" multiple="multiple" required>
+                                            <select name="vehicle_type" id="type" class="form-control select2" required>
                                                 @foreach($types as $key=>$type)
-                                                        <option value="{{ $type->id }}" {{ old('type[]', $item->driverVehicleTypeDetail()->Where('vehicle_type', $type->id)->pluck('vehicle_type')->first()) ? 'selected' : '' }}>
+                                                        <option value="{{ $type->id }}"
+
+                                                            {{ old('vehicle_type', $item->driverVehicleTypeDetail()->Where('vehicle_type', $type->id)->pluck('vehicle_type')->first()) ? 'selected' : '' }}
+                                                            >
                                                         {{ $type->name }}</option>
                                                 @endforeach
                                             </select>
@@ -158,7 +164,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    {{-- <div class="col-6">
                                         <div class="form-group">
                                             <label for="car_model">@lang('view_pages.car_model')<span
                                                     class="text-danger">*</span></label>
@@ -171,7 +177,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="driving_license">License Number<span class="text-danger">*</span></label>
@@ -243,55 +249,56 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-$(document).ready(function() {
-    // Retrieve the initial selected transport_type value
-    var initialTransportType = $('#transport_type').val();
+    $(document).ready(function() {
+        // Retrieve the initial selected owner_id value
+        var initialOwnerId = $('#owner_id').val();
 
-    // Perform an initial request to get the corresponding types based on the transport_type value
-    getTypesByTransportType(initialTransportType);
+        // Perform an initial request to get the corresponding types based on the owner_id value
+        getTypesByOwnerId(initialOwnerId);
 
-    // On change event of transport_type select
-    $(document).on('change', '#transport_type', function() {
-        var transportType = $(this).val();
+        // On change event of owner_id select
+        $(document).on('change', '#owner_id', function() {
+            var owner_id = $(this).val();
 
-        // Call the function to get the types based on the selected transport_type
-        getTypesByTransportType(transportType);
-    });
-
-    // Function to get types based on the transport_type
-    function getTypesByTransportType(transportType) {
-        $.ajax({
-            url: "{{ route('getType') }}",
-            type: 'GET',
-            data: {
-                'transport_type': transportType,
-            },
-            success: function(result) {
-                var selectedTypes = [];
-
-                // Get the selected type values from the type select element
-                $('#type').find('option:selected').each(function() {
-                    selectedTypes.push($(this).val());
-                });
-
-                $('#type').empty();
-
-                result.forEach(element => {
-                    var option = $('<option>').val(element.id).text(element.name);
-
-                    // Check if the type value is in the selectedTypes array
-                    if (selectedTypes.includes(element.id.toString())) {
-                        option.attr('selected', 'selected');
-                    }
-
-                    $('#type').append(option);
-                });
-
-                $('#type').select2();
-            }
+            // Call the function to get the types based on the selected owner_id
+            getTypesByOwnerId(owner_id);
         });
-    }
-});
+
+        // Function to get types based on the transport_type
+        function getTypesByOwnerId(owner_id) {
+            $.ajax({
+                url: "{{ route('getType') }}",
+                type: 'GET',
+                data: {
+                    // 'transport_type': transportType,
+                    'owner_id': owner_id,
+                },
+                success: function(result) {
+                    var selectedTypes = [];
+
+                    // Get the selected type values from the type select element
+                    $('#type').find('option:selected').each(function() {
+                        selectedTypes.push($(this).val());
+                    });
+
+                    $('#type').empty();
+
+                    result.forEach(element => {
+                        var option = $('<option>').val(element.id).text(element.name);
+
+                        // Check if the type value is in the selectedTypes array
+                        if (selectedTypes.includes(element.id.toString())) {
+                            option.attr('selected', 'selected');
+                        }
+
+                        $('#type').append(option);
+                    });
+
+                    $('#type').select2();
+                }
+            });
+        }
+    });
 
 
     $('.select2').select2({

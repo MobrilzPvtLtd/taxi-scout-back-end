@@ -26,7 +26,21 @@
                         <form method="post" class="form-horizontal" action="{{url('company/drivers/store')}}" enctype="multipart/form-data">
                             {{csrf_field()}}
 
-                            <div class="row">
+                            <div class="row"><div class="col-6">
+                                <div class="form-group">
+                                    <label for="service_location_id">@lang('view_pages.select_area')
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select name="service_location_id" id="service_location_id" class="form-control" required>
+                                        <option value="">@lang('view_pages.select_area')</option>
+                                        @foreach($services as $key=>$service)
+                                        <option value="{{$service->id}}" {{ old('service_location_id') == $service->id ? 'selected' : '' }}>{{$service->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger">{{ $errors->first('service_location_id') }}</span>
+
+                                </div>
+                            </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="name">@lang('view_pages.name') <span class="text-danger">*</span></label>
@@ -49,6 +63,13 @@
                                         </select>
                                         <span class="text-danger">{{ $errors->first('gender') }}</span>
 
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="driving_license">License Number<span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" id="driving_license" name="driving_license" value="{{old('driving_license')}}" required="" placeholder="@lang('view_pages.enter') License Number">
+                                        <span class="text-danger">{{ $errors->first('driving_license') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -165,7 +186,7 @@
                                     <label for="vehicle_type">Assign Taxi
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <select name="vehicle_type" id="vehicle_type" class="form-control" required>
+                                    <select name="vehicle_type" id="vehicle_type" class="form-control select2" required>
                                         <option value="" >Select Taxi Type</option>
                                         @foreach($types as $key=>$type)
                                         <option value="{{$type->id}}" {{ old('vehicle_type') == $type->id ? 'selected' : '' }}>{{$type->name}}</option>
@@ -176,7 +197,7 @@
 
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label for="car_make">@lang('view_pages.car_make')<span class="text-danger">*</span></label>
+                                        <label for="car_make">@lang('view_pages.car_model')<span class="text-danger">*</span></label>
                                         <select name="car_make" id="car_make" class="form-control select2" required>
                                             <option value="" selected disabled>@lang('view_pages.select')</option>
                                             @foreach($carmake as $key=>$make)
@@ -186,14 +207,14 @@
                                     </div>
                                 </div>
 
-                                <div class="col-4">
+                                {{-- <div class="col-4">
                                     <div class="form-group">
                                         <label for="car_model">@lang('view_pages.car_model')<span class="text-danger">*</span></label>
                                         <select name="car_model" id="car_model" class="form-control select2" required>
                                             <option value="" selected disabled>@lang('view_pages.select')</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 {{-- <div class="col-sm-6">
                                     <div class="form-group">
@@ -202,15 +223,7 @@
                                         <span class="text-danger">{{ $errors->first('car_color') }}</span>
                                     </div>
                                 </div> --}}
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="driving_license">License Number<span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" id="driving_license" name="driving_license" value="{{old('driving_license')}}" required="" placeholder="@lang('view_pages.enter') License Number">
-                                        <span class="text-danger">{{ $errors->first('driving_license') }}</span>
-                                    </div>
-                                </div>
-                                <div class="col-4">
+                                {{-- <div class="col-4">
                                     <div class="form-group">
                                         <label for="approve">Approval Status<span class="text-danger">*</span></label>
                                         <select name="approve" id="approve" class="form-control select2" required>
@@ -220,7 +233,7 @@
                                             <option value="2">Pending</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
 
                             <div class="form-group">

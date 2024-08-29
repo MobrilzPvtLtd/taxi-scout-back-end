@@ -17,6 +17,7 @@ use App\Http\Requests\Admin\VehicleTypes\CreateVehicleTypeRequest;
 use App\Http\Requests\Admin\VehicleTypes\UpdateVehicleTypeRequest;
 use App\Models\Admin\AdminDetail;
 use App\Models\Admin\Owner;
+use App\Models\Master\CarMake;
 use App\Models\Master\CarModel;
 
 /**
@@ -90,7 +91,7 @@ class VehicleTypeController extends BaseController
         $page = trans('pages_names.add_type');
         // $services = ServiceLocation::whereActive(true)->get();
         $main_menu = 'types';
-        $carModels = CarModel::whereActive(true)->get();
+        $carModels = CarMake::whereActive(true)->get();
         $sub_menu = '';
         $admin = Owner::whereHas('user', function ($query) {
             $query->whereNotNull('owner_unique_id');
@@ -166,7 +167,7 @@ class VehicleTypeController extends BaseController
         $type = $this->vehicle_type->where('id', $id)->first();
         // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
         // $services = ServiceLocation::whereActive(true)->get();
-        $carModels = CarModel::whereActive(true)->get();
+        $carModels = CarMake::whereActive(true)->get();
         $main_menu = 'types';
         $sub_menu = '';
         $admin = Owner::whereHas('user', function ($query) {
