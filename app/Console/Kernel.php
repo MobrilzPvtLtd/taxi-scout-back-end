@@ -13,6 +13,7 @@ use App\Console\Commands\ClearDemoDatabase;
 use App\Console\Commands\ClearRequestTable;
 use App\Console\Commands\ClearOtp;
 use App\Console\Commands\OrderExpired;
+use App\Console\Commands\ScheduledRunOnLive;
 use App\Models\Admin\Order;
 
 class Kernel extends ConsoleKernel
@@ -32,6 +33,7 @@ class Kernel extends ConsoleKernel
         ClearRequestTable::class,
         ClearOtp::class,
         OrderExpired::class,
+        ScheduledRunOnLive::class,
 
     ];
 
@@ -52,6 +54,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('order:expire')->everyMinute();
         $schedule->command('order:expire')->daily();
         $schedule->command('clear:request')->everyMinute();
+        $schedule->command('scheduledRunOnLive:run')->everyMinute();
         // $schedule->command('clear:database')
         //          ->daily();
     }

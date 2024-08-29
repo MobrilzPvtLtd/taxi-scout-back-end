@@ -1,5 +1,6 @@
 <?php
-
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -64,4 +65,10 @@ Route::namespace('Web')->group(function () {
 
     // Website home route
     //Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/run-schedule', function () {
+        Artisan::call('scheduledRunOnLive:run');
+        $output = Artisan::output();
+        return response()->json(['message' => 'Scheduled commands executed.', 'output' => $output]);
+    });
 });
+

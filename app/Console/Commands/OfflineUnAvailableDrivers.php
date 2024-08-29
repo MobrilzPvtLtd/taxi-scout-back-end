@@ -52,7 +52,7 @@ class OfflineUnAvailableDrivers extends Command
 
         foreach ($drivers as $key => $driver) {
             $driver_updated_at = Carbon::createFromTimestamp($driver['updated_at'] / 1000);
-            
+
                 $mysql_driver = Driver::where('id', $driver['id'])->first();
                 // Check if the driver is on trip
                 if($mysql_driver && $mysql_driver->requestDetail()->where('is_completed',false)->where('is_cancelled',false)->exists()){
@@ -63,10 +63,10 @@ class OfflineUnAvailableDrivers extends Command
                 goto make_offline;
             }
 
-            
-            
+
+
             if ($conditional_timestamp > $driver_updated_at) {
-                
+
                 $this->info("some-drivers-are-there");
 
                 if ($mysql_driver){
@@ -77,8 +77,8 @@ class OfflineUnAvailableDrivers extends Command
                     dispatch(new SendPushNotification($notifable_driver,$title,$body));
 
                 }
-                
-                
+
+
                 make_offline:
 
                 // Get last online record
@@ -96,14 +96,14 @@ class OfflineUnAvailableDrivers extends Command
                         $availability->update(['is_online'=>false,'offline_at'=>$updatable_offline_date_time,'duration'=>$availability->duration+$duration]);
 
                     }else{
-                        $created_params['duration'] = 0;  
+                        $created_params['duration'] = 0;
                         $created_params['is_online'] = false;
                         $created_params['online_at'] = $updatable_offline_date_time;
                         $created_params['offline_at'] = $updatable_offline_date_time;
                         $mysql_driver->driverAvailabilities()->create($created_params);
 
                     }
-                    
+
                     $mysql_driver->active = 0;
                     $mysql_driver->save();
 
@@ -113,8 +113,8 @@ class OfflineUnAvailableDrivers extends Command
 
 
                 end:
-                
-                
+
+
             }
 
         $this->info("no-drivers-found");

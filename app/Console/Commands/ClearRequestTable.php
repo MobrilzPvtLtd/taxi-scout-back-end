@@ -46,9 +46,9 @@ class ClearRequestTable extends Command
     {
         $date = Carbon::now()->subDays(30);
 
-        // $request = Request::where( 'created_at', '<', $date)->delete();
+        $request = Request::where( 'created_at', '<', $date)->delete();
 
-       // Delete inactive users with expired OTPs
+    //    Delete inactive users with expired OTPs
         // $usersToDelete = User::where('active', 0)
         //     ->where('email_confirmed', 0)
         //     ->get();

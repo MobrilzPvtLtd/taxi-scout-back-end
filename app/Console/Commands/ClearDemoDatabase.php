@@ -62,9 +62,9 @@ class ClearDemoDatabase extends Command
         $this->database->getReference('requests')->remove();
 
         $this->info("success");
-    
+
         }
-        
+
 
     }
 }

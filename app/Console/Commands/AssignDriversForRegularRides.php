@@ -119,15 +119,15 @@ class AssignDriversForRegularRides extends Command
         $vehicle_type = $type_id;
 
         $fire_drivers = $this->database->getReference('drivers')->orderByChild('g')->startAt($lower_hash)->endAt($higher_hash)->getValue();
-        
+
         $firebase_drivers = [];
 
         $i=-1;
 
         foreach ($fire_drivers as $key => $fire_driver) {
-            $i +=1; 
+            $i +=1;
             $driver_updated_at = Carbon::createFromTimestamp($fire_driver['updated_at'] / 1000)->timestamp;
-            
+
             if(array_key_exists('vehicle_type',$fire_driver) && $fire_driver['vehicle_type']==$vehicle_type && $fire_driver['is_active']==1 && $fire_driver['is_available']==1 && $conditional_timestamp < $driver_updated_at){
 
                 $distance = distance_between_two_coordinates($pick_lat,$pick_lng,$fire_driver['l'][0],$fire_driver['l'][1],'K');
@@ -149,18 +149,18 @@ class AssignDriversForRegularRides extends Command
                 }
 
 
-            }      
+            }
 
         }
 
         asort($firebase_drivers);
 
             if (!empty($firebase_drivers)) {
-               
+
                 $nearest_driver_ids = [];
 
                 foreach ($firebase_drivers as $key => $firebase_driver) {
-                    
+
                     $nearest_driver_ids[]=$key;
                 }
 
@@ -201,13 +201,13 @@ class AssignDriversForRegularRides extends Command
                         }
                     } else {
 
-                     
+
                          foreach ($nearest_drivers as $key => $nearest_driver) {
-                        
+
                         if($nearest_driver->enable_my_route_booking && $has_enabled_my_route_drivers!=null &$route_coordinates!=null){
 
                             $enabled_route_matched = $nearest_driver->intersects('route_coordinates',$route_coordinates)->first();
-                            
+
                             if(!$enabled_route_matched){
 
                                 $nearest_drivers->forget($key);
@@ -299,21 +299,21 @@ class AssignDriversForRegularRides extends Command
                         }
 
                         usort($selected_drivers, function($a, $b) {
-                        
+
                         return $a['distance_to_pickup'] <=> $b['distance_to_pickup'];
-                    
+
                         });
                         // Send notification to the very first driver
                         $first_meta_driver = $selected_drivers[0]['driver_id'];
                         $selected_drivers[0]["active"] = 1;
-                        
+
                         // Add first Driver into Firebase Request Meta
                         $this->database->getReference('request-meta/'.$request->id)->set(['driver_id'=>$first_meta_driver,'request_id'=>$request->id,'user_id'=>$request->user_id,'active'=>1,'updated_at'=> Database::SERVER_TIMESTAMP]);
 
                         $request_result =  fractal($request, new CronTripRequestTransformer)->parseIncludes('userDetail');
                         $pus_request_detail = $request_result->toJson();
                         $push_data = ['notification_enum'=>PushEnums::REQUEST_CREATED,'result'=>(string)$pus_request_detail];
-                        
+
 
                         $socket_data = new \stdClass();
                         $socket_data->success = true;
@@ -329,17 +329,17 @@ class AssignDriversForRegularRides extends Command
 
                         dispatch(new SendPushNotification($notifable_driver,$title,$body));
 
-                    
+
                         // dispatch(new NotifyViaMqtt('create_request_'.$driver->id, json_encode($socket_data), $driver->id));
                         create_meta_request:
-                        
+
                         foreach ($selected_drivers as $key => $selected_driver) {
                             $request->requestMeta()->create($selected_driver);
                         }
                     }
-                 
+
                     }
-                
+
             } else {
                 $this->info('no-drivers-available');
                     $request->attempt_for_schedule += 1;

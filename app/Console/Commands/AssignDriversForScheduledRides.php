@@ -122,13 +122,13 @@ class AssignDriversForScheduledRides extends Command
         $vehicle_type = $type_id;
 
         $fire_drivers = $this->database->getReference('drivers')->orderByChild('g')->startAt($lower_hash)->endAt($higher_hash)->getValue();
-        
+
         $firebase_drivers = [];
 
         $i=-1;
 
         foreach ($fire_drivers as $key => $fire_driver) {
-            $i +=1; 
+            $i +=1;
             $driver_updated_at = Carbon::createFromTimestamp($fire_driver['updated_at'] / 1000)->timestamp;
 
             if(array_key_exists('vehicle_type',$fire_driver) && $fire_driver['vehicle_type']==$vehicle_type && $fire_driver['is_active']==1 && $fire_driver['is_available']==1 && $conditional_timestamp < $driver_updated_at){
@@ -152,23 +152,23 @@ class AssignDriversForScheduledRides extends Command
                 }
 
 
-            }      
+            }
 
         }
 
         asort($firebase_drivers);
 
             if (!empty($firebase_drivers)) {
-                    
+
                     $nearest_driver_ids = [];
 
                 foreach ($firebase_drivers as $key => $firebase_driver) {
-                    
+
                     $nearest_driver_ids[]=$key;
                 }
 
                     $rejected_drivers = DriverRejectedRequest::where('request_id',$request->id)->pluck('driver_id')->toArray();
-                    
+
 $nearest_drivers = Driver::where('active', 1)
 ->where('approve', 1)
 ->where('available', 1)
@@ -196,7 +196,7 @@ $query->where('vehicle_type', $type_id);
                             $no_driver_request_ids[0] = $request->id;
 
                              $this->database->getReference('requests/'.$request->id)->update(['no_driver'=>1,'updated_at'=> Database::SERVER_TIMESTAMP]);
-                             
+
                             dispatch(new NoDriverFoundNotifyJob($no_driver_request_ids));
                         }
                     } else {
@@ -247,14 +247,14 @@ $query->where('vehicle_type', $type_id);
                         }
 
                         usort($selected_drivers, function($a, $b) {
-                        
+
                         return $a['distance_to_pickup'] <=> $b['distance_to_pickup'];
-                    
+
                         });
                         // Send notification to the very first driver
                         $first_meta_driver = $selected_drivers[0]['driver_id'];
                         $selected_drivers[0]["active"] = 1;
-                        
+
                         // Add first Driver into Firebase Request Meta
                         $this->database->getReference('request-meta/'.$request->id)->set(['driver_id'=>$first_meta_driver,'request_id'=>$request->id,'user_id'=>$request->user_id,'active'=>1,'is_later'=>1,'updated_at'=> Database::SERVER_TIMESTAMP]);
 
@@ -272,9 +272,9 @@ $query->where('vehicle_type', $type_id);
                         $driver = Driver::find($first_meta_driver);
 
                         $notifable_driver = $driver->user;
-                        dispatch(new SendPushNotification($notifable_driver,$title,$body)); 
+                        dispatch(new SendPushNotification($notifable_driver,$title,$body));
 
-                        
+
                         // Form a socket sturcture using users'id and message with event name
                         // $socket_message = structure_for_socket($driver->id, 'driver', $socket_data, 'create_request');
 
@@ -283,12 +283,12 @@ $query->where('vehicle_type', $type_id);
                         // dispatch(new NotifyViaMqtt('create_request_'.$driver->id, json_encode($socket_data), $driver->id));
 
                         create_meta_request:
-                        
+
                         foreach ($selected_drivers as $key => $selected_driver) {
                             $request->requestMeta()->create($selected_driver);
                         }
                     }
-                
+
             } else {
                  $this->info('no-drivers-available');
                     $request->attempt_for_schedule += 1;
