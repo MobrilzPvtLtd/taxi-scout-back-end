@@ -165,6 +165,13 @@ class AdminController extends BaseController
             if (env('APP_FOR')=='demo') {
                 $user_params['company_key'] = '';
             }
+
+            $subscription = Subscription::where('id', $request->package_id)->first();
+
+            if (!$subscription) {
+                return $this->respondBadRequest('The package_id field is required.');
+            }
+
             $user = $this->user->create($user_params);
 
             $user->attachRole(RoleSlug::OWNER);
@@ -175,7 +182,6 @@ class AdminController extends BaseController
 
             // $admin = User::where('id', 1)->first();
             // $userUuid = User::where('id', $user->id)->first();
-            $subscription = Subscription::where('id', $request->package_id)->first();
 
             if ($subscription) {
                 $start_date = $subscription->created_at;
