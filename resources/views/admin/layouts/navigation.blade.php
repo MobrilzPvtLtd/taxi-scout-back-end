@@ -230,6 +230,35 @@
                 </li>
             @endif
 
+            @if (auth()->user()->can('manage-blog') && $app_for !== 'delivery')
+                <li class="treeview {{ 'manage-blog' == $main_menu ? 'active menu-open' : '' }}">
+                    <a href="javascript: void(0);">
+                        <i class="fa fa-paper-plane"></i>
+                        <span> Blogs</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+
+                    <ul class="treeview-menu">
+                        @if (auth()->user()->can('blog-category'))
+                            <li class="{{ 'blog-category' == $main_menu ? 'active menu-open' : '' }}">
+                                <a href="{{ url('/blog-category') }}">
+                                    <i class="fa fa-circle-thin"></i> <span>Blog Category</span>
+                                </a>
+                            </li>
+                        @endif
+                        @if (auth()->user()->can('manage-blog'))
+                            <li class="{{ 'manage-blog' == $main_menu ? 'active menu-open' : '' }}">
+                                <a href="{{ url('/blogs') }}">
+                                    <i class="fa fa-circle-thin"></i> <span>Blogs</span>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
+
             {{-- @if (auth()->user()->can('chat'))
                 <li class="{{ 'chat_module' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/chat') }}">

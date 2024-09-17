@@ -508,6 +508,28 @@ Route::middleware('auth:web')->group(function () {
             Route::get('delete/{order}', 'OrderController@delete');
         });
 
+        // Order Reason CRUD
+        Route::group(['prefix' => 'blogs',  'middleware' => 'permission:manage-blogs'], function () {
+            Route::get('/', 'BlogController@index');
+            Route::get('/fetch', 'BlogController@fetch');
+            Route::get('/create', 'BlogController@create');
+            Route::post('store', 'BlogController@store');
+            Route::get('/{blog}', 'BlogController@getById');
+            Route::post('update/{blog}', 'BlogController@update');
+            Route::get('delete/{blog}', 'BlogController@delete');
+        });
+
+        // Order Reason CRUD
+        Route::group(['prefix' => 'blog-category',  'middleware' => 'permission:blog-category'], function () {
+            Route::get('/', 'BlogCategoryController@index');
+            Route::get('/fetch', 'BlogCategoryController@fetch');
+            Route::get('/create', 'BlogCategoryController@create');
+            Route::post('store', 'BlogCategoryController@store');
+            Route::get('/{blogCategory}', 'BlogCategoryController@getById');
+            Route::post('update/{blogCategory}', 'BlogCategoryController@update');
+            Route::get('delete/{blogCategory}', 'BlogCategoryController@delete');
+        });
+
          // Order Reason CRUD
         Route::group(['prefix' => 'chat',  'middleware' => 'permission:manage-chat'], function () {
             Route::get('/', 'ChatController@index');
