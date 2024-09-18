@@ -19,9 +19,9 @@
     @forelse($results as $key => $result)
         <tr>
             <td>{{ $i++ }} </td>
-            <td>{{ $result->image }}</td>
+            <td><img src="{{ asset('blog/'.$result->image) }}" alt="" width="70px"></td>
             <td>{{ $result->title }}</td>
-            <td>{{ $result->blog_category_id }}</td>
+            <td>{{ $result->category_name }}</td>
             <td>{{ $result->description }}</td>
             @if($result->status == 1)
                 <td><span class="label label-success">Active</span></td>
@@ -29,15 +29,15 @@
                 <td><span class="label label-warning">Inactive</span></td>
             @endif
             <td>
-            @if(auth()->user()->can('edit-blog'))
+            @if(auth()->user()->can('edit-blogs'))
                 <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
                 </button>
                     <div class="dropdown-menu">
-                        @if(auth()->user()->can('edit-blog'))
-                            <a class="dropdown-item" href="{{url('blog',$result->id)}}"><i class="fa fa-pencil"></i>@lang('view_pages.edit')</a>
+                        @if(auth()->user()->can('edit-blogs'))
+                            <a class="dropdown-item" href="{{url('blogs',$result->id)}}"><i class="fa fa-pencil"></i>@lang('view_pages.edit')</a>
                         @endif
-                        @if(auth()->user()->can('delete-blog'))
-                            <a class="dropdown-item sweet-delete" href="{{url('blog/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a>
+                        @if(auth()->user()->can('delete-blogs'))
+                            <a class="dropdown-item sweet-delete" href="{{url('blogs/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a>
                         @endif
                     </div>
                 </div>

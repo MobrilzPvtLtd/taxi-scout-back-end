@@ -68,9 +68,10 @@ class BlogController extends BaseController
         $created_params['user_id'] = auth()->user()->id;
         $created_params['slug'] = Str::slug($created_params['title']);
 
-        if ($uploadedFile = $this->getValidatedUpload('image', $request)) {
-            $created_params['image'] = $this->imageUploader->file($uploadedFile)
-                ->saveDriverProfilePicture();
+        if ($request->hasFile('image')) {
+            $imageName = time().'.'.request()->image->getClientOriginalName();
+            request()->image->move(public_path('blog'), $imageName);
+            $created_params['image'] = $imageName;
         }
 
         $this->blog->create($created_params);
@@ -93,6 +94,15 @@ class BlogController extends BaseController
     public function update(Request $request, Blog $blog)
     {
         $updated_params = $request->all();
+        $updated_params['user_id'] = auth()->user()->id;
+        $updated_params['slug'] = Str::slug($updated_params['title']);
+
+        if ($request->hasFile('image')) {
+            $imageName = time().'.'.request()->image->getClientOriginalName();
+            request()->image->move(public_path('blog'), $imageName);
+            $updated_params['image'] = $imageName;
+        }
+
         $blog->update($updated_params);
 
         $message = trans('succes_messages.blog_updated_succesfully');

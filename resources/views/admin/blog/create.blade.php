@@ -24,7 +24,7 @@
                         </div>
 
                         <div class="col-sm-12">
-                            <form method="post" class="form-horizontal" action="{{ url('blogs/store') }}">
+                            <form method="post" class="form-horizontal" action="{{ url('blogs/store') }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-6">
@@ -52,8 +52,7 @@
                                         <div class="form-group">
                                             <label for="image">Image</label>
                                             <input class="form-control" type="file" id="image"
-                                                name="image" value="{{ old('image') }}"
-                                                required="">{{ $errors->first('image') }}</span>
+                                                name="image" value="{{ old('image') }}">{{ $errors->first('image') }}</span>
                                         </div>
                                     </div>
 
@@ -63,8 +62,8 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <select name="status" id="status" class="form-control">
-                                                <option value="1" {{ old('status') == 1 ? 'selected' : '' }} >Active</option>
-                                                <option value="0" {{ old('status') == 0 ? 'selected' : '' }} >Inactive</option>
+                                                <option value="1">Active</option>
+                                                <option value="0">Inactive</option>
                                             </select>
                                             <span class="text-danger">{{ $errors->first('status') }}</span>
                                         </div>

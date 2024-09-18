@@ -25,26 +25,26 @@
                         </div>
 
                         <div class="col-sm-12">
-                            <form method="post" class="form-horizontal" action="{{ url('blogs/update', $item->id) }}">
+                            <form method="post" class="form-horizontal" action="{{ url('blogs/update', $item->id) }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
-                                            <label for="category_id">Blog Category <span class="text-danger">*</span></label>
-                                            <select name="category_id" id="category_id" class="form-control">
+                                            <label for="blog_category_id">Blog Category <span class="text-danger">*</span></label>
+                                            <select name="blog_category_id" id="blog_category_id" class="form-control">
                                                 <option value="">-- Select a Blog Category -- </option>
                                                 @foreach (App\Models\Admin\BlogCategory::get() as $category)
-                                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }} >{{ $category->category_name }}</option>
+                                                    <option value="{{ $category->id }}" {{ $item->blog_category_id == $category->id ? 'selected' : '' }} >{{ $category->category_name }}</option>
                                                 @endforeach
                                             </select>
-                                            <span class="text-danger">{{ $errors->first('category_id') }}</span>
+                                            <span class="text-danger">{{ $errors->first('blog_category_id') }}</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="title">Title<span class="text-danger">*</span></label>
                                             <input class="form-control" type="text" id="title"
-                                                name="title" value="{{ old('title') }}"
+                                                name="title" value="{{ $item->title }}"
                                                 required="">{{ $errors->first('title') }}</span>
                                         </div>
                                     </div>
@@ -53,8 +53,7 @@
                                         <div class="form-group">
                                             <label for="image">Image</label>
                                             <input class="form-control" type="file" id="image"
-                                                name="image" value="{{ old('image') }}"
-                                                required="">{{ $errors->first('image') }}</span>
+                                                name="image" value="{{ old('image') }}">{{ $errors->first('image') }}</span>
                                         </div>
                                     </div>
 
@@ -64,8 +63,8 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <select name="status" id="status" class="form-control">
-                                                <option value="1" {{ old('status') == 1 ? 'selected' : '' }} >Active</option>
-                                                <option value="0" {{ old('status') == 0 ? 'selected' : '' }} >Inactive</option>
+                                                <option value="1" {{ $item->status == 1 ? 'selected' : '' }} >Active</option>
+                                                <option value="0" {{ $item->status == 0 ? 'selected' : '' }} >Inactive</option>
                                             </select>
                                             <span class="text-danger">{{ $errors->first('status') }}</span>
                                         </div>
@@ -74,7 +73,7 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label for="description">description</label>
-                                            <textarea class="form-control" name="description" id="" rows="5"></textarea>
+                                            <textarea class="form-control" name="description" id="" rows="5">{{ $item->description }}</textarea>
                                         </div>
                                     </div>
                                 </div>
