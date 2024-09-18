@@ -38,6 +38,10 @@ Route::namespace('Common')->group(function () {
 
     // Get all the ServiceLocation.
     Route::get('servicelocation', 'ServiceLocationController@index');
+
+     // List all the blogs.
+     Route::get('blogs', 'BlogController@index');
+     Route::get('blog-details/{slug}', 'BlogController@blogDetails');
 });
 
 Route::namespace('Company')->group(function () {
