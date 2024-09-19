@@ -37,7 +37,12 @@ class ChatController extends BaseController
 
     public function index(QueryFilterContract $queryFilter)
     {
-
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.chat');
 
         $main_menu = 'manage-chat';
@@ -81,6 +86,12 @@ class ChatController extends BaseController
 
     public function getById($id)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.chat');
         $main_menu = 'manage-chat';
         $sub_menu = '';

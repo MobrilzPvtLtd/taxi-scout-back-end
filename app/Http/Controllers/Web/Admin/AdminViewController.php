@@ -64,7 +64,7 @@ class AdminViewController extends BaseController
 
         auth('web')->login($user, true);
 
-        return redirect('dispatch/dashboard');
+            return redirect('dispatch/dashboard');
 
         }
         if($conditional_host[0] =='tagxi-super-delivery-dispatcher'){
@@ -525,7 +525,4 @@ class AdminViewController extends BaseController
 
         return view('admin.admin.services', compact('page', 'main_menu', 'sub_menu'));
     }
-
-
-
 }

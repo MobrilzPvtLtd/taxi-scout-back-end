@@ -39,6 +39,7 @@ use App\Mail\Driver\DriverCreateByCompanyMail;
 use App\Models\Admin\DriverDetail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Admin\DriverVehicleType;
+use App\Models\Admin\Order;
 
 /**
  * @resource Driver
@@ -89,6 +90,12 @@ class DriverController extends BaseController
     */
     public function index()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.drivers');
         $main_menu = 'drivers';
         $sub_menu = 'driver_details';
@@ -101,6 +108,12 @@ class DriverController extends BaseController
     */
     public function getAllDrivers(QueryFilterContract $queryFilter)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         // dd(auth()->user()->owner->owner_unique_id);
         $url = request()->fullUrl(); //get full url
         return cache()->tags('drivers_list')->remember($url, Carbon::parse('10 minutes'), function () use ($queryFilter) {
@@ -132,6 +145,12 @@ class DriverController extends BaseController
     */
     public function create()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.add_driver');
 
         // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
@@ -160,6 +179,12 @@ class DriverController extends BaseController
      */
     public function store(CreateDriverRequest $request)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $created_params = $request->only(['service_location_id','owner_id','name', 'driving_license','mobile','email','address','state','city','gender','car_color','car_number','transport_type','vehicle_type','car_make','car_model']);
         // $created_params['owner_id'] = auth()->user()->admin->id;
         // $created_params['service_location_id'] = $request->service_location_id;
@@ -249,6 +274,12 @@ class DriverController extends BaseController
 
     public function getById(Driver $driver)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.edit_driver');
 
         $services = ServiceLocation::whereActive(true)->get();
@@ -272,6 +303,12 @@ class DriverController extends BaseController
 
     public function update(Driver $driver, UpdateDriverRequest $request)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $updatedParams = $request->only(['service_location_id','name','mobile','email','driving_license','address','state','city','country','gender','car_color','car_number','car_model','car_make','postal_code','vehicle_type','transport_type']);
 
         $validate_exists_email = $this->user->belongsTorole(Role::DRIVER)->where('email', $request->email)->where('id', '!=', $driver->user_id)->exists();
@@ -346,6 +383,12 @@ class DriverController extends BaseController
 
     public function toggleStatus(Driver $driver)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $status = $driver->active == 1 ? 0 : 1;
         $driver->update([
             'active' => $status
@@ -356,6 +399,12 @@ class DriverController extends BaseController
     }
    public function toggleApprove(Driver $driver)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $status = $driver->approve == 1 ? 0 : 1;
         // dd($status);
 
@@ -404,6 +453,12 @@ class DriverController extends BaseController
 
     public function toggleAvailable(Driver $driver)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $status = $driver->available == 1 ? 0 : 1;
         $driver->update([
             'available' => $status
@@ -415,6 +470,12 @@ class DriverController extends BaseController
 
     public function delete(Driver $driver)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $driver->delete();
 
         $message = trans('succes_messages.driver_deleted_succesfully');

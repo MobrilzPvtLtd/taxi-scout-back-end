@@ -502,7 +502,10 @@ Route::middleware('auth:web')->group(function () {
             Route::get('/', 'OrderController@index');
             Route::get('/fetch', 'OrderController@fetch');
             Route::get('/create', 'OrderController@create');
+            Route::get('/invoice/{order}', 'OrderController@invoice');
+            Route::get('/package-show', 'OrderController@packageShow');
             Route::post('store', 'OrderController@store');
+            Route::post('package-upgrade', 'OrderController@packageUpgrade');
             Route::get('/{order}', 'OrderController@getById');
             Route::post('update/{order}', 'OrderController@update');
             Route::get('delete/{order}', 'OrderController@delete');

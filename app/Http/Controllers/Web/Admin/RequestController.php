@@ -9,11 +9,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Request\Request as RequestRequest;
 use Illuminate\Http\Request;
 use App\Base\Constants\Auth\Role as RoleSlug;
+use App\Models\Admin\Order;
 
 class RequestController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.request');
         $main_menu = 'trip-request';
         $sub_menu = 'request';
@@ -23,6 +30,12 @@ class RequestController extends Controller
 
     public function indexDelivery()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.delivery_request');
         $main_menu = 'delivery-trip-request';
         $sub_menu = 'delivery-request';
@@ -33,6 +46,12 @@ class RequestController extends Controller
 
     public function getAllRequest(QueryFilterContract $queryFilter)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         // $query = RequestRequest::companyKey()->where('transport_type','taxi');
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
             $query = RequestRequest::where('transport_type','taxi');
@@ -47,6 +66,12 @@ class RequestController extends Controller
 
     public function getAllDeliveryRequest(QueryFilterContract $queryFilter)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
             $query = RequestRequest::companyKey()->where('transport_type','delivery');
         }else{
@@ -80,7 +105,13 @@ class RequestController extends Controller
         return $request;
     }
 
-     public function requestDetailedView(RequestRequest $request){
+    public function requestDetailedView(RequestRequest $request){
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $item = $request;
         $page = trans('pages_names.request');
          $main_menu = 'trip-request';
@@ -91,6 +122,12 @@ class RequestController extends Controller
 
      public function indexScheduled()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.request');
         $main_menu = 'trip-request';
         $sub_menu = 'scheduled-rides';
@@ -101,6 +138,12 @@ class RequestController extends Controller
 
     public function indexScheduledDelivery()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.delivery_request');
         $main_menu = 'delivery-trip-request';
         $sub_menu = 'scheduled-rides';
@@ -137,7 +180,12 @@ class RequestController extends Controller
      *
      * */
     public function viewCustomerInvoice(RequestRequest $request_detail){
-
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $data = $request_detail;
 
         return view('email.invoice',compact('data'));
@@ -148,7 +196,12 @@ class RequestController extends Controller
      *
      * */
     public function viewDriverInvoice(RequestRequest $request_detail){
-
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $data = $request_detail;
 
         return view('email.driver_invoice',compact('data'));
@@ -156,6 +209,12 @@ class RequestController extends Controller
     }
     public function getCancelledRequest(RequestRequest $request)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.request');
         $main_menu = 'cancelled-request';
         $sub_menu = 'request';

@@ -7,9 +7,9 @@
             <th> @lang('view_pages.start_date')</th>
             <th> End Date</th>
             <th> @lang('view_pages.status')</th>
-            @if(auth()->user()->can('edit-order'))
+            {{-- @if(auth()->user()->can('edit-order')) --}}
                 <th> @lang('view_pages.action')</th>
-            @endif
+            {{-- @endif --}}
         </tr>
     </thead>
 
@@ -33,6 +33,13 @@
                 <td><span class="label label-warning">@lang('view_pages.inactive')</span></td>
             @endif
             <td>
+            @if(access()->hasRole(App\Base\Constants\Auth\Role::OWNER))
+            @if ($result->active == 2)
+                <a href="{{url('order/invoice',$result->id)}}" class="btn btn-primary btn-sm">Renew</a>
+            @else
+                <a href="{{url('order',$result->id)}}" class="btn btn-primary btn-sm">Upgrade</a>
+            @endif
+            @endif
             @if(auth()->user()->can('edit-order'))
                 <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('view_pages.action')
                 </button>

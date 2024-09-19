@@ -205,7 +205,7 @@ td {
                                 <th>@lang('view_pages.price')</th>
                             </tr>
                         </thead>
-@if($item->is_bid_ride == false)
+                        @if($item->is_bid_ride == false)
 
                         @php
                         $requestBill = collect($item->requestBill->toArray());
@@ -241,7 +241,7 @@ td {
 
                         </tbody>
 
-@else
+                        @else
                         @php
                         $requestBill = collect($item->requestBill->toArray());
                         $bill =
@@ -263,7 +263,7 @@ td {
 
                         </tbody>
 
-@endif
+                    @endif
                     </table>
                 </div>
             </div>

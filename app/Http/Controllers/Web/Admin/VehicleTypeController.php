@@ -19,6 +19,7 @@ use App\Models\Admin\AdminDetail;
 use App\Models\Admin\Owner;
 use App\Models\Master\CarMake;
 use App\Models\Master\CarModel;
+use App\Models\Admin\Order;
 
 /**
  * @resource Vechicle-Types
@@ -51,6 +52,13 @@ class VehicleTypeController extends BaseController
     */
     public function index()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
+
         $page = trans('pages_names.types');
         $main_menu = 'types';
         $sub_menu = '';
@@ -59,6 +67,13 @@ class VehicleTypeController extends BaseController
 
     public function getAllTypes(QueryFilterContract $queryFilter)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
+
         $url = request()->fullUrl(); //get full url
         return cache()->tags('vehilce_types')->remember($url, Carbon::parse('10 minutes'), function () use ($queryFilter,$url) {
             if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
@@ -88,6 +103,12 @@ class VehicleTypeController extends BaseController
     */
     public function create()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.add_type');
         // $services = ServiceLocation::whereActive(true)->get();
         $main_menu = 'types';
@@ -113,6 +134,12 @@ class VehicleTypeController extends BaseController
      */
     public function store(CreateVehicleTypeRequest $request)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         //  if (env('APP_FOR')=='demo') {
         //     $message = trans('succes_messages.you_are_not_authorised');
 
@@ -163,6 +190,12 @@ class VehicleTypeController extends BaseController
     */
     public function edit($id)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.edit_type');
         $type = $this->vehicle_type->where('id', $id)->first();
         // $admins = User::doesNotBelongToRole(RoleSlug::SUPER_ADMIN)->get();
@@ -200,6 +233,12 @@ class VehicleTypeController extends BaseController
      */
     public function update(UpdateVehicleTypeRequest $request, VehicleType $vehicle_type)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
 
         if (env('APP_FOR')=='demo') {
             $message = trans('succes_messages.you_are_not_authorised');
@@ -253,6 +292,13 @@ class VehicleTypeController extends BaseController
     }
     public function toggleStatus(VehicleType $vehicle_type)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
+
         if (env('APP_FOR')=='demo') {
             $message = trans('succes_messages.you_are_not_authorised');
 
@@ -281,6 +327,12 @@ class VehicleTypeController extends BaseController
 
     public function delete(VehicleType $vehicle_type)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         if (env('APP_FOR')=='demo') {
             $message = trans('succes_messages.you_are_not_authorised');
 

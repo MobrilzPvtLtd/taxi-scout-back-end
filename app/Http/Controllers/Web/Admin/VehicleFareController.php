@@ -15,11 +15,18 @@ use App\Models\Admin\ZoneTypePrice;
 use Illuminate\Http\Request;
 use App\Base\Constants\Auth\Role as RoleSlug;
 use App\Models\Admin\Owner;
+use App\Models\Admin\Order;
 
 class VehicleFareController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.vehicle-fare');
         $main_menu = 'vehicle-fare';
         $sub_menu = '';
@@ -29,6 +36,12 @@ class VehicleFareController extends Controller
 
     public function fetchFareList(QueryFilterContract $queryFilter)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         // dd($queryFilter);
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
             $query = ZoneTypePrice::latest();
@@ -43,6 +56,12 @@ class VehicleFareController extends Controller
 
     public function create()
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $zones = Zone::active()->get();
 
         // dd($zones);
@@ -93,6 +112,12 @@ class VehicleFareController extends Controller
 
     public function store(AssignZoneTypeRequest $request)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $zone  = Zone::whereId($request->zone)->first();
         $payment = implode(',', $request->payment_type);
         // To save default type
@@ -143,6 +168,12 @@ class VehicleFareController extends Controller
 
     public function getById(ZoneTypePrice $zone_price)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         // dd($zone_price);
         $page = trans('pages_names.edit_vehicle_fare');
         $main_menu = 'vehicle-fare';
@@ -159,6 +190,12 @@ class VehicleFareController extends Controller
 
     public function update(Request $request,ZoneTypePrice $zone_price)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $zone_price->zoneType()->update([
             'type_id' => $request->type,
             'payment_type' => implode(',', $request->payment_type),
@@ -213,19 +250,13 @@ class VehicleFareController extends Controller
         $message = trans('succes_messages.vehicle_fare_deleted_succesfully');
 
         return $message;
-
-
     }
 
 
     public function getTransportTypes(Request $request)
     {
-
         // $type = ['taxi','delivery','both'];
         $type = ['taxi'];
-
         return $type;
     }
-
-
 }

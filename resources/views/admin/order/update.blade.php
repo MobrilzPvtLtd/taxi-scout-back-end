@@ -25,7 +25,6 @@
                         </div>
 
                         <div class="col-sm-12">
-
                             <form method="post" class="form-horizontal" action="{{ url('order/update', $item->id) }}">
                                 @csrf
                                 <div class="row">
@@ -40,20 +39,21 @@
                                             <span class="text-danger">{{ $errors->first('package_name') }}</span>
                                         </div>
                                     </div>
+                                    @if(!access()->hasRole(App\Base\Constants\Auth\Role::OWNER))
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="user_id">Users <span class="text-danger">*</span></label>
                                             <select name="user_id" id="user_id" class="form-control">
-                                                @foreach (App\Models\Admin\AdminDetail::whereHas('user')->get() as $user)
+                                                @foreach (App\Models\Admin\Owner::whereHas('user')->get() as $user)
                                                     <option value="{{ $user->user_id }}" {{ $user->user->id == $item->user_id ? 'selected' : '' }} >{{ $user->user->name }}</option>
                                                 @endforeach
                                             </select>
                                             <span class="text-danger">{{ $errors->first('user_id') }}</span>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
+                                    @else
+                                    <input type="hidden" value="{{ auth()->user()->id }}" name="user_id">
+                                    @endif
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="start_date">@lang('view_pages.start_date') </label>

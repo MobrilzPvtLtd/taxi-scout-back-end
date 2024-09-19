@@ -6,11 +6,15 @@
         $main_menu = 'settings';
         $sub_menu = 'translations';
     }
+    $packageExpiryDate = [];
     if (access()->hasRole(App\Base\Constants\Auth\Role::OWNER)) {
         $owner = auth()->user()->owner->owner_unique_id;
         $drivers = App\Models\Admin\Driver::where('owner_id', $owner)->orderBy('created_at', 'asc')->get();
         $driverIds = $drivers->pluck('user_id')->toArray();
         $total_chat = App\Models\ChatMessage::whereIn('sender_id', $driverIds)->where('seen_count', 0)->count();
+
+        $packageExpiryDate = App\Models\Admin\Order::where('user_id', auth()->user()->id)
+                    ->where('active', 2)->first();
     }
 
 @endphp
@@ -19,12 +23,14 @@
     <section class="sidebar">
         <!-- sidebar menu-->
         <ul class="sidebar-menu" data-widget="tree">
+            @if (!$packageExpiryDate)
             @if (auth()->user()->can('access-dashboard'))
                 <li class="{{ 'dashboard' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/dashboard') }}">
                         <i class="fa fa-tachometer"></i> <span>@lang('pages_names.dashboard')</span>
                     </a>
                 </li>
+            @endif
             @endif
 
             @if (auth()->user()->can('service_location'))
@@ -75,13 +81,14 @@
                     </a>
                 </li>
             @endif
-
+            @if (!$packageExpiryDate)
             @if (auth()->user()->can('view-vehicle-types'))
                 <li class="{{ 'types' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/types') }}">
                         <i class="fa fa-taxi "></i> <span>@lang('pages_names.types')</span>
                     </a>
                 </li>
+            @endif
             @endif
 
             @if (auth()->user()->can('drivers-menu'))
@@ -97,12 +104,14 @@
 
 
                 <li class="treeview {{ 'drivers' == $main_menu ? 'active menu-open' : '' }}">
-                    @if (auth()->user()->hasRole('owner'))
-                        @if (auth()->user()->can('view-drivers'))
-                            <li class="{{ 'driver_details' == $sub_menu ? 'active' : '' }}">
-                                <a href="{{ url($route) }}"><i
-                                        class="fa fa-users"></i>@lang('pages_names.drivers')</a>
-                            </li>
+                    @if (!$packageExpiryDate)
+                        @if (auth()->user()->hasRole('owner'))
+                            @if (auth()->user()->can('view-drivers'))
+                                <li class="{{ 'driver_details' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url($route) }}"><i
+                                            class="fa fa-users"></i>@lang('pages_names.drivers')</a>
+                                </li>
+                            @endif
                         @endif
                     @endif
                     @if (!auth()->user()->hasRole('owner'))
@@ -162,56 +171,59 @@
                 </li>
             @endif
 
-            @if (auth()->user()->can('view-requests') && $app_for !== 'delivery')
-                <li class="treeview {{ 'trip-request' == $main_menu ? 'active menu-open' : '' }}">
-                    <a href="javascript: void(0);">
-                        <i class="fa fa-book"></i>
-                        <span> Bookings</span>
-                        <span class="pull-right-container">
-                            <i class="fa fa-angle-right pull-right"></i>
-                        </span>
-                    </a>
+            @if (!$packageExpiryDate)
+                @if (auth()->user()->can('view-requests') && $app_for !== 'delivery')
+                    <li class="treeview {{ 'trip-request' == $main_menu ? 'active menu-open' : '' }}">
+                        <a href="javascript: void(0);">
+                            <i class="fa fa-book"></i>
+                            <span> Bookings</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-right pull-right"></i>
+                            </span>
+                        </a>
 
-                    <ul class="treeview-menu">
-                        @if (auth()->user()->can('view-rides'))
-                            <li class="{{ 'request' == $sub_menu ? 'active' : '' }}">
-                                <a href="{{ url('/requests') }}">
-                                    <i class="fa fa-circle-thin"></i> <span>@lang('pages_names.rides')</span>
-                                </a>
-                            </li>
-                        @endif
-                        @if (auth()->user()->can('scheduled-rides'))
-                            <li class="{{ 'scheduled-rides' == $sub_menu ? 'active' : '' }}">
-                                <a href="{{ url('/scheduled-rides') }}">
-                                    <i class="fa fa-circle-thin"></i> <span>@lang('pages_names.scheduled_rides')</span>
-                                </a>
-                            </li>
-                        @endif
-                        {{-- @if (auth()->user()->can('out-station-rides'))
-                            <li class="{{ 'out-station-rides' == $sub_menu ? 'active' : '' }}">
-                                <a href="{{ url('/out-station-rides') }}">
-                                    <i class="fa fa-circle-thin"></i> <span>@lang('pages_names.out_station_rides')</span>
-                                </a>
-                            </li>
-                        @endif --}}
+                        <ul class="treeview-menu">
+                            @if (auth()->user()->can('view-rides'))
+                                <li class="{{ 'request' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url('/requests') }}">
+                                        <i class="fa fa-circle-thin"></i> <span>@lang('pages_names.rides')</span>
+                                    </a>
+                                </li>
+                            @endif
+                            @if (auth()->user()->can('scheduled-rides'))
+                                <li class="{{ 'scheduled-rides' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url('/scheduled-rides') }}">
+                                        <i class="fa fa-circle-thin"></i> <span>@lang('pages_names.scheduled_rides')</span>
+                                    </a>
+                                </li>
+                            @endif
+                            {{-- @if (auth()->user()->can('out-station-rides'))
+                                <li class="{{ 'out-station-rides' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url('/out-station-rides') }}">
+                                        <i class="fa fa-circle-thin"></i> <span>@lang('pages_names.out_station_rides')</span>
+                                    </a>
+                                </li>
+                            @endif --}}
 
-                        @if (auth()->user()->can('cancellation-rides'))
-                            <li class="{{ 'cancellation-rides' == $sub_menu ? 'active' : '' }}">
-                                <a href="{{ url('/cancellation-rides') }}">
-                                    <i class="fa fa-circle-thin"></i> <span>@lang('pages_names.cancellation_rides')</span>
-                                </a>
-                            </li>
-                        @endif
+                            @if (auth()->user()->can('cancellation-rides'))
+                                <li class="{{ 'cancellation-rides' == $sub_menu ? 'active' : '' }}">
+                                    <a href="{{ url('/cancellation-rides') }}">
+                                        <i class="fa fa-circle-thin"></i> <span>@lang('pages_names.cancellation_rides')</span>
+                                    </a>
+                                </li>
+                            @endif
 
-                    </ul>
-                </li>
+                        </ul>
+                    </li>
+                @endif
             @endif
 
-
-            @if (auth()->user()->can('vehicle-fare'))
-                <li class="{{ 'vehicle-fare' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/vehicle_fare') }}"><i class="fa fa-money"></i>@lang('pages_names.set_price')</a>
-                </li>
+            @if (!$packageExpiryDate)
+                @if (auth()->user()->can('vehicle-fare'))
+                    <li class="{{ 'vehicle-fare' == $main_menu ? 'active' : '' }}">
+                        <a href="{{ url('/vehicle_fare') }}"><i class="fa fa-money"></i>@lang('pages_names.set_price')</a>
+                    </li>
+                @endif
             @endif
 
 
@@ -222,6 +234,7 @@
                     </a>
                 </li>
             @endif
+            {{-- @if (!$packageExpiryDate) --}}
             @if (auth()->user()->can('manage-order'))
                 <li class="{{ 'manage-order' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/order') }}">
@@ -229,6 +242,7 @@
                     </a>
                 </li>
             @endif
+            {{-- @endif --}}
 
             @if (auth()->user()->can('manage-blog') && $app_for !== 'delivery')
                 <li class="treeview {{ 'manage-blog' == $main_menu ? 'active menu-open' : '' }}">
@@ -266,7 +280,7 @@
                     </a>
                 </li>
             @endif --}}
-
+            @if (!$packageExpiryDate)
             @if (access()->hasRole(App\Base\Constants\Auth\Role::OWNER))
                 @if (auth()->user()->can('manage-chat'))
                     <li class="{{ 'manage-chat' == $main_menu ? 'active' : '' }}">
@@ -280,6 +294,7 @@
                         </a>
                     </li>
                 @endif
+            @endif
             @endif
 
             @if (auth()->user()->can('user-menu'))

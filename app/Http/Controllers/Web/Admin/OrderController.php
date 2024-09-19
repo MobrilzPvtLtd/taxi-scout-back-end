@@ -9,8 +9,11 @@ use App\Http\Controllers\Web\BaseController;
 use App\Http\Requests\Admin\Order\CreateOrderRequest;
 use App\Http\Requests\Admin\Order\UpdateOrderRequest;
 use App\Base\Constants\Auth\Role as RoleSlug;
+use App\Models\Admin\Invoice;
 use App\Models\Admin\Order;
+use App\Models\Admin\Subscription;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class OrderController extends BaseController
 {
@@ -72,6 +75,12 @@ class OrderController extends BaseController
 
     public function getById(Order $order)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         $page = trans('pages_names.edit_order');
         $main_menu = 'manage-order';
         $sub_menu = '';
@@ -97,4 +106,53 @@ class OrderController extends BaseController
         $message = trans('succes_messages.order_deleted_succesfully');
         return redirect('order')->with('success', $message);
     }
+
+    public function invoice(Order $order)
+    {
+        $page = trans('pages_names.edit_order');
+        $main_menu = 'manage-order';
+        $sub_menu = '';
+        $item = $order;
+
+        return view('admin.order.invoice', compact('item', 'page', 'main_menu', 'sub_menu'));
+    }
+
+    public function packageShow(Request $request)
+    {
+        $package = Subscription::where('id', $request->package_id)->first();
+        // dd($package);
+        return response()->json($package);
+    }
+
+    public function packageUpgrade(Request $request)
+    {
+        $invoice = new Invoice();
+        $invoice->user_id = auth()->user()->id;
+        $invoice->order_id = $request->order_id;
+        $invoice->transaction_id = $request->transaction_id;
+        $invoice->amount = $request->package_amount;
+        $invoice->description = $request->description;
+        $invoice->payment_method = $request->payment_method;
+        $invoice->status = "paid";
+        $invoice->save();
+
+        $subscription = Subscription::where('id', $request->package_id)->first();
+
+        if ($subscription) {
+            $start_date = Carbon::now();
+            $end_date = (clone $start_date)->addDays($subscription->validity);
+        }
+
+        $order = $this->order->where('id', $invoice->order_id)->first();
+        $order->active = 1;
+        $order->package_id = $request->package_id;
+        $order->start_date = $start_date;
+        $order->end_date = $end_date;
+        $order->save();
+
+        $message = trans('succes_messages.order_updated_succesfully');
+
+        return redirect('order')->with('success', $message);
+    }
+
 }

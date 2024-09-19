@@ -18,11 +18,18 @@ use App\Models\Admin\AdminDetail;
 use App\Models\Admin\Owner;
 use App\Models\Admin\VehicleType;
 use App\Models\Request\RequestPlace;
+use App\Models\Admin\Order;
 
 class DashboardController extends BaseController
 {
     public function dashboard(Request $request)
     {
+        if (auth()->user()->hasRole('owner')) {
+            $packageExpiryDate = Order::where('user_id', auth()->user()->id)->where('active', 2)->first();
+            if($packageExpiryDate){
+                return redirect('/order');
+            }
+        }
         if(!Session::get('applocale')){
             Session::put('applocale', 'en');
         }
