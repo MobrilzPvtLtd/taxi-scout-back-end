@@ -35,7 +35,16 @@
             <td>
             @if(access()->hasRole(App\Base\Constants\Auth\Role::OWNER))
             @if ($result->active == 2)
-                <a href="{{url('order/upgrade',$result->id)}}" class="btn btn-primary btn-sm">Renew</a>
+                <form method="post" action="{{ url('order/package-upgrade') }}">
+                    @csrf
+                    <input type="hidden" name="order_id" value="{{ $result->id }}">
+                    <input type="hidden" name="package_id" value="{{ $result->package_id }}">
+                    <input type="hidden" value="Renew" name="description" id="description" class="form-control">
+                    <input type="hidden" value="{{ $result->subscription->amount }}" name="package_amount" id="package_amount" class="form-control">
+
+                    <button class="btn btn-primary btn-sm" type="submit">Renew</button>
+                </form>
+                {{-- <a href="{{url('order/upgrade',$result->id)}}" class="btn btn-primary btn-sm">Renew</a> --}}
             @else
                 <a href="{{url('order/upgrade',$result->id)}}" class="btn btn-primary btn-sm">Upgrade</a>
             @endif

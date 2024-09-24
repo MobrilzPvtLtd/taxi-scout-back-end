@@ -513,11 +513,12 @@ Route::middleware('auth:web')->group(function () {
             Route::get('/{order}', 'OrderController@getById');
             Route::post('update/{order}', 'OrderController@update');
             Route::get('delete/{order}', 'OrderController@delete');
+
+            Route::post('/paypal/payment', [PayPalController::class, 'createPayment'])->name('paypal.payment');
+            Route::get('/paypal/success', [PayPalController::class, 'paymentSuccess'])->name('payment.success');
+            Route::get('/paypal/cancel', [PayPalController::class, 'paymentCancel'])->name('payment.cancel');
         });
 
-        Route::post('/paypal/payment', [PayPalController::class, 'createPayment'])->name('paypal.payment');
-        Route::get('/paypal/success', [PayPalController::class, 'paymentSuccess'])->name('payment.success');
-        Route::get('/paypal/cancel', [PayPalController::class, 'paymentCancel'])->name('payment.cancel');
 
 
         // Order Reason CRUD

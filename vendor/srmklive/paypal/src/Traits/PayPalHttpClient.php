@@ -211,7 +211,6 @@ trait PayPalHttpClient
 
             // Perform PayPal HTTP API request.
             $response = $this->makeHttpRequest();
-
             return ($decode === false) ? $response->getContents() : Utils::jsonDecode($response, true);
         } catch (RuntimeException $t) {
             $error = ($decode === false) || (Str::isJson($t->getMessage()) === false) ? $t->getMessage() : Utils::jsonDecode($t->getMessage(), true);

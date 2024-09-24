@@ -68,6 +68,7 @@ trait Helpers
     {
         $body = [
             'plan_id'    => $this->billing_plan['id'],
+            'options' => ['startImmediately' => true],
             'quantity'   => 1,
             'subscriber' => [
                 'name'          => [
@@ -78,7 +79,7 @@ trait Helpers
         ];
 
         if (!empty($start_date)) {
-            $body['start_time'] = Carbon::parse($start_date)->toIso8601String();
+            // $body['start_time'] = Carbon::parse($start_date)->toIso8601String();
         }
 
         if ($this->has_setup_fee) {
@@ -112,7 +113,6 @@ trait Helpers
         unset($this->trial_pricing);
         unset($this->return_url);
         unset($this->cancel_url);
-
         return $subscription;
     }
 

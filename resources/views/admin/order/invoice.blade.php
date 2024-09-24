@@ -53,7 +53,7 @@
                                                     @if($result->status == "paid")
                                                         <td><span class="label label-success">Paid</span></td>
                                                     @else
-                                                        <td><span class="label label-warning">Unpaid</span></td>
+                                                        <td><span class="label label-danger">Unpaid</span></td>
                                                     @endif
                                                     <td>{{ $result->payment_method }}</td>
                                                 </tr>

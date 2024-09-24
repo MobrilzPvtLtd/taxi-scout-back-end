@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Invoice;
+use App\Models\Admin\Order;
+use App\Models\Admin\Subscription;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
@@ -63,27 +66,50 @@ class PayPalController extends Controller
         $provider->getAccessToken();
 
         $response = $provider->showSubscriptionDetails($subscriptionId);
+
+        // dd($response);
         if (is_array($response)) {
 
             if (isset($response['status']) && $response['status'] === 'ACTIVE') {
                 $invoice = Invoice::find($request->invoice_id);
-                $invoice->transaction_id = $subscriptionId;
+                $invoice->transaction_id = md5($subscriptionId);
+                $invoice->subscription_id = $subscriptionId;
                 $invoice->payment_method = "paypal";
                 $invoice->status = "paid";
                 $invoice->save();
 
+                if($subscriptionId != $invoice->subscription_id){
+                    $subscription = Subscription::where('id', $invoice->package_id)->first();
+                    if ($subscription) {
+                        $start_date = Carbon::now();
+                        $end_date = (clone $start_date)->addDays($subscription->validity);
+                    }
+
+                    $order = Order::where('id', $invoice->order_id)->first();
+                    $order->active = 1;
+                    $order->package_id = $invoice->package_id;
+                    $order->start_date = $start_date;
+                    $order->end_date = $end_date;
+                    $order->save();
+                }
+
                 return view('admin.order.payment-success', compact('response', 'invoice', 'page', 'main_menu', 'sub_menu'));
-                // ['subscription' => $response,'invoice_id' => $request->invoice_id, 'main_menu ' => $main_menu]);
             } else {
-                return view('payment.failure', ['message' => 'Subscription is not active.']);
+                return redirect()->route('payment.cancel');
+
             }
         }
 
-        return view('payment.failure', ['message' => 'Failed to retrieve subscription details.']);
+        return redirect()->route('payment.cancel');
     }
 
     public function paymentCancel()
     {
-        return "Payment canceled!";
+        $page = trans('pages_names.edit_order');
+        $main_menu = 'manage-order';
+        $sub_menu = '';
+
+        $message = "Payment canceled!";
+        return view('admin.order.payment-failure', compact('message','page', 'main_menu', 'sub_menu'));
     }
 }

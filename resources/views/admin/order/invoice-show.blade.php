@@ -27,8 +27,8 @@
                                 @csrf
                                 <input type="hidden" name="invoice_id" value="{{ $item->id }}">
                                 <input type="hidden" name="trial_days" value="{{ $item->subscription->validity }}">
-                                <input type="hidden" name="end_date" value="{{ $item->order->end_date }}">
                                 <input type="hidden" name="start_date" value="{{ $item->order->start_date }}">
+                                <input type="hidden" name="end_date" value="{{ $item->order->end_date }}">
 
                                 <div class="row">
                                     <div class="col-12">
@@ -42,12 +42,12 @@
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <input type="hidden" value="{{ $item->subscription->package_name }}" name="description" id="description" class="form-control">
-                                                        <span id="descriptionText">{{ $item->subscription->package_name }}</span>
+                                                        <input type="hidden" value="{{ $item->description }}" name="description" id="description" class="form-control">
+                                                        <span id="descriptionText">{{ $item->description }}</span>
                                                     </td>
                                                     <td>
-                                                        <input type="hidden" value="{{ $item->subscription->amount }}" name="amount" id="amount" class="form-control">
-                                                        <span id="packageAmountText">$ {{ $item->subscription->amount }}</span>
+                                                        <input type="hidden" value="{{ $item->amount }}" name="amount" id="amount" class="form-control">
+                                                        <span id="packageAmountText">$ {{ $item->amount }}</span>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -59,7 +59,7 @@
                                         <label for="payment_method">Payment Method<span class="text-danger">*</span></label>
                                         <select name="payment_method" id="payment_method" class="form-control" required>
                                             <option value="">-- Select a Payment Method --</option>
-                                            <option value="paypal">Paypal</option>
+                                            <option value="paypal" selected>Paypal</option>
                                         </select>
                                         <span class="text-danger">{{ $errors->first('payment_method') }}</span>
                                     </div>

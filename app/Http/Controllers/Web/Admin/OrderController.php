@@ -127,19 +127,6 @@ class OrderController extends BaseController
 
     public function packageUpgrade(Request $request)
     {
-        $subscription = Subscription::where('id', $request->package_id)->first();
-        if ($subscription) {
-            $start_date = Carbon::now();
-            $end_date = (clone $start_date)->addDays($subscription->validity);
-        }
-
-        $order = $this->order->where('id', $request->order_id)->first();
-        $order->active = 1;
-        $order->package_id = $request->package_id;
-        $order->start_date = $start_date;
-        $order->end_date = $end_date;
-        $order->save();
-
         $invoice = new Invoice();
         $invoice->user_id = auth()->user()->id;
         $invoice->order_id = $request->order_id;
@@ -150,8 +137,6 @@ class OrderController extends BaseController
         $invoice->payment_method = $request->payment_method;
         $invoice->status = "unpaid";
         $invoice->save();
-
-        // $message = trans('succes_messages.order_updated_succesfully');
 
         return redirect()->route('order.invoice', $invoice->id);
     }
