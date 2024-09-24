@@ -17,6 +17,7 @@ class CreateInvoicesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('order_id')->nullable();
+            $table->unsignedBigInteger('package_id')->nullable();
             $table->string('transaction_id')->nullable();
             $table->double('amount', 10, 2)->default(0);
             $table->text('description')->nullable();

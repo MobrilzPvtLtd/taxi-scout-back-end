@@ -184,8 +184,8 @@ class AdminController extends BaseController
             // $userUuid = User::where('id', $user->id)->first();
 
             if ($subscription) {
-                $start_date = $subscription->created_at;
-                $end_date = $start_date->clone()->addDays(30);
+                $start_date = Carbon::now();
+                $end_date = $start_date->clone()->addDays($subscription->validity);
             }
 
             // $adminDetail = AdminDetail::where('user_id', $user->id)->first();

@@ -238,7 +238,12 @@
             @if (auth()->user()->can('manage-order'))
                 <li class="{{ 'manage-order' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/order') }}">
-                        <i class="fa fa-first-order"></i> <span>Package Order</span>
+                        <i class="fa fa-first-order"></i> <span>All Orders</span>
+                    </a>
+                </li>
+                <li class="{{ 'invoice' == $main_menu ? 'active' : '' }}">
+                    <a href="{{ route('invoice') }}">
+                        <i class="fa fa-first-order"></i> <span>Invoices</span>
                     </a>
                 </li>
             @endif

@@ -107,14 +107,15 @@ class OrderController extends BaseController
         return redirect('order')->with('success', $message);
     }
 
-    public function invoice(Order $order)
+    public function upgrade(Request $request, Order $order)
     {
         $page = trans('pages_names.edit_order');
         $main_menu = 'manage-order';
         $sub_menu = '';
+
         $item = $order;
 
-        return view('admin.order.invoice', compact('item', 'page', 'main_menu', 'sub_menu'));
+        return view('admin.order.upgrade', compact('item', 'page', 'main_menu', 'sub_menu'));
     }
 
     public function packageShow(Request $request)
@@ -126,33 +127,58 @@ class OrderController extends BaseController
 
     public function packageUpgrade(Request $request)
     {
-        $invoice = new Invoice();
-        $invoice->user_id = auth()->user()->id;
-        $invoice->order_id = $request->order_id;
-        $invoice->transaction_id = $request->transaction_id;
-        $invoice->amount = $request->package_amount;
-        $invoice->description = $request->description;
-        $invoice->payment_method = $request->payment_method;
-        $invoice->status = "paid";
-        $invoice->save();
-
         $subscription = Subscription::where('id', $request->package_id)->first();
-
         if ($subscription) {
             $start_date = Carbon::now();
             $end_date = (clone $start_date)->addDays($subscription->validity);
         }
 
-        $order = $this->order->where('id', $invoice->order_id)->first();
+        $order = $this->order->where('id', $request->order_id)->first();
         $order->active = 1;
         $order->package_id = $request->package_id;
         $order->start_date = $start_date;
         $order->end_date = $end_date;
         $order->save();
 
-        $message = trans('succes_messages.order_updated_succesfully');
+        $invoice = new Invoice();
+        $invoice->user_id = auth()->user()->id;
+        $invoice->order_id = $request->order_id;
+        $invoice->package_id = $request->package_id;
+        $invoice->transaction_id = $request->transaction_id;
+        $invoice->amount = $request->package_amount;
+        $invoice->description = $request->description;
+        $invoice->payment_method = $request->payment_method;
+        $invoice->status = "unpaid";
+        $invoice->save();
 
-        return redirect('order')->with('success', $message);
+        // $message = trans('succes_messages.order_updated_succesfully');
+
+        return redirect()->route('order.invoice', $invoice->id);
+    }
+
+    public function invoice(Request $request)
+    {
+        $page = trans('pages_names.edit_order');
+        $main_menu = 'invoice';
+        $sub_menu = '';
+
+        if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
+            $invoices = Invoice::get();
+        } else {
+            $invoices = Invoice::where('user_id', auth()->user()->id)->get();
+        }
+
+        return view('admin.order.invoice', compact('invoices', 'page', 'main_menu', 'sub_menu'));
+    }
+
+    public function orderInvoice(Request $request, $id)
+    {
+        $page = trans('pages_names.edit_order');
+        $main_menu = 'manage-order';
+        $sub_menu = '';
+
+        $item = Invoice::find($id);
+        return view('admin.order.invoice-show', compact('item', 'page', 'main_menu', 'sub_menu'));
     }
 
 }

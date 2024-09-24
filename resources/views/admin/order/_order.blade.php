@@ -35,9 +35,9 @@
             <td>
             @if(access()->hasRole(App\Base\Constants\Auth\Role::OWNER))
             @if ($result->active == 2)
-                <a href="{{url('order/invoice',$result->id)}}" class="btn btn-primary btn-sm">Renew</a>
+                <a href="{{url('order/upgrade',$result->id)}}" class="btn btn-primary btn-sm">Renew</a>
             @else
-                <a href="{{url('order',$result->id)}}" class="btn btn-primary btn-sm">Upgrade</a>
+                <a href="{{url('order/upgrade',$result->id)}}" class="btn btn-primary btn-sm">Upgrade</a>
             @endif
             @endif
             @if(auth()->user()->can('edit-order'))

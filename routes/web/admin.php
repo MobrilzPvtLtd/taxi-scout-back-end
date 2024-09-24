@@ -11,6 +11,8 @@
  */
 
 use App\Base\Constants\Auth\Role;
+use App\Http\Controllers\PayPalController;
+
 
 /*
  * These routes are used for web authentication.
@@ -502,14 +504,21 @@ Route::middleware('auth:web')->group(function () {
             Route::get('/', 'OrderController@index');
             Route::get('/fetch', 'OrderController@fetch');
             Route::get('/create', 'OrderController@create');
-            Route::get('/invoice/{order}', 'OrderController@invoice');
-            Route::get('/package-show', 'OrderController@packageShow');
-            Route::post('store', 'OrderController@store');
+            Route::get('/upgrade/{order}', 'OrderController@upgrade');
             Route::post('package-upgrade', 'OrderController@packageUpgrade');
+            Route::get('/package-show', 'OrderController@packageShow');
+            Route::get('/invoice', 'OrderController@invoice')->name('invoice');
+            Route::get('/invoice/{id}', 'OrderController@orderInvoice')->name('order.invoice');
+            Route::post('store', 'OrderController@store');
             Route::get('/{order}', 'OrderController@getById');
             Route::post('update/{order}', 'OrderController@update');
             Route::get('delete/{order}', 'OrderController@delete');
         });
+
+        Route::post('/paypal/payment', [PayPalController::class, 'createPayment'])->name('paypal.payment');
+        Route::get('/paypal/success', [PayPalController::class, 'paymentSuccess'])->name('payment.success');
+        Route::get('/paypal/cancel', [PayPalController::class, 'paymentCancel'])->name('payment.cancel');
+
 
         // Order Reason CRUD
         Route::group(['prefix' => 'blogs',  'middleware' => 'permission:manage-blogs'], function () {

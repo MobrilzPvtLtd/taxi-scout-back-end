@@ -8,9 +8,11 @@
         "php": "^8.2",
         "aws/aws-sdk-php-laravel": "^3.7",
         "barryvdh/laravel-debugbar": "^3.7",
-        "barryvdh/laravel-dompdf": "~0.8.2",
+        "barryvdh/laravel-dompdf": "0.9",
         "barryvdh/laravel-ide-helper": "^2.12",
         "barryvdh/laravel-translation-manager": "^0.6.3",
+        "beste/clock": "^2.0",
+        "beste/json": "^1.0",
         "binarytorch/larecipe": "^2.5",
         "braintree/braintree_php": "^6.9",
         "emcconville/google-map-polyline-encoding-tool": "~1.3",
@@ -37,11 +39,10 @@
         "saikiran/geohash": "^1.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-fractal": "^6.0",
+        "srmklive/paypal": "~3.0",
         "stripe/stripe-php": "^9.6",
         "symfony/dom-crawler": "^6.1",
-        "tanmuhittin/laravel-google-translate": "^2.1",
-        "beste/clock": "^2.0",
-        "beste/json": "^1.0"
+        "tanmuhittin/laravel-google-translate": "^2.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
