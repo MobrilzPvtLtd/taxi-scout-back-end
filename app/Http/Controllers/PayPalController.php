@@ -72,13 +72,13 @@ class PayPalController extends Controller
 
             if (isset($response['status']) && $response['status'] === 'ACTIVE') {
                 $invoice = Invoice::find($request->invoice_id);
-                $invoice->transaction_id = md5($subscriptionId);
-                $invoice->subscription_id = $subscriptionId;
-                $invoice->payment_method = "paypal";
-                $invoice->status = "paid";
-                $invoice->save();
 
                 if($subscriptionId != $invoice->subscription_id){
+                    $invoice->transaction_id = md5($subscriptionId);
+                    $invoice->subscription_id = $subscriptionId;
+                    $invoice->payment_method = "paypal";
+                    $invoice->status = "paid";
+                    $invoice->save();
                     $subscription = Subscription::where('id', $invoice->package_id)->first();
                     if ($subscription) {
                         $start_date = Carbon::now();
