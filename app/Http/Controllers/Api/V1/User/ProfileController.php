@@ -11,6 +11,8 @@ use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\UpdateDriverProfileRequest;
 use App\Base\Services\ImageUploader\ImageUploaderContract;
 use App\Base\Constants\Auth\Role;
+use App\Models\Admin\Order;
+use App\Models\Admin\Owner;
 use App\Models\User;
 use App\Models\Request\FavouriteLocation;
 use App\Models\Payment\UserBankInfo;
@@ -64,13 +66,27 @@ class ProfileController extends ApiController
      */
     public function updateProfile(UpdateProfileRequest $request)
     {
+        $user = auth()->user();
+        $owner = Owner::whereHas('user', function ($query) use ($user) {
+            $query->where('owner_unique_id', $user->driver->owner_id);
+        })->first();
+
+        if (!$owner) {
+            $this->throwCustomException('The taxi company is not found.');
+        }
+
+        $packageExpiryDate = Order::where('user_id', $owner->user_id)->where('active', 2)->first();
+
+        if ($packageExpiryDate) {
+            $this->throwCustomException('Your company’s subscription has expired. Please renew your company package.');
+        }
+
         $data = $request->only(['name', 'email', 'last_name','mobile','service_location_id']);
 
         if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
             $data['profile_picture'] = $this->imageUploader->file($uploadedFile)
                 ->saveProfilePicture();
         }
-        $user = auth()->user();
 
         $mobile = $request->mobile;
         $data['vehicle_type'] = $request->vehicle_type_id;

@@ -3,6 +3,7 @@
         <tr>
             <th> @lang('view_pages.s_no')</th>
             <th> @lang('view_pages.package_name')</th>
+            <th> Number of driver limit</th>
             <th> Company</th>
             <th> @lang('view_pages.start_date')</th>
             <th> End Date</th>
@@ -22,6 +23,7 @@
         <tr>
             <td>{{ $i++ }} </td>
             <td>{{ $result->package_name }}</td>
+            <td>{{ $result->number_of_drivers }}</td>
             <td>{{ $result->name }}</td>
             <td>{{ \Carbon\Carbon::parse($result->start_date)->format('d-M-Y') }}</td>
             <td>{{ \Carbon\Carbon::parse($result->end_date)->format('d-M-Y') }}</td>

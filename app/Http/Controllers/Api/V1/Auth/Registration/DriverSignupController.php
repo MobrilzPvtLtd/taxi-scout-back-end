@@ -28,6 +28,7 @@ use App\Jobs\Mails\SendMailNotification;
 use App\Mail\OtpMail;
 use App\Models\Admin\AdminDetail;
 use App\Models\Admin\DriverVehicleType;
+use App\Models\Admin\Order;
 use App\Models\Admin\Owner;
 use App\Models\Admin\Subscription;
 use App\Models\Admin\UserDetails;
@@ -59,50 +60,36 @@ class DriverSignupController extends LoginController
         $this->imageUploader = $imageUploader;
     }
 
-    /**
-    * Register the driver and send welcome email.
-    * @bodyParam name string required name of the driver
-    * @bodyParam company_key string optional company key of demo
-    * @bodyParam mobile integer required mobile of driver
-    * @bodyParam email email required email of the driver
-    * @bodyParam device_token string required device_token of the driver
-    * @bodyParam terms_condition boolean required it should be 0 or 1
-    * @bodyParam service_location_id uuid required service location of the driver. it can be listed from service location list apis
-     * @bodyParam refferal_code string optional refferal_code of the another driver
-    * @bodyParam login_by tinyInt required from which device the driver registered
-    * @bodyParam is_company_driver tinyInt required value can be 0 or 1.
-    * @bodyParam vehicle_type uuid required vehicle types. listed by types api
-    * @bodyParam car_make string required car make of the driver
-    * @bodyParam car_model string required car model of the driver
-    * @bodyParam car_number string required car number of the driver
-    * @bodyParam car_color string required car color of the driver
-    *
-    * @param \App\Http\Requests\Auth\Registration\UserRegistrationRequest $request
-    * @return \Illuminate\Http\JsonResponse
-    * @responseFile responses/auth/register.json
-    */
-
     public function register(DriverRegistrationRequest $request)
     {
-        // $owner = Owner::whereHas('user', function ($query) use ($request) {
-        //     $query->where('owner_unique_id', $request->input('owner_id'));
-        // })->first();
+        $owner = Owner::whereHas('user', function ($query) use ($request) {
+            $query->where('owner_unique_id', $request->input('owner_id'));
+        })->first();
 
-        // if ($owner->package_id) {
-        //     $sub = Subscription::find($owner->package_id);
+        $registeredDriverCount = Driver::where('owner_id', $request->input('owner_id'))->count();
+        $packageExpiryDate = Order::where('user_id', $owner->user_id)->where('active', 2)->first();
 
-        //     if ($sub && $sub->package_name == "Free") {
+        if ($packageExpiryDate) {
+            $this->throwCustomException('Your company’s subscription has expired. Please renew your company package.');
+        }
 
-        //         $registeredDriverCount = Driver::where('company_key', $request->input('company_key'))->count();
+        $packageDate = Order::where('user_id', $owner->user_id)->first();
 
-        //         if ($registeredDriverCount > 0) {
-        //             $this->throwCustomException('If your company has already registered a driver, you cannot register another one. Each company is allowed to have only one registered driver at a time.');
-        //         }
-        //     }
-        // }
+        if (!$packageDate) {
+            $this->throwCustomException('No active order found for this user. Please check your registration.');
+        }
+
+        $package = Subscription::find($packageDate->package_id);
+
+        if (!$package) {
+            $this->throwCustomException('Package not found. Please check your subscription details.');
+        }
+
+        if ($registeredDriverCount >= $package->number_of_drivers) {
+            $this->throwCustomException('Your company has reached the limit of registered drivers allowed under your company current package.');
+        }
 
         $mobileUuid = $request->input('uuid');
-
         Log::info($request->all());
         $created_params = $request->only(['service_location_id', 'name','mobile','email','address','state','city','country','gender','vehicle_type','car_make','car_model','car_color','car_number','vehicle_year','custom_make','custom_model','smoking','pets','drinking','handica','driving_license']);
 

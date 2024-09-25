@@ -44,7 +44,7 @@ class OrderController extends BaseController
     {
         $query = $this->order->leftJoin('users', 'orders.user_id', '=', 'users.id')
                         ->leftJoin('subscriptions', 'orders.package_id', '=', 'subscriptions.id')
-                        ->select('orders.*','users.name','subscriptions.package_name');
+                        ->select('orders.*','users.name','subscriptions.package_name','subscriptions.number_of_drivers');
         if(!access()->hasRole(RoleSlug::SUPER_ADMIN)){
             $query = $query->where('orders.user_id', auth()->user()->id);
         }

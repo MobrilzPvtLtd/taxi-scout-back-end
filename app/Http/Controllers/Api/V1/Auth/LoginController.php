@@ -15,6 +15,9 @@ use App\Models\MailOtp;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\Auth\Registration\ValidateEmailOTPRequest;
 use App\Mail\OtpMail;
+use App\Models\Admin\Order;
+use App\Models\Admin\Owner;
+use App\Models\Admin\Subscription;
 
 /**
  * @group Authentication
@@ -117,6 +120,17 @@ class LoginController extends BaseLoginController
         // if($request->has('role') && $request->role=='admin'){
         //     return $this->loginUserAccountApp($request, Role::ADMIN);
         // }
+        $registeredDriver = Driver::where('email', $request->input('email'))->first();
+
+        $owner = Owner::whereHas('user', function ($query) use ($registeredDriver) {
+            $query->where('owner_unique_id', $registeredDriver->owner_id);
+        })->first();
+        $packageExpiryDate = Order::where('user_id', $owner->user_id)->where('active', 2)->first();
+
+        if ($packageExpiryDate) {
+            $this->throwCustomException('Your company’s subscription has expired. Please renew your company package.');
+        }
+
         $user = User::where('email', $request->email)->first();
 
         if($user->email_confirmed != 1) {
