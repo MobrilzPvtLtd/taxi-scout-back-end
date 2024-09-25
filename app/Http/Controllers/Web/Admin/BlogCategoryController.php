@@ -28,8 +28,8 @@ class BlogCategoryController extends BaseController
     {
         $page = trans('pages_names.blog-category');
 
-        $main_menu = 'blog-category';
-        $sub_menu = '';
+        $main_menu = 'manage-blog';
+        $sub_menu = 'blog-category';
 
         return view('admin.blog-category.index', compact('page', 'main_menu', 'sub_menu'));
     }
@@ -46,8 +46,8 @@ class BlogCategoryController extends BaseController
     public function create()
     {
         $page = trans('pages_names.add_blog_category');
-        $main_menu = 'blog-category';
-        $sub_menu = '';
+        $main_menu = 'manage-blog';
+        $sub_menu = 'blog-category';
 
         return view('admin.blog-category.create', compact('page', 'main_menu', 'sub_menu'));
     }
@@ -73,8 +73,8 @@ class BlogCategoryController extends BaseController
     public function getById(BlogCategory $blogCategory)
     {
         $page = trans('pages_names.edit_blog_category');
-        $main_menu = 'blog-category';
-        $sub_menu = '';
+        $main_menu = 'manage-blog';
+        $sub_menu = 'blog-category';
         $item = $blogCategory;
 
         return view('admin.blog-category.update', compact('item', 'page', 'main_menu', 'sub_menu'));

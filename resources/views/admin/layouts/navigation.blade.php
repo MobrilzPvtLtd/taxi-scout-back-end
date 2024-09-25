@@ -234,20 +234,33 @@
                     </a>
                 </li>
             @endif
-            {{-- @if (!$packageExpiryDate) --}}
-            @if (auth()->user()->can('manage-order'))
-                <li class="{{ 'manage-order' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/order') }}">
-                        <i class="fa fa-first-order"></i> <span>All Orders</span>
+
+            @if (auth()->user()->can('manage-order') && $app_for !== 'delivery')
+                <li class="treeview {{ 'manage-order' == $main_menu ? 'active menu-open' : '' }}">
+                    <a href="javascript: void(0);">
+                        <i class="fa fa-first-order"></i>
+                        <span>All Orders</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
                     </a>
-                </li>
-                <li class="{{ 'invoice' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ route('invoice') }}">
-                        <i class="fa fa-first-order"></i> <span>Invoices</span>
-                    </a>
+
+                    <ul class="treeview-menu">
+                        @if (auth()->user()->can('manage-order'))
+                            <li class="{{ 'order' == $sub_menu ? 'active' : '' }}">
+                                <a href="{{ url('/order') }}">
+                                    <i class="fa fa-circle-thin"></i> <span>Orders</span>
+                                </a>
+                            </li>
+                            <li class="{{ 'invoice' == $sub_menu ? 'active' : '' }}">
+                                <a href="{{ route('invoice') }}">
+                                    <i class="fa fa-circle-thin"></i> <span>Invoices</span>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
                 </li>
             @endif
-            {{-- @endif --}}
 
             @if (auth()->user()->can('manage-blog') && $app_for !== 'delivery')
                 <li class="treeview {{ 'manage-blog' == $main_menu ? 'active menu-open' : '' }}">
@@ -261,14 +274,14 @@
 
                     <ul class="treeview-menu">
                         @if (auth()->user()->can('blog-category'))
-                            <li class="{{ 'blog-category' == $main_menu ? 'active menu-open' : '' }}">
+                            <li class="{{ 'blog-category' == $sub_menu ? 'active menu-open' : '' }}">
                                 <a href="{{ url('/blog-category') }}">
                                     <i class="fa fa-circle-thin"></i> <span>Blog Category</span>
                                 </a>
                             </li>
                         @endif
                         @if (auth()->user()->can('manage-blog'))
-                            <li class="{{ 'manage-blog' == $main_menu ? 'active menu-open' : '' }}">
+                            <li class="{{ 'blog' == $sub_menu ? 'active menu-open' : '' }}">
                                 <a href="{{ url('/blogs') }}">
                                     <i class="fa fa-circle-thin"></i> <span>Blogs</span>
                                 </a>

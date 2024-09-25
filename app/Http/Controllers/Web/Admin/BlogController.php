@@ -37,7 +37,7 @@ class BlogController extends BaseController
         $page = trans('pages_names.blog');
 
         $main_menu = 'manage-blog';
-        $sub_menu = '';
+        $sub_menu = 'blog';
 
         return view('admin.blog.index', compact('page', 'main_menu', 'sub_menu'));
     }
@@ -56,7 +56,7 @@ class BlogController extends BaseController
     {
         $page = trans('pages_names.add_blog');
         $main_menu = 'manage-blog';
-        $sub_menu = '';
+        $sub_menu = 'blog';
 
         return view('admin.blog.create', compact('page', 'main_menu', 'sub_menu'));
     }
@@ -85,7 +85,7 @@ class BlogController extends BaseController
     {
         $page = trans('pages_names.edit_blog');
         $main_menu = 'manage-blog';
-        $sub_menu = '';
+        $sub_menu = 'blog';
         $item = $blog;
 
         return view('admin.blog.update', compact('item', 'page', 'main_menu', 'sub_menu'));

@@ -35,7 +35,7 @@ class OrderController extends BaseController
         $page = trans('pages_names.order');
 
         $main_menu = 'manage-order';
-        $sub_menu = '';
+        $sub_menu = 'order';
 
         return view('admin.order.index', compact('page', 'main_menu', 'sub_menu'));
     }
@@ -144,8 +144,8 @@ class OrderController extends BaseController
     public function invoice(Request $request)
     {
         $page = trans('pages_names.edit_order');
-        $main_menu = 'invoice';
-        $sub_menu = '';
+        $main_menu = 'manage-order';
+        $sub_menu = 'invoice';
 
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
             $invoices = Invoice::get();
