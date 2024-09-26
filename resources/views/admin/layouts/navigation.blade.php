@@ -239,7 +239,7 @@
                 <li class="treeview {{ 'manage-order' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-first-order"></i>
-                        <span>All Orders</span>
+                        <span>Orders</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-right pull-right"></i>
                         </span>
@@ -249,7 +249,7 @@
                         @if (auth()->user()->can('manage-order'))
                             <li class="{{ 'order' == $sub_menu ? 'active' : '' }}">
                                 <a href="{{ url('/order') }}">
-                                    <i class="fa fa-circle-thin"></i> <span>Orders</span>
+                                    <i class="fa fa-circle-thin"></i> <span>All Orders</span>
                                 </a>
                             </li>
                             <li class="{{ 'invoice' == $sub_menu ? 'active' : '' }}">
