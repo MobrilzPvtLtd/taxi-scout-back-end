@@ -239,7 +239,7 @@
                 <li class="treeview {{ 'manage-order' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-first-order"></i>
-                        <span>Orders</span>
+                        <span>Subscription</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-right pull-right"></i>
                         </span>
