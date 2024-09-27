@@ -551,6 +551,18 @@ Route::middleware('auth:web')->group(function () {
             Route::get('delete/{faq}', 'FaqController@delete');
         });
 
+        // Gallery CRUD
+        Route::group(['prefix' => 'galleries',  'middleware' => 'permission:manage-gallery'], function () {
+            Route::get('/', 'GalleryController@index');
+            Route::get('/fetch', 'GalleryController@fetch');
+            Route::get('/create', 'GalleryController@create');
+            Route::post('store', 'GalleryController@store');
+            Route::get('/{gallery}', 'GalleryController@getById');
+            Route::post('update/{gallery}', 'GalleryController@update');
+            Route::get('toggle_status/{gallery}', 'GalleryController@toggleStatus');
+            Route::get('delete/{gallery}', 'GalleryController@delete');
+        });
+
          // Order Reason CRUD
         Route::group(['prefix' => 'chat',  'middleware' => 'permission:manage-chat'], function () {
             Route::get('/', 'ChatController@index');

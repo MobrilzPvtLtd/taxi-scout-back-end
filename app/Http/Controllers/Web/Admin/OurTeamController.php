@@ -36,7 +36,7 @@ class OurTeamController extends BaseController
     {
         $page = trans('pages_names.our-team');
 
-        $main_menu = 'manage-our-team';
+        $main_menu = 'manage-store-front';
         $sub_menu = 'our-team';
 
         return view('admin.our-team.index', compact('page', 'main_menu', 'sub_menu'));
@@ -54,7 +54,7 @@ class OurTeamController extends BaseController
     public function create()
     {
         $page = trans('pages_names.add_our_team');
-        $main_menu = 'manage-our-team';
+        $main_menu = 'manage-store-front';
         $sub_menu = 'our-team';
 
         return view('admin.our-team.create', compact('page', 'main_menu', 'sub_menu'));
@@ -80,7 +80,7 @@ class OurTeamController extends BaseController
     public function getById(OurTeam $team)
     {
         $page = trans('pages_names.our-team');
-        $main_menu = 'manage-our-team';
+        $main_menu = 'manage-store-front';
         $sub_menu = 'our-team';
         $item = $team;
 

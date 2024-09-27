@@ -29,8 +29,8 @@ class FaqController extends BaseController
     {
         $page = trans('pages_names.view_faq');
 
-        $main_menu = 'faq';
-        $sub_menu = '';
+        $main_menu = 'manage-store-front';
+        $sub_menu = 'faq';
 
         return view('admin.faq.index', compact('page', 'main_menu', 'sub_menu'));
     }
@@ -47,8 +47,8 @@ class FaqController extends BaseController
     {
         $page = trans('pages_names.add_faq');
         $cities = ServiceLocation::companyKey()->whereActive(true)->get();
-        $main_menu = 'faq';
-        $sub_menu = '';
+        $main_menu = 'manage-store-front';
+        $sub_menu = 'faq';
 
         return view('admin.faq.create', compact('cities', 'page', 'main_menu', 'sub_menu'));
     }
@@ -71,8 +71,8 @@ class FaqController extends BaseController
     {
         $page = trans('pages_names.edit_faq');
         $cities = ServiceLocation::companyKey()->whereActive(true)->get();
-        $main_menu = 'faq';
-        $sub_menu = '';
+        $main_menu = 'manage-store-front';
+        $sub_menu = 'faq';
         $item = $faq;
 
         return view('admin.faq.update', compact('cities', 'item', 'page', 'main_menu', 'sub_menu'));

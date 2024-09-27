@@ -302,6 +302,13 @@
                     </a>
 
                     <ul class="treeview-menu">
+                        @if (auth()->user()->can('manage-gallery'))
+                            <li class="{{ 'gallery' == $sub_menu ? 'active' : '' }}">
+                                <a href="{{ url('/galleries') }}">
+                                    <i class="fa fa-circle-thin"></i> <span>Gallery</span>
+                                </a>
+                            </li>
+                        @endif
                         @if (auth()->user()->can('our-team'))
                             <li class="{{ 'our-team' == $sub_menu ? 'active menu-open' : '' }}">
                                 <a href="{{ url('/our-team') }}">
@@ -310,9 +317,9 @@
                             </li>
                         @endif
                         @if (auth()->user()->can('manage-faq'))
-                            <li class="{{ 'faq' == $main_menu ? 'active' : '' }}">
+                            <li class="{{ 'faq' == $sub_menu ? 'active' : '' }}">
                                 <a href="{{ url('/faq') }}">
-                                    <i class="fa fa-question-circle"></i> <span>@lang('pages_names.faq')</span>
+                                    <i class="fa fa-circle-thin"></i> <span>@lang('pages_names.faq')</span>
                                 </a>
                             </li>
                         @endif
