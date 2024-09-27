@@ -42,6 +42,10 @@ Route::namespace('Common')->group(function () {
      // List all the blogs.
      Route::get('blogs', 'BlogController@index');
      Route::get('blog-details/{slug}', 'BlogController@blogDetails');
+
+     Route::get('gallery', 'StoreFrontController@gallery');
+     Route::get('faq', 'StoreFrontController@faq');
+     Route::get('our-team', 'StoreFrontController@ourTeam');
 });
 
 Route::namespace('Company')->group(function () {
