@@ -291,6 +291,35 @@
                 </li>
             @endif
 
+            @if (auth()->user()->can('manage-store-front') && $app_for !== 'delivery')
+                <li class="treeview {{ 'manage-store-front' == $main_menu ? 'active menu-open' : '' }}">
+                    <a href="javascript: void(0);">
+                        <i class="fa fa-paint-brush"></i>
+                        <span> Store Front</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+
+                    <ul class="treeview-menu">
+                        @if (auth()->user()->can('our-team'))
+                            <li class="{{ 'our-team' == $sub_menu ? 'active menu-open' : '' }}">
+                                <a href="{{ url('/our-team') }}">
+                                    <i class="fa fa-circle-thin"></i> <span>Our Team</span>
+                                </a>
+                            </li>
+                        @endif
+                        {{-- @if (auth()->user()->can('manage-blog'))
+                            <li class="{{ 'blog' == $sub_menu ? 'active menu-open' : '' }}">
+                                <a href="{{ url('/blogs') }}">
+                                    <i class="fa fa-circle-thin"></i> <span>Blogs</span>
+                                </a>
+                            </li>
+                        @endif --}}
+                    </ul>
+                </li>
+            @endif
+
             {{-- @if (auth()->user()->can('chat'))
                 <li class="{{ 'chat_module' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/chat') }}">

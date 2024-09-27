@@ -543,6 +543,17 @@ Route::middleware('auth:web')->group(function () {
             Route::get('delete/{blogCategory}', 'BlogCategoryController@delete');
         });
 
+        // Our Team CRUD
+        Route::group(['prefix' => 'our-team',  'middleware' => 'permission:manage-our-team'], function () {
+            Route::get('/', 'OurTeamController@index');
+            Route::get('/fetch', 'OurTeamController@fetch');
+            Route::get('/create', 'OurTeamController@create');
+            Route::post('store', 'OurTeamController@store');
+            Route::get('/{team}', 'OurTeamController@getById');
+            Route::post('update/{team}', 'OurTeamController@update');
+            Route::get('delete/{team}', 'OurTeamController@delete');
+        });
+
          // Order Reason CRUD
         Route::group(['prefix' => 'chat',  'middleware' => 'permission:manage-chat'], function () {
             Route::get('/', 'ChatController@index');
