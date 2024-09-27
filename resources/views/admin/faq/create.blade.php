@@ -22,11 +22,9 @@
                         </div>
 
                         <div class="col-sm-12">
-
                             <form method="post" class="form-horizontal" action="{{ url('faq/store') }}">
                                 @csrf
-
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-6">
                                         <div class="form-group">
                                             <label for="admin_id">@lang('view_pages.select_area')
@@ -56,10 +54,10 @@
                                             <span class="text-danger">{{ $errors->first('user_type') }}</span>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                         <div class="row">
-                                    <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-12">
                                         <div class="form-group">
                                             <label for="question">@lang('view_pages.question') <span class="text-danger">*</span></label>
                                             <input class="form-control" type="text" id="question" name="question"
@@ -68,19 +66,18 @@
                                             <span class="text-danger">{{ $errors->first('question') }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-12">
                                         <div class="form-group">
                                             <label for="answer">@lang('view_pages.answer') <span class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" id="answer" name="answer"
+                                            <textarea name="answer" id="answer" class="form-control" rows="5"></textarea>
+                                            {{-- <input class="form-control" type="text" id="answer" name="answer"
                                                 value="{{ old('answer') }}" required=""
-                                                placeholder="@lang('view_pages.enter') @lang('view_pages.answer')">
+                                                placeholder="@lang('view_pages.enter') @lang('view_pages.answer')"> --}}
                                             <span class="text-danger">{{ $errors->first('answer') }}</span>
 
                                         </div>
                                     </div>
                                 </div>
-
-
                                 <div class="form-group">
                                     <div class="col-12">
                                         <button class="btn btn-primary btn-sm pull-right m-5" type="submit">

@@ -14,8 +14,8 @@ class CreateFaqRequest extends FormRequest
     public function rules()
     {
         return [
-            'service_location_id' => 'required',
-            'user_type' => 'required',
+            // 'service_location_id' => 'required',
+            // 'user_type' => 'required',
             'question' => 'required',
             'answer' => 'required',
         ];

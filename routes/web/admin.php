@@ -461,21 +461,6 @@ Route::middleware('auth:web')->group(function () {
 
         });
 
-
-
-
-        // Faq CRUD
-        Route::group(['prefix' => 'faq',  'middleware' => 'permission:manage-faq'], function () {
-            Route::get('/', 'FaqController@index');
-            Route::get('/fetch', 'FaqController@fetch');
-            Route::get('/create', 'FaqController@create');
-            Route::post('store', 'FaqController@store');
-            Route::get('/{faq}', 'FaqController@getById');
-            Route::post('update/{faq}', 'FaqController@update');
-            Route::get('toggle_status/{faq}', 'FaqController@toggleStatus');
-            Route::get('delete/{faq}', 'FaqController@delete');
-        });
-
         // Cancellation Reason CRUD
         Route::group(['prefix' => 'cancellation',  'middleware' => 'permission:cancellation-reason'], function () {
             Route::get('/', 'CancellationReasonController@index');
@@ -552,6 +537,18 @@ Route::middleware('auth:web')->group(function () {
             Route::get('/{team}', 'OurTeamController@getById');
             Route::post('update/{team}', 'OurTeamController@update');
             Route::get('delete/{team}', 'OurTeamController@delete');
+        });
+
+        // Faq CRUD
+        Route::group(['prefix' => 'faq',  'middleware' => 'permission:manage-faq'], function () {
+            Route::get('/', 'FaqController@index');
+            Route::get('/fetch', 'FaqController@fetch');
+            Route::get('/create', 'FaqController@create');
+            Route::post('store', 'FaqController@store');
+            Route::get('/{faq}', 'FaqController@getById');
+            Route::post('update/{faq}', 'FaqController@update');
+            Route::get('toggle_status/{faq}', 'FaqController@toggleStatus');
+            Route::get('delete/{faq}', 'FaqController@delete');
         });
 
          // Order Reason CRUD

@@ -309,13 +309,13 @@
                                 </a>
                             </li>
                         @endif
-                        {{-- @if (auth()->user()->can('manage-blog'))
-                            <li class="{{ 'blog' == $sub_menu ? 'active menu-open' : '' }}">
-                                <a href="{{ url('/blogs') }}">
-                                    <i class="fa fa-circle-thin"></i> <span>Blogs</span>
+                        @if (auth()->user()->can('manage-faq'))
+                            <li class="{{ 'faq' == $main_menu ? 'active' : '' }}">
+                                <a href="{{ url('/faq') }}">
+                                    <i class="fa fa-question-circle"></i> <span>@lang('pages_names.faq')</span>
                                 </a>
                             </li>
-                        @endif --}}
+                        @endif
                     </ul>
                 </li>
             @endif
@@ -851,14 +851,6 @@
                             </li>
                         @endif
                     </ul>
-                </li>
-            @endif --}}
-
-            {{-- @if (auth()->user()->can('manage-faq'))
-                <li class="{{ 'faq' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/faq') }}">
-                        <i class="fa fa-question-circle"></i> <span>@lang('pages_names.faq')</span>
-                    </a>
                 </li>
             @endif --}}
 

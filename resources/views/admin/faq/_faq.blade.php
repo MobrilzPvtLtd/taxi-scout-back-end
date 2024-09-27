@@ -4,7 +4,7 @@
             <th> @lang('view_pages.s_no')</th>
             <th> @lang('view_pages.question')</th>
             <th> @lang('view_pages.answer')</th>
-            <th> @lang('view_pages.user_type')</th>
+            {{-- <th> @lang('view_pages.user_type')</th> --}}
             <th> @lang('view_pages.status')</th>
             <th> @lang('view_pages.action')</th>
         </tr>
@@ -18,9 +18,9 @@
             <td>{{ $i++ }} </td>
             <td>{{$result->question}}</td>
             <td>{{$result->answer}}</td>
-            <td>
+            {{-- <td>
                 <span class="label label-warning">{{ ucfirst($result->user_type) }}</span>
-            </td>
+            </td> --}}
             @if($result->active)
             <td><span class="label label-success">@lang('view_pages.active')</span></td>
             @else

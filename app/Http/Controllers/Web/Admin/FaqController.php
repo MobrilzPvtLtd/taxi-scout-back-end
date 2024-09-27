@@ -37,7 +37,7 @@ class FaqController extends BaseController
 
     public function fetch(QueryFilterContract $queryFilter)
     {
-        $query = $this->faq->companyKey()->active();
+        $query = $this->faq->query();
         $results = $queryFilter->builder($query)->customFilter(new CommonMasterFilter)->paginate();
 
         return view('admin.faq._faq', compact('results'));
