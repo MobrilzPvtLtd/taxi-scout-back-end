@@ -82,10 +82,10 @@ Route::namespace('Web')->group(function () {
         Artisan::call('route:cache');
     
         // Clear view cache
-        Artisan::call('view:clear');
+        //Artisan::call('view:clear');
     
         // Clear compiled class files
-        Artisan::call('optimize');
+       // Artisan::call('optimize');
     
         // Clear the cache for specific service providers (if needed)
         // Artisan::call('cache:clear-provider', ['provider' => 'App\Providers\YourServiceProvider']);
