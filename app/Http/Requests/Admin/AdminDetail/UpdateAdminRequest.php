@@ -30,7 +30,7 @@ class UpdateAdminRequest extends FormRequest
             'email'=>'required|email|unique:users,email,'.$this->admin->user->id,
             'address'=>'required|min:10',
             // 'state'=>'max:100',
-            'city'=>'required',
+            // 'city'=>'required',
             'country'=>'required|exists:countries,id',
             'service_location_id' => 'sometimes',
             // 'role' => 'required',
