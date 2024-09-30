@@ -76,7 +76,7 @@ Route::namespace('Web')->group(function () {
        // Artisan::call('cache:clear');
     
         // Clear config cache
-        Artisan::call('config:cache');
+       // Artisan::call('config:cache');
     
         // Clear route cache
         Artisan::call('route:cache');
