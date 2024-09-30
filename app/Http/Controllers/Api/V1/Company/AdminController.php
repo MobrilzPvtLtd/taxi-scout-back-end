@@ -127,6 +127,8 @@ class AdminController extends BaseController
      */
     public function store(CreateAdminRequest $request)
     {
+
+        dd($request->name);
         $created_params = $request->only(['service_location_id', 'password','company_name','name','mobile','email','address','state','city','country']);
 
         $created_params['postal_code'] = $request->postal_code;
