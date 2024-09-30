@@ -73,7 +73,7 @@ Route::namespace('Web')->group(function () {
 
     Route::get('/clear-caches', function () {
         // Clear application cache
-        Artisan::call('cache:clear');
+       // Artisan::call('cache:clear');
     
         // Clear config cache
        // Artisan::call('config:cache');
