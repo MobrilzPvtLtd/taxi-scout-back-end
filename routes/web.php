@@ -70,5 +70,27 @@ Route::namespace('Web')->group(function () {
         $output = Artisan::output();
         return response()->json(['message' => 'Scheduled commands executed.', 'output' => $output]);
     });
+
+    Route::get('/clear-caches', function () {
+        // Clear application cache
+        Artisan::call('cache:clear');
+    
+        // Clear config cache
+        Artisan::call('config:cache');
+    
+        // Clear route cache
+        Artisan::call('route:cache');
+    
+        // Clear view cache
+        Artisan::call('view:clear');
+    
+        // Clear compiled class files
+        Artisan::call('optimize');
+    
+        // Clear the cache for specific service providers (if needed)
+        // Artisan::call('cache:clear-provider', ['provider' => 'App\Providers\YourServiceProvider']);
+    
+        return response()->json(['message' => 'Caches cleared successfully!']);
+    });
 });
 
