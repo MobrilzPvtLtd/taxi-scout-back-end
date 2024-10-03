@@ -309,6 +309,13 @@
                                 </a>
                             </li>
                         @endif
+                        @if (auth()->user()->can('manage-partner'))
+                            <li class="{{ 'partner' == $sub_menu ? 'active' : '' }}">
+                                <a href="{{ url('/our-partner') }}">
+                                    <i class="fa fa-circle-thin"></i> <span>Our Partner</span>
+                                </a>
+                            </li>
+                        @endif
                         @if (auth()->user()->can('our-team'))
                             <li class="{{ 'our-team' == $sub_menu ? 'active menu-open' : '' }}">
                                 <a href="{{ url('/our-team') }}">

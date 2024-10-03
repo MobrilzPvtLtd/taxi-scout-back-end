@@ -563,6 +563,18 @@ Route::middleware('auth:web')->group(function () {
             Route::get('delete/{gallery}', 'GalleryController@delete');
         });
 
+        // Gallery CRUD
+        Route::group(['prefix' => 'our-partner',  'middleware' => 'permission:manage-partner'], function () {
+            Route::get('/', 'OurPartnerController@index');
+            Route::get('/fetch', 'OurPartnerController@fetch');
+            Route::get('/create', 'OurPartnerController@create');
+            Route::post('store', 'OurPartnerController@store');
+            Route::get('/{partner}', 'OurPartnerController@getById');
+            Route::post('update/{partner}', 'OurPartnerController@update');
+            Route::get('toggle_status/{partner}', 'OurPartnerController@toggleStatus');
+            Route::get('delete/{partner}', 'OurPartnerController@delete');
+        });
+
          // Order Reason CRUD
         Route::group(['prefix' => 'chat',  'middleware' => 'permission:manage-chat'], function () {
             Route::get('/', 'ChatController@index');

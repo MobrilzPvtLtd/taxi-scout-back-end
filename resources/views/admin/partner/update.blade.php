@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Gallery Edit')
+@section('title', 'Our Partner Edit')
 
 @section('content')
 {{-- {{session()->get('errors')}} --}}
@@ -12,7 +12,7 @@
                 <div class="col-sm-12">
                     <div class="box">
                         <div class="box-header with-border">
-                            <a href="{{ url('galleries') }}">
+                            <a href="{{ url('our-partner') }}">
                                 <button class="btn btn-danger btn-sm pull-right" type="submit">
                                     <i class="mdi mdi-keyboard-backspace mr-2"></i>
                                     @lang('view_pages.back')
@@ -22,7 +22,7 @@
 
                         <div class="col-sm-12">
 
-                            <form method="post" class="form-horizontal" action="{{ url('galleries/update',$item->id) }}" enctype="multipart/form-data">
+                            <form method="post" class="form-horizontal" action="{{ url('our-partner/update',$item->id) }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-sm-12">
@@ -33,7 +33,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <img src="{{ asset('gallery/'. $item->image) }}" alt="" width="150px">
+                                <img src="{{ asset('partner/'. $item->image) }}" alt="" width="150px">
 
                                 <div class="form-group">
                                     <div class="col-12">
