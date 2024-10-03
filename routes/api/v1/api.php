@@ -46,6 +46,7 @@ Route::namespace('Common')->group(function () {
      Route::get('gallery', 'StoreFrontController@gallery');
      Route::get('faq', 'StoreFrontController@faq');
      Route::get('our-team', 'StoreFrontController@ourTeam');
+     Route::get('our-partner', 'StoreFrontController@ourPartner');
 });
 
 Route::namespace('Company')->group(function () {

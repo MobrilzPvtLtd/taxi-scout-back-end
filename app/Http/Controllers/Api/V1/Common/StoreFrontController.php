@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Models\Admin\Faq;
 use App\Models\Admin\Gallery;
 use App\Models\Admin\OurTeam;
+use App\Models\Admin\Partner;
 use App\Transformers\BlogTransformer;
 
 class StoreFrontController extends ApiController
@@ -82,6 +83,27 @@ class StoreFrontController extends ApiController
         }
 
         return $this->respondOk($ourTeamData);
+    }
+
+    public function ourPartner()
+    {
+        $partners = Partner::where('active', true)->get();
+
+        $partnerData = [];
+
+        foreach ($partners as $partner) {
+            $params= [
+                'id' => $partner->id,
+                'image' => asset('partner/'.$partner->image),
+                'active'=>(bool)$partner->active,
+                'created_at'=>$partner->created_at,
+                'updated_at' => $partner->updated_at,
+            ];
+
+            $partnerData[] = $params;
+        }
+
+        return $this->respondOk($partnerData);
     }
 
 }
