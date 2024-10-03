@@ -291,6 +291,14 @@
                 </li>
             @endif
 
+            @if (auth()->user()->can('manage-contact'))
+                <li class="{{ 'contact' == $sub_menu ? 'active' : '' }}">
+                    <a href="{{ url('/contact') }}">
+                        <i class="fa fa-phone"></i> <span>Contact Enquery</span>
+                    </a>
+                </li>
+            @endif
+
             @if (auth()->user()->can('manage-store-front') && $app_for !== 'delivery')
                 <li class="treeview {{ 'manage-store-front' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">

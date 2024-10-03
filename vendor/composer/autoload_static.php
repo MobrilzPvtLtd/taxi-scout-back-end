@@ -1613,6 +1613,7 @@ class ComposerStaticInitb7a14c8ad70415fd6ee2c6b891fa9fa6
         'App\\Models\\Admin\\Company' => __DIR__ . '/../..' . '/app/Models/Admin/Company.php',
         'App\\Models\\Admin\\Complaint' => __DIR__ . '/../..' . '/app/Models/Admin/Complaint.php',
         'App\\Models\\Admin\\ComplaintTitle' => __DIR__ . '/../..' . '/app/Models/Admin/ComplaintTitle.php',
+        'App\\Models\\Admin\\Contact' => __DIR__ . '/../..' . '/app/Models/Admin/Contact.php',
         'App\\Models\\Admin\\Driver' => __DIR__ . '/../..' . '/app/Models/Admin/Driver.php',
         'App\\Models\\Admin\\DriverAvailability' => __DIR__ . '/../..' . '/app/Models/Admin/DriverAvailability.php',
         'App\\Models\\Admin\\DriverDetail' => __DIR__ . '/../..' . '/app/Models/Admin/DriverDetail.php',

@@ -47,6 +47,7 @@ Route::namespace('Common')->group(function () {
      Route::get('faq', 'StoreFrontController@faq');
      Route::get('our-team', 'StoreFrontController@ourTeam');
      Route::get('our-partner', 'StoreFrontController@ourPartner');
+     Route::post('contact', 'StoreFrontController@contact');
 });
 
 Route::namespace('Company')->group(function () {

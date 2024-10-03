@@ -528,6 +528,13 @@ Route::middleware('auth:web')->group(function () {
             Route::get('delete/{blogCategory}', 'BlogCategoryController@delete');
         });
 
+        // Contact enquery fetch
+        Route::group(['prefix' => 'contact',  'middleware' => 'permission:manage-contact'], function () {
+            Route::get('/', 'ContactController@index');
+            Route::get('/fetch', 'ContactController@fetch');
+            Route::get('/show/{id}', 'ContactController@show');
+        });
+
         // Our Team CRUD
         Route::group(['prefix' => 'our-team',  'middleware' => 'permission:manage-our-team'], function () {
             Route::get('/', 'OurTeamController@index');

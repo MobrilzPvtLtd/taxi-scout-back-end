@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api\V1\Common;
 
 use App\Http\Controllers\ApiController;
+use App\Models\Admin\Contact;
 use App\Models\Admin\Faq;
 use App\Models\Admin\Gallery;
 use App\Models\Admin\OurTeam;
 use App\Models\Admin\Partner;
 use App\Transformers\BlogTransformer;
+use Illuminate\Http\Request;
 
 class StoreFrontController extends ApiController
 {
@@ -104,6 +106,22 @@ class StoreFrontController extends ApiController
         }
 
         return $this->respondOk($partnerData);
+    }
+
+    public function contact(Request $request){
+        $contact = new Contact();
+        $contact->name = $request->name;
+        $contact->email = $request->email;
+        $contact->mobile = $request->mobile;
+        $contact->country = $request->country;
+        $contact->address = $request->address;
+        $contact->state = $request->state;
+        $contact->pincode = $request->pincode;
+        $contact->subject = $request->subject;
+        $contact->message = $request->message;
+        $contact->save();
+
+        return $this->respondSuccess(null, 'Contact data saved successful.');
     }
 
 }

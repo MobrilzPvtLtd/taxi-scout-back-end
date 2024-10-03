@@ -461,6 +461,7 @@ return array(
     'App\\Models\\Admin\\Company' => $baseDir . '/app/Models/Admin/Company.php',
     'App\\Models\\Admin\\Complaint' => $baseDir . '/app/Models/Admin/Complaint.php',
     'App\\Models\\Admin\\ComplaintTitle' => $baseDir . '/app/Models/Admin/ComplaintTitle.php',
+    'App\\Models\\Admin\\Contact' => $baseDir . '/app/Models/Admin/Contact.php',
     'App\\Models\\Admin\\Driver' => $baseDir . '/app/Models/Admin/Driver.php',
     'App\\Models\\Admin\\DriverAvailability' => $baseDir . '/app/Models/Admin/DriverAvailability.php',
     'App\\Models\\Admin\\DriverDetail' => $baseDir . '/app/Models/Admin/DriverDetail.php',
