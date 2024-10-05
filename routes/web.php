@@ -73,21 +73,21 @@ Route::namespace('Web')->group(function () {
 
     Route::get('/clear-caches', function () {
         // Clear application cache
-       // Artisan::call('cache:clear');
+        Artisan::call('cache:clear');
 
         // Clear config cache
-       // Artisan::call('config:cache');
+        Artisan::call('config:clear');
 
         // Clear route cache
-        Artisan::call('route:cache');
+        Artisan::call('route:clear');
 
         // Clear view cache
-        //Artisan::call('view:clear');
+        Artisan::call('view:clear');
 
         // Clear compiled class files
-       Artisan::call('optimize:clear');
+        Artisan::call('optimize:clear');
 
-        // Clear the cache for specific service providers (if needed)
+        // You can also add clearing for specific service providers if needed
         // Artisan::call('cache:clear-provider', ['provider' => 'App\Providers\YourServiceProvider']);
 
         return response()->json(['message' => 'Caches cleared successfully!']);
