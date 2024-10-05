@@ -703,7 +703,7 @@
         window.initMap = initMap;
     </script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap&key={{ env('GOOGLE_MAP_KEY') }}" defer>
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap&key=AIzaSyAL0hd3a2l1k1uLSAxQNN511PWkguNxzE4" defer>
     </script>
 
     <script src="{{ asset('assets/vendor_components/jquery.peity/jquery.peity.js') }}"></script>

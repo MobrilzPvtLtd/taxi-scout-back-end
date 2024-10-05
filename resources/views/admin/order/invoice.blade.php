@@ -44,19 +44,21 @@
                                                         $query->where('user_id', $result->user_id);
                                                     })->first();
                                                 @endphp
-                                                <tr>
-                                                    @if(auth()->user()->id == 1)
-                                                        <td> {{$owner->name}}</td>
-                                                    @endif
-                                                    <td>{{ $result->description }}</td>
-                                                    <td>{{ $result->amount }}</td>
-                                                    @if($result->status == "paid")
-                                                        <td><span class="label label-success">Paid</span></td>
-                                                    @else
-                                                        <td><span class="label label-danger">Unpaid</span></td>
-                                                    @endif
-                                                    <td>{{ $result->payment_method }}</td>
-                                                </tr>
+                                                @if ($owner)
+                                                    <tr>
+                                                        @if(auth()->user()->id == 1)
+                                                            <td> {{$owner->name}}</td>
+                                                        @endif
+                                                        <td>{{ $result->description }}</td>
+                                                        <td>{{ $result->amount }}</td>
+                                                        @if($result->status == "paid")
+                                                            <td><span class="label label-success">Paid</span></td>
+                                                        @else
+                                                            <td><span class="label label-danger">Unpaid</span></td>
+                                                        @endif
+                                                        <td>{{ $result->payment_method }}</td>
+                                                    </tr>
+                                                @endif
                                             @endforeach
                                         </tbody>
                                     </table>

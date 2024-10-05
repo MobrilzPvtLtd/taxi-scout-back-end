@@ -24,13 +24,13 @@
         <!-- sidebar menu-->
         <ul class="sidebar-menu" data-widget="tree">
             @if (!$packageExpiryDate)
-            @if (auth()->user()->can('access-dashboard'))
-                <li class="{{ 'dashboard' == $main_menu ? 'active' : '' }}">
-                    <a href="{{ url('/dashboard') }}">
-                        <i class="fa fa-tachometer"></i> <span>@lang('pages_names.dashboard')</span>
-                    </a>
-                </li>
-            @endif
+                @if (auth()->user()->can('access-dashboard'))
+                    <li class="{{ 'dashboard' == $main_menu ? 'active' : '' }}">
+                        <a href="{{ url('/dashboard') }}">
+                            <i class="fa fa-tachometer"></i> <span>@lang('pages_names.dashboard')</span>
+                        </a>
+                    </li>
+                @endif
             @endif
 
             @if (auth()->user()->can('service_location'))
@@ -230,7 +230,7 @@
             @if (auth()->user()->can('manage-subscription'))
                 <li class="{{ 'manage-subscription' == $main_menu ? 'active' : '' }}">
                     <a href="{{ url('/subscription') }}">
-                        <i class="fa fa-solid fa-dollar"></i> <span>@lang('pages_names.subscription')</span>
+                        <i class="fa fa-solid fa-dollar"></i> <span>Package</span>
                     </a>
                 </li>
             @endif
@@ -239,7 +239,7 @@
                 <li class="treeview {{ 'manage-order' == $main_menu ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-first-order"></i>
-                        <span>Subscription</span>
+                        <span>Subscription Order</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-right pull-right"></i>
                         </span>

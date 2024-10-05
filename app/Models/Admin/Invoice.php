@@ -18,4 +18,9 @@ class Invoice extends Model
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
+
+    public function owner()
+    {
+        return $this->belongsTo(Owner::class, 'user_id', 'id');
+    }
 }
