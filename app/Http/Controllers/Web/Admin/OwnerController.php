@@ -30,6 +30,9 @@ use App\Models\Payment\UserWalletHistory;
 use App\Base\Constants\Setting\Settings;
 use Illuminate\Support\Str;
 use App\Base\Constants\Masters\WalletRemarks;
+use App\Models\Admin\Driver;
+use App\Models\Admin\VehicleType;
+use App\Models\Admin\ZoneTypePrice;
 
 class OwnerController extends BaseController
 {
@@ -206,9 +209,21 @@ class OwnerController extends BaseController
 
     public function delete(Owner $owner)
     {
+        $driver = Driver::where('owner_id', $owner->owner_unique_id)->first();
+        $VehicleType = VehicleType::where('owner_id', $owner->owner_unique_id)->first();
+        $ZoneTypePrice = ZoneTypePrice::where('owner_id', $owner->owner_unique_id)->first();
+        // dd($ZoneTypePrice);
+        if($ZoneTypePrice){
+            return redirect("owners")->with('warning', trans('Please remove the taxi company set price first.'));
+        }elseif($VehicleType){
+            return redirect("owners")->with('warning', trans('Please remove the taxi company vehicle type first.'));
+        }elseif($driver){
+            return redirect("owners")->with('warning', trans('Please remove the taxi company driver first.'));
+        }
+
         $owner->user()->delete();
 
-        $message = trans('succes_messages.owner_deleted_succesfully');
+        $message = trans('Taxi Company deleted succesfully.');
         // return $message;
         return redirect("owners")->with('success', $message);
         // return redirect("owners/by_area/$owner->service_location_id")->with('success', $message);

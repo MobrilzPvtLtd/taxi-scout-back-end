@@ -51,7 +51,7 @@
             </tr>
             </thead>
             <tbody>
-            @if(count($results)<1)
+            @if(count($results) < 1)
                 <tr>
                     <td colspan="11">
                         <p id="no_data" class="lead no-data text-center">
@@ -64,7 +64,10 @@
                 </tr>
             @else
 
-                @php  $i= $results->firstItem(); @endphp
+                @php
+                 $i= $results->firstItem();
+                    // dd($results);
+                @endphp
 
                 @foreach($results as $key => $result)
                     @php
@@ -131,11 +134,9 @@
                                         @endif
                                     @endif
                                     @if(auth()->user()->can('delete-vehicle-types'))
-                                       <!--  <a class="dropdown-item sweet-delete" href="#" data-url="{{url('types/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a> -->
+                                       <a class="dropdown-item sweet-delete" href="#" data-url="{{url('types/delete',$result->id)}}"><i class="fa fa-trash-o"></i>@lang('view_pages.delete')</a>
                                     @endif
-
                                     </div>
-
                             </td>
                         {{-- @endif --}}
                     </tr>
