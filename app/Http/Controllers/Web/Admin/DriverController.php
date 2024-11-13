@@ -117,7 +117,7 @@ class DriverController extends BaseController
     public function getApprovedDrivers(QueryFilterContract $queryFilter)
     {
         if (access()->hasRole(RoleSlug::SUPER_ADMIN)) {
-            $query = Driver::where('approve', true)->orderBy('created_at', 'desc');
+            $query = Driver::orderBy('created_at', 'desc');
             if (env('APP_FOR')=='demo') {
                 $query = Driver::where('approve', true)->whereHas('user', function ($query) {
                     $query->whereCompanyKey(auth()->user()->company_key);

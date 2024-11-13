@@ -110,7 +110,7 @@ return array (
   'profile' => 'الملف الشخصي',
   'remove' => 'إزالة',
   'role' => 'الأدوار',
-  's_no' => 'S.No',
+  's_no' => 'Sr.No',
   'save' => 'حفظ',
   'search' => 'بحث',
   'select' => 'تحديد',

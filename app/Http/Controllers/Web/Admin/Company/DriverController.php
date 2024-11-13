@@ -611,7 +611,6 @@ class DriverController extends BaseController
         }else{
             $message = trans('succes_messages.driver_disapproved_succesfully');
         }
-
         return $message;
         // return redirect('admins')->with('success', $message);
     }

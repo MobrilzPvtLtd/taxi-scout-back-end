@@ -10,7 +10,7 @@ return array (
   'reason' => 'reason',
   'save' => 'Save',
   'update' => 'Update',
-  's_no' => 'Yes.No',
+  's_no' => 'Sr.No',
   'user_type' => 'User Type',
   'payment_type' => 'Payment Type',
   'status' => 'Status',

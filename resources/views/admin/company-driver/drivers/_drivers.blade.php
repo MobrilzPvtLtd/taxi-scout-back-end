@@ -4,12 +4,12 @@
             <thead>
                 <tr>
                     <th> @lang('view_pages.s_no')<span style="float: right;"></span></th>
-                    <th> @lang('view_pages.uuid')<span style="float: right;"></span></th>
+                    {{-- <th> @lang('view_pages.uuid')<span style="float: right;"></span></th> --}}
                     <th> @lang('view_pages.company_key')<span style="float: right;"></span></th>
                     <th> @lang('view_pages.name')<span style="float: right;"></span></th>
                     <th> @lang('view_pages.email')<span style="float: right;"></span></th>
                     <th> @lang('view_pages.mobile')<span style="float: right;"></span></th>
-                    <th>@lang('view_pages.document_view')<span style="float: right;"></span></th>
+                    {{-- <th>@lang('view_pages.document_view')<span style="float: right;"></span></th> --}}
                     <th> @lang('view_pages.approve_status')<span style="float: right;"></span></th>
                     <th> @lang('view_pages.online_status')<span style="float: right;"></span></th>
                     <th> @lang('view_pages.action')<span style="float: right;"></span></th>
@@ -31,16 +31,16 @@
                     @foreach($results as $key => $result)
                     <tr>
                         <td>{{ $i++ }} </td>
-                        <td> {{$result->uuid}}</td>
+                        {{-- <td> {{$result->uuid}}</td> --}}
                         <td> {{$result->owner_id}}</td>
                         <td> {{$result->name}}</td>
                         <td>{{$result->email}}</td>
                         <td>{{$result->mobile}}</td>
-                        <td>
+                        {{-- <td>
                             <a href="{{ url('company/drivers/document/view',$result->id) }}" class="btn btn-social-icon btn-bitbucket">
                                 <i class="fa fa-file-text"></i>
                             </a>
-                        </td>
+                        </td> --}}
 
                         <td>
                             @if($result->approve == 1)

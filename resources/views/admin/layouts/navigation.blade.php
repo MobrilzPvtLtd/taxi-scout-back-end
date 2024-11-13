@@ -34,7 +34,7 @@
             @endif
 
             @if (auth()->user()->can('service_location') || auth()->user()->can('view-zone'))
-            <li class="treeview {{ ($main_menu == 'service_location' || $main_menu == 'zone') ? 'active menu-open' : '' }}">
+            <li class="treeview {{ ($main_menu == 'service_location' || $sub_menu == 'zone') ? 'active menu-open' : '' }}">
                     <a href="javascript: void(0);">
                         <i class="fa fa-map-marker"></i>
                         <span>Service Area </span>

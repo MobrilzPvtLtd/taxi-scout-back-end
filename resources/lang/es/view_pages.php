@@ -4,7 +4,7 @@ return array (
   'status' => 'Status',
   'action' => 'Action',
   'search' => 'Search',
-  's_no' => 'S.No',
+  's_no' => 'Sr.No',
   'save' => 'Save',
   'update' => 'Update',
   'name' => 'Name',
