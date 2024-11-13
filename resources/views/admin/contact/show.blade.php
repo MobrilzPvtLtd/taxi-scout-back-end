@@ -77,7 +77,7 @@
                                 <tr>
                                     <td>
                                         <strong>
-                                            country
+                                            Country
                                         </strong>
                                     </td>
                                     <td>
@@ -87,7 +87,7 @@
                                 <tr>
                                     <td>
                                         <strong>
-                                            address
+                                            Address
                                         </strong>
                                     </td>
                                     <td>
@@ -97,7 +97,7 @@
                                 <tr>
                                     <td>
                                         <strong>
-                                            state
+                                            State
                                         </strong>
                                     </td>
                                     <td>
@@ -107,7 +107,7 @@
                                 <tr>
                                     <td>
                                         <strong>
-                                            pincode
+                                            Pincode
                                         </strong>
                                     </td>
                                     <td>
@@ -117,7 +117,7 @@
                                 <tr>
                                     <td>
                                         <strong>
-                                            subject
+                                            Subject
                                         </strong>
                                     </td>
                                     <td>
@@ -127,11 +127,37 @@
                                 <tr>
                                     <td>
                                         <strong>
-                                            message
+                                            Message
                                         </strong>
                                     </td>
                                     <td>
                                         {{ $result->message }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            Status
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="dropdown-toggle text-white btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="{{ $result->status == 'open' ? 'background-color: #fc4b6c;' : 'background-color: #008000;' }} border: none; color:#fff">
+                                                {{ $result->status == 'open' ? 'Open' : 'Close' }}
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <form action="{{ url('contact/is_view') }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="contactId" id="" value="{{ $result->id }}">
+                                                        <input type="hidden" name="status" id="" value="{{ $result->status == 'open' ? 'close' : 'open' }}">
+                                                        <button type="submit" class="dropdown-item" style="cursor: pointer;">
+                                                            {{ $result->status == 'open' ? 'Close' : 'Open' }}
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>

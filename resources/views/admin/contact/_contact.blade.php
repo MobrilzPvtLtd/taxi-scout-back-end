@@ -2,14 +2,14 @@
     <thead>
         <tr>
             <th> @lang('view_pages.s_no')</th>
-            <th> name</th>
-            <th> email</th>
-            <th> mobile</th>
-            <th> country</th>
+            <th> Name</th>
+            <th> Email</th>
+            <th> Mobile</th>
+            <th> Country</th>
             {{-- <th> address</th> --}}
-            {{-- <th> state</th> --}}
             {{-- <th> pincode</th> --}}
             {{-- <th> subject</th> --}}
+            <th> Status</th>
             <th> Action</th>
         </tr>
     </thead>
@@ -27,9 +27,11 @@
             <td>{{ $result->mobile }}</td>
             <td>{{ $result->country }}</td>
             {{-- <td>{{ $result->address }}</td> --}}
-            {{-- <td>{{ $result->state }}</td> --}}
             {{-- <td>{{ $result->pincode }}</td> --}}
             {{-- <td>{{ $result->subject }}</td> --}}
+            <td>
+                <button class="btn-sm text-white" style="{{ $result->status == 'open' ? 'background-color: #fc4b6c;' : 'background-color: #008000;' }} border: none;cursor: auto;">{{ $result->status == 'open' ? 'Open' : 'Close' }}</button>
+            </td>
             <td><a href="{{url('contact/show',$result->id)}}" class="btn btn-info btn-sm">View</a>
             </td>
         </tr>

@@ -533,6 +533,7 @@ Route::middleware('auth:web')->group(function () {
             Route::get('/', 'ContactController@index');
             Route::get('/fetch', 'ContactController@fetch');
             Route::get('/show/{id}', 'ContactController@show');
+            Route::post('is_view', 'ContactController@is_view');
         });
 
         // Our Team CRUD

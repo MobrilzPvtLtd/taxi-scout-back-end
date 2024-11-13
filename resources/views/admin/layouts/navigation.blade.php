@@ -298,7 +298,7 @@
             @if (auth()->user()->can('manage-contact'))
                 <li class="{{ 'contact' == $sub_menu ? 'active' : '' }}">
                     <a href="{{ url('/contact') }}">
-                        <i class="fa fa-phone"></i> <span>Contact Enquery</span>
+                        <i class="fa fa-phone"></i> <span>Contact Inquiry</span>
                     </a>
                 </li>
             @endif

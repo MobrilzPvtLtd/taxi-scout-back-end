@@ -7,7 +7,7 @@
                         <thead>
                             <tr>
                                 <th> @lang('view_pages.s_no')</th>
-                                <th> Company Id</th>
+                                {{-- <th> Company Id</th> --}}
                                 <th> @lang('view_pages.company_name')</th>
                                 <th> @lang('view_pages.name')</th>
                                 <th> @lang('view_pages.email')</th>
@@ -34,7 +34,7 @@
 
                                     <tr>
                                         <td>{{ $i++ }} </td>
-                                        <td> {{ $result->owner_unique_id }}</td>
+                                        {{-- <td> {{ $result->owner_unique_id }}</td> --}}
                                         <td> {{ $result->company_name }}</td>
                                         <td> {{ $result->name }}</td>
                                         <td>{{ $result->email }}</td>

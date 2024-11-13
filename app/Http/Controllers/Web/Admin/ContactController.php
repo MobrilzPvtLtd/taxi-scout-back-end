@@ -61,4 +61,16 @@ class ContactController extends BaseController
         $result = $this->contact->find($id);
         return view('admin.contact.show', compact('result','page', 'main_menu', 'sub_menu'));
     }
+
+    public function is_view(Request $request){
+        // dd($request);
+        $contact = Contact::find($request->contactId);
+
+        if ($contact) {
+            $contact->status = $contact->status === 'open' ? 'close' : 'open';
+            $contact->save();
+
+            return redirect()->back();
+        }
+    }
 }

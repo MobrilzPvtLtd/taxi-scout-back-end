@@ -24,6 +24,7 @@ class CreateContactsTable extends Migration
             $table->string('pincode')->nullable();
             $table->string('subject')->nullable();
             $table->longText('message')->nullable();
+            $table->string('status')->default('open')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
