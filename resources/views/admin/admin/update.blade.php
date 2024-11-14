@@ -174,15 +174,25 @@
                                             <select name="country" id="country" class="form-control" required>
                                                 <option value="" selected disabled>@lang('view_pages.select_country')</option>
                                                 @foreach ($countries as $key => $country)
-                                                    <option value="{{ $country->id }}"
-                                                        {{ old('country', $item->country) == $country->id ? 'selected' : '' }}>
+                                                    <option value="{{ $country->dial_code }}"
+                                                        {{ $item->user->country == $country->dial_code ? 'selected' : '' }}>
                                                         {{ $country->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-
                                     <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="city">@lang('view_pages.Zone') <span
+                                                    class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" id="city" name="city"
+                                                value="{{ old('city', $item->city) }}" required=""
+                                                placeholder="Enter Zone">
+                                            <span class="text-danger">{{ $errors->first('city') }}</span>
+
+                                        </div>
+                                    </div>
+                                    {{-- <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="state">@lang('view_pages.state') <span
                                                     class="text-danger">*</span></label>
@@ -192,22 +202,10 @@
                                             <span class="text-danger">{{ $errors->first('state') }}</span>
 
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="city">@lang('view_pages.city') <span
-                                                    class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" id="city" name="city"
-                                                value="{{ old('city', $item->city) }}" required=""
-                                                placeholder="@lang('view_pages.enter_city')">
-                                            <span class="text-danger">{{ $errors->first('city') }}</span>
-
-                                        </div>
-                                    </div>
-
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="address">@lang('view_pages.address') <span

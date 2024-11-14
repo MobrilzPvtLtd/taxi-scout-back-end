@@ -176,7 +176,7 @@
                         {{-- <i class="mdi mdi-bell-ring sosicon"></i> --}}
                     </a>
                     <ul class="dropdown-menu scale-up sosList">
-                        
+
                     </ul>
                 </li>
                  <li class="dropdown notifications-menu">
@@ -237,8 +237,12 @@
                                  </div>
                                  <div role="separator" class="divider col-12"></div>
                                  <div class="col-12 text-left">
-                                     <a href="{{ url('api/spa/logout') }}" class="logout"><i
-                                             class="fa fa-power-off"></i> @lang('pages_names.logout')</a>
+                                    <form action="{{ url('api/spa/logout') }}">
+                                        @csrf
+                                        <button type="submit" class="logout"><i class="fa fa-power-off"></i> @lang('pages_names.logout')</button>
+                                    </form>
+                                     {{-- <a href="{{ url('api/spa/logout') }}" class="logout"> --}}
+                                        {{-- <i class="fa fa-power-off"></i> @lang('pages_names.logout')</a> --}}
                                  </div>
                              </div>
                              <!-- /.row -->
@@ -257,4 +261,3 @@
 
  <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
  <!-- <div class="control-sidebar-bg"></div> -->
- 

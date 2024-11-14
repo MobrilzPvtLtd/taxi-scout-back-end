@@ -156,7 +156,7 @@
                                         </div>
                                     </div> --}}
 
-                                    <div class="col-6">
+                                    {{-- <div class="col-6">
                                         <div class="form-group">
                                             <label for="car_make">@lang('view_pages.car_model')<span
                                                     class="text-danger">*</span></label>
@@ -169,7 +169,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     {{-- <div class="col-6">
                                         <div class="form-group">

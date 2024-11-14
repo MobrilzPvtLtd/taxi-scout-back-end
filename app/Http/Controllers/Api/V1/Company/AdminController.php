@@ -162,10 +162,6 @@ class AdminController extends BaseController
                 'profile_picture'=>$profile_picture ?? '',
             ];
 
-            if (env('APP_FOR')=='demo') {
-                $user_params['company_key'] = '';
-            }
-
             $subscription = Subscription::where('id', $request->package_id)->first();
 
             if (!$subscription) {
@@ -286,7 +282,6 @@ class AdminController extends BaseController
             'mobile'=>$request->input('mobile'),
             'password' => bcrypt($request->input('password'))
         ];
-
         if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
             $updated_user_params['profile_picture'] = $this->imageUploader->file($uploadedFile)
                 ->saveProfilePicture();

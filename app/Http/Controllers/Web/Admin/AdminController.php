@@ -258,21 +258,16 @@ class AdminController extends BaseController
 
     public function update(Owner $admin, UpdateAdminRequest $request)
     {
-        if (env('APP_FOR')=='demo') {
-            $message = trans('succes_messages.you_are_not_authorised');
-
-            return redirect('owners')->with('warning', $message);
-        }
-
         $updatedParams = $request->only(['service_location_id', 'name', 'company_name','mobile','email','address','state','city','country']);
         $updatedParams['postal_code'] = $request->postal_code;
         $updatedParams['owner_name'] = $request->name;
 
-
-        $updated_user_params = ['name'=>$request->input('name'),
+        $updated_user_params = [
+            'name'=>$request->input('name'),
             'email'=>$request->input('email'),
             'mobile'=>$request->input('mobile'),
-            'password' => bcrypt($request->input('password'))
+            'password' => bcrypt($request->input('password')),
+            'country'=>$request->input('country'),
         ];
 
         if ($uploadedFile = $this->getValidatedUpload('profile_picture', $request)) {
