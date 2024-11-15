@@ -67,9 +67,16 @@ class ProfileController extends ApiController
     public function updateProfile(UpdateProfileRequest $request)
     {
         $user = auth()->user();
-        $owner = Owner::whereHas('user', function ($query) use ($user) {
-            $query->where('owner_unique_id', $user->driver->owner_id);
-        })->first();
+
+        if($user->driver){
+            $owner = Owner::whereHas('user', function ($query) use ($user) {
+                $query->where('owner_unique_id', $user->driver->owner_id);
+            })->first();
+        }else{
+            $owner = Owner::whereHas('user', function ($query) use ($user) {
+                $query->where('owner_unique_id', $user->owner_id);
+            })->first();
+        }
 
         if (!$owner) {
             $this->throwCustomException('The taxi company is not found.');
