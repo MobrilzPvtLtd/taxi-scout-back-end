@@ -30,7 +30,7 @@
                             @if(auth()->user()->can('add-vehicle-types'))
                                 <div class="col-md-7 text-center text-md-right">
                                     <a href="{{ url('types/create') }}" class="btn btn-primary btn-sm">
-                                        <i class="mdi mdi-plus-circle mr-2"></i>@lang('view_pages.add_types')</a>
+                                        <i class="mdi mdi-plus-circle mr-2"></i>Add Vehicle</a>
                                     <!--  <a class="btn btn-danger">
                                                 Export</a> -->
                                 </div>

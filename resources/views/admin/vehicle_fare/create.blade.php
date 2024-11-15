@@ -75,15 +75,17 @@
                                             <span class="text-danger">*</span>
                                         </label>
                                         @php
-                                            $card = '';
                                             $cash = '';
                                             $wallet = '';
+                                            $credit_card = '';
+                                            $debit_card = '';
+                                            $contactless = '';
                                         @endphp
                                         @if (old('payment_type'))
                                             @foreach (old('payment_type') as $item)
-                                                @if ($item == 'card')
+                                                @if ($item == 'credit_card')
                                                     @php
-                                                        $card = 'selected';
+                                                        $credit_card = 'selected';
                                                     @endphp
                                                 @elseif($item == 'cash')
                                                     @php
@@ -93,16 +95,25 @@
                                                     @php
                                                         $wallet = 'selected';
                                                     @endphp
+                                                @elseif($item == 'debit_card')
+                                                    @php
+                                                        $debit_card = 'selected';
+                                                    @endphp
+                                                @elseif($item == 'contactless')
+                                                    @php
+                                                        $contactless = 'selected';
+                                                    @endphp
                                                 @endif
                                             @endforeach
                                         @endif
                                         <select name="payment_type[]" id="payment_type" class="form-control select2"
                                             multiple="multiple" data-placeholder="@lang('view_pages.select') @lang('view_pages.payment_type')"
                                             required>
-                                            <option value="cash" {{ $cash }}>@lang('view_pages.cash')</option>
-                                            <option value="wallet" {{ $wallet }}>@lang('view_pages.wallet')</option>
-                                            <option value="card" {{ $card }}>@lang('view_pages.card')</option>
-
+                                            <option value="cash" {{ $cash }}>Cash</option>
+                                            <option value="wallet" {{ $wallet }}>Mobile Wallets</option>
+                                            <option value="credit_card" {{ $credit_card }}>Credit Cards</option>
+                                            <option value="debit_card" {{ $debit_card }}>Debit Cards</option>
+                                            <option value="contactless" {{ $contactless }}>Contactless Payments (NFC)</option>
                                         </select>
                                     </div>
                                 </div>

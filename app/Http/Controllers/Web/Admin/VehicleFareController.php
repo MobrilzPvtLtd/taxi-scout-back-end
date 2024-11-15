@@ -161,7 +161,7 @@ class VehicleFareController extends Controller
             'free_waiting_time_in_mins_after_trip_start' =>  $request->ride_now_free_waiting_time_in_mins_after_trip_start ? $request->ride_now_free_waiting_time_in_mins_after_trip_start:0,
         ]);
 
-        $message = trans('succes_messages.type_assigned_succesfully');
+        $message = trans('Type assigned succesfully.');
 
         return redirect('vehicle_fare')->with('success', $message);
     }
@@ -214,7 +214,7 @@ class VehicleFareController extends Controller
             'free_waiting_time_in_mins_after_trip_start' =>  $request->ride_now_free_waiting_time_in_mins_after_trip_start ? $request->ride_now_free_waiting_time_in_mins_after_trip_start:0,
         ]);
         }
-        $message = trans('succes_messages.type_fare_updated_succesfully');
+        $message = trans('Type fare updated succesfully.');
 
         return redirect('vehicle_fare')->with('success', $message);
     }
@@ -223,7 +223,7 @@ class VehicleFareController extends Controller
         $status = $zone_price->zoneType->isActive() ? false : true;
         $zone_price->zoneType->update(['active' => $status]);
 
-        $message = trans('succes_messages.type_fare_status_updated_succesfully');
+        $message = trans('Type fare status updated succesfully.');
 
         return redirect('vehicle_fare')->with('success', $message);
     }
@@ -247,7 +247,7 @@ class VehicleFareController extends Controller
         //   $package->delete();
 
         }
-        $message = trans('succes_messages.vehicle_fare_deleted_succesfully');
+        $message = trans('Vehicle fare deleted succesfully.');
 
         return $message;
     }
