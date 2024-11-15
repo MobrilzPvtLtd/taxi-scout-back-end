@@ -25,7 +25,7 @@ class DriverRegistrationRequest extends BaseRequest
             'device_token'=>'required',
             'login_by'=>'required|in:android,ios',
             'vehicle_type'=>'sometimes|required|exists:vehicle_types,id',
-            'address'=>'min:15',
+            // 'address'=>'min:15',
             'postal_code'=>'min:6|max:6',
             // 'car_make'=>'sometimes|required|exists:car_makes,id',
             // 'car_model'=>'sometimes|required|exists:car_models,id',
